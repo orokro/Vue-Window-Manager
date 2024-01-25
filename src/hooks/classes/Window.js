@@ -144,16 +144,16 @@ Window.windowData = [
 		kind: Window.KIND.EDITOR,
 	},
 	{
+		title: 'Inspector',
+		svgIcon: '#iconFrameSingle',
+		icon: '',
+		kind: Window.KIND.INSPECTOR,
+	},
+	{
 		title: 'Viewer',
 		svgIcon: '#iconFrameSingle',
 		icon: '',
 		kind: Window.KIND.VIEWER,
-	},
-	{
-		title: 'Instrument',
-		svgIcon: '#iconFrameSingle',
-		icon: '',
-		kind: Window.KIND.EMPTY,
 	},
 	{
 		title: 'Tools',
