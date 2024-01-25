@@ -245,7 +245,6 @@ export default class WindowLayoutHelper {
 				let refKey = ref[1].split('+')[0].split('-')[0];
 
 				// get the value from the reference
-				console.log(refs, refWnd, refKey)
 				val = refs[refWnd][refKey];
 
 				// if anything was being added, lets add it now
