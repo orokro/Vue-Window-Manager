@@ -1,0 +1,45 @@
+<!-- 
+	StatusBar.vue
+	-------------
+
+	This is the bar that is fixed in height and runs along the bottom of the app.
+
+	Like the TopBar (on the top), it is fixed size and cannot be split/merged like
+	other windows in the App's windowing-system.
+
+	This bar will show things like:
+		- Tool Tip Text
+		- Modal Options for modal-tools
+		- Misc Info/Stats
+-->
+<template>
+
+	<div class="statusBar">Status Bar</div>
+</template>
+<script setup>
+
+</script>
+<style scoped lang="scss">
+
+	// pull in our global reusable styles & variables
+	@import '../css/main.scss';
+
+	// outer most wrapper for the top bar contents
+	.statusBar {
+
+		// fill entire width of bottom, with fixed height
+		position: fixed;
+		inset: auto 0px 0px 0px;
+		height: 30px;
+
+		// black bar on top
+		border-top: 2px solid black;
+
+		background-color: $panel-bg-default;
+		color: #5d5e62;
+
+		padding: 6px 10px;		
+		
+	}// .statusBar
+
+</style>

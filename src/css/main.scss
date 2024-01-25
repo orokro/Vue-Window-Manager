@@ -1,0 +1,35 @@
+/*
+	main.scss
+	---------
+
+	Main file for global styles
+
+	This will also set up reusable variables
+*/
+
+// reusable panel background color
+$panel-bg-default: rgb(49 49 59);
+
+// quickie to disable userSelection
+.noSel {
+	user-select: none;
+}
+
+// styles to show debug information in our components
+.debugPanel {
+
+	position: absolute;
+	background: rgba(200,200,200,0.2);
+	border-radius: 8px;
+	padding: 8px;
+	box-sizing: border-box;
+	color: gray;
+
+	&.t { top: 10px; }
+	&.b { bottom: 10px; }
+	&.l { left: 10px; }
+	&.r { right: 10px; }
+
+	mix-blend-mode:difference;
+
+}// .debugPanel
