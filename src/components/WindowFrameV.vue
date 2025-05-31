@@ -3,7 +3,7 @@
 	----------------
 
 	This component creates a WindowFrame, which are "empty" containers that partition the
-	screen real-state. WindowFrames are what contain one or more Windows, in various configurations.
+	screen real-estate. WindowFrames are what contain one or more Windows, in various configurations.
 
 	See the large comment-block at the top of WindowManager.js for more info on our WindowingSystem.
 

@@ -116,7 +116,7 @@
 	"eslint.validate": [
 		"javascript",
 	],
-	"editor.formatOnSave": true,
+	"editor.formatOnSave": false,
 	"editor.defaultFormatter": "dbaeumer.vscode-eslint",
 	"volar.takeOverMode.extension": ""
 }
