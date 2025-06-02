@@ -11,9 +11,9 @@
 
 	It's important to note that there are a couple different cases we're interested in, please consult the ASCII diagram below:
 	┌──────────┬──────────┬──────────┐
-	| Window 1 | Window 2 | Window 3 |
-	|          |          ├──────────┤
-	|          |          | Window 4 |
+	| Window 1  | Window 2  | Window 3  |
+	|           |           ├──────────┤
+	|           |           | Window 4  |
 	└──────────┴──────────┴──────────┘
 	* Window 1 shares a complete edge with Window 2, such that the RIGHT-edge of Window 1 is the same as the LEFT-edge of Window 2
 	* Window 2 shares a partial edge with window 3
