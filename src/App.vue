@@ -17,8 +17,6 @@
 			<WindowManager/>
 		</div> -->
 
-		
-
 	</main>
 </template>
 <script setup>
@@ -74,12 +72,12 @@ function disableContextMenus(event){
 	.demoBox {
 
 		position: absolute;
-		top: 50px;
-		left: 100px;
+		top: 0px;
+		left: 0px;
 		width: 1200px;
 		height: 800px;
 
-		border: 2px solid red;
+		/* border: 2px solid red; */
 		border-radius: 5px;
 		overflow: clip;
 

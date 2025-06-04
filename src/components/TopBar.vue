@@ -10,8 +10,9 @@
 <template>
 
 	<div class="topBar">
-		<!-- Top Bar -->
+		<slot/>
 	</div>
+
 </template>
 <script setup>
 

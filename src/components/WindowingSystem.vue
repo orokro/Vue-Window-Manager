@@ -46,21 +46,12 @@
 <script setup>
 
 // vue
-import { onMounted, onUnmounted, ref, shallowRef, provide } from 'vue';
+import { onMounted, onUnmounted, ref, shallowRef, inject } from 'vue';
 
 // components
 import WindowFrameV from './WindowFrameV.vue';
 import WindowPen from './WindowPen.vue';
 import WindowDragLayer from './WindowDragLayer.vue';
-
-// classes
-import WindowManager from '@classes/WindowManager';
-
-// make a new window manager if one doesn't exist yet
-const windowMgr = new WindowManager();
-
-// provide the window manager for all our components down stream
-provide('windowManager', windowMgr);
 
 // DOM refs
 const containerRef = ref(null);
@@ -68,8 +59,10 @@ const containerRef = ref(null);
 // our calculated DOM size, updated automatically when our component resizes
 const windowContainerSize = shallowRef({width: 0, height: 0});
 
-window.cr = containerRef;
+// get our window manager from the parent component
+const windowMgr = inject('windowManager');
 
+window.cr = containerRef;
 
 // function to update our window size based on our DOM measurements
 function updateWindowContainerSize(){

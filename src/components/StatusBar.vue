@@ -14,7 +14,10 @@
 -->
 <template>
 
-	<div class="statusBar">Status Bar</div>
+	<div class="statusBar">
+		<slot/>
+	</div>
+
 </template>
 <script setup>
 
