@@ -50,7 +50,7 @@ import PreferencesViewD from './DemoViews/PreferencesViewD.vue';
 import DebugViewD from './DemoViews/DebugViewD.vue';
 
 // lib/misc
-import Window from '../hooks/classes/Window';
+import Window from '@classes/Window';
 
 // define our props
 const props = defineProps({

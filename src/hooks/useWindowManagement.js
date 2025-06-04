@@ -33,7 +33,7 @@
 */
 
 // classes
-import WindowManager from './classes/WindowManager';
+import WindowManager from '@classes/WindowManager';
 
 // make a new window manager if one doesn't exist yet
 const windowMgr = new WindowManager();

@@ -16,7 +16,7 @@ import WindowManager from './WindowManager';
 import Window from './Window';
 
 // lib/misc
-import { clamp01, parseParams, rangeOverlap } from '../../misc/Utils';
+import { clamp01, parseParams, rangeOverlap } from '@misc/Utils';
 
 // the main money: the WindowFrame class export
 export default class WindowFrame {

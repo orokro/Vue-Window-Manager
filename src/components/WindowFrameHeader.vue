@@ -97,12 +97,12 @@ import { onMounted, ref, shallowRef, watch } from 'vue';
 
 // lib/misc
 import { arrayDiff } from 'garraydiff';
-import WindowFrame from '../hooks/classes/WindowFrame';
-import Window from '../hooks/classes/Window';
+import WindowFrame from '@classes/WindowFrame';
+import Window from '@classes/Window';
 
 // hooks
-import useDragHelper from '../hooks/useDragHelper';
-import { getTextWidth, getCanvasFont } from '../hooks/useTextMeasuring';
+import useDragHelper from '@hooks/useDragHelper';
+import { getTextWidth, getCanvasFont } from '@hooks/useTextMeasuring';
 
 // invoke hooks
 const { dragHelper } = useDragHelper();

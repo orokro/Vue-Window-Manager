@@ -58,8 +58,8 @@ import WindowPen from './WindowPen.vue';
 import WindowDragLayer from './WindowDragLayer.vue';
 
 // hooks
-import useWindowManagement from '../hooks/useWindowManagement';
-import { useWindowingDebug } from '../hooks/useFlags';
+import useWindowManagement from '@hooks/useWindowManagement';
+import { useWindowingDebug } from '@hooks/useFlags';
 
 // invoke hooks
 const { windowMgr } = useWindowManagement();

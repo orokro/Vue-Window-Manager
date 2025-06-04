@@ -103,11 +103,11 @@
 import { ref, watch } from 'vue';
 
 // lib/misc
-import WindowFrame from '../hooks/classes/WindowFrame';
-import Window from '../hooks/classes/Window';
+import WindowFrame from '@classes/WindowFrame';
+import Window from '@classes/Window';
 
 // hooks
-import useDragHelper from '../hooks/useDragHelper';
+import useDragHelper from '@hooks/useDragHelper';
 
 // invoke hooks
 const { dragHelper } = useDragHelper();

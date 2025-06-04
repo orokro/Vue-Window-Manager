@@ -210,15 +210,15 @@ import WindowFrameHeader from './WindowFrameHeader.vue';
 import WindowFrameContents from './WindowFrameContents.vue';
 
 // lib/misc
-import { clamp } from '../misc/Utils';
-import WindowManager from '../hooks/classes/WindowManager';
-import WindowFrame from '../hooks/classes/WindowFrame';
-import Window from '../hooks/classes/Window';
+import { clamp } from '@misc/Utils';
+import WindowManager from '@classes/WindowManager';
+import WindowFrame from '@classes/WindowFrame';
+import Window from '@classes/Window';
 
 // hooks
-import { useWindowingDebug } from '../hooks/useFlags';
-import useWindowManagement from '../hooks/useWindowManagement';
-import useDragHelper from '../hooks/useDragHelper';
+import { useWindowingDebug } from '@hooks/useFlags';
+import useWindowManagement from '@hooks/useWindowManagement';
+import useDragHelper from '@hooks/useDragHelper';
 
 // invoke hooks
 const { windowMgr } = useWindowManagement();

@@ -23,7 +23,7 @@ import WindowFrame from './WindowFrame';
 import WindowManager from './WindowManager';
 
 // lib/misc
-import { parseParams, applyKeys } from '../../misc/Utils';
+import { parseParams, applyKeys } from '@misc/Utils';
 
 // the main money - Window class export
 export default class Window {

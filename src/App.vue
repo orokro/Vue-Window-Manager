@@ -27,7 +27,7 @@
 import { ref } from 'vue';
 
 // lib/misc
-import { checkParentsForClass } from '../src/misc/Utils';
+import { checkParentsForClass } from '@misc/Utils';
 
 // main window component
 import WindowManager from './components/WindowManager.vue';

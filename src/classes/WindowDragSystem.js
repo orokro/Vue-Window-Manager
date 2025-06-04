@@ -23,11 +23,11 @@
 import { ref } from 'vue';
 
 // classes
-import WindowManager from './WindowManager';
-import WindowFrame from './WindowFrame';
+import WindowManager from '@classes/WindowManager';
+import WindowFrame from '@classes/WindowFrame';
 
 // hooks
-import useDragHelper from '../useDragHelper';
+import useDragHelper from '@hooks/useDragHelper';
 
 // invoke hooks
 const { dragHelper } = useDragHelper();

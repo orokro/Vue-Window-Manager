@@ -49,7 +49,7 @@ import WindowV from './WindowV.vue';
 
 
 // hooks
-import useWindowManagement from '../hooks/useWindowManagement';
+import useWindowManagement from '@hooks/useWindowManagement';
 
 // invoke hooks
 const { windowMgr } = useWindowManagement();

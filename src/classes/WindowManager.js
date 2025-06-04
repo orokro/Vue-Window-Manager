@@ -96,18 +96,18 @@
 import { ref, shallowRef } from 'vue';
 
 // hooks
-import { useWindowingDebug } from '../useFlags';
-import useDragHelper from '../useDragHelper';
+import { useWindowingDebug } from '@hooks/useFlags';
+import useDragHelper from '@hooks/useDragHelper';
 
 // classes
-import WindowLayoutHelper from './WindowLayoutHelper';
-import WindowFrame from './WindowFrame';
-import Window from './Window';
-import EdgeMap from './EdgeMap';
-import WindowDragSystem from './WindowDragSystem';
+import WindowLayoutHelper from '@classes/WindowLayoutHelper';
+import WindowFrame from '@classes/WindowFrame';
+import Window from '@classes/Window';
+import EdgeMap from '@classes/EdgeMap';
+import WindowDragSystem from '@classes/WindowDragSystem';
 
 // lib/misc
-import { rangeOverlap } from '../../misc/Utils';
+import { rangeOverlap } from '@misc/Utils';
 
 // invoke hooks
 const { dragHelper } = useDragHelper();

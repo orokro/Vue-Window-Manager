@@ -26,7 +26,7 @@
 import { onMounted, ref } from 'vue';
 
 // lib/misc
-import Window from '../../hooks/classes/Window';
+import Window from '@classes/Window';
 
 // when we mount the demo component we'll use random bg colors
 const randomNumber = ref(0);
