@@ -1,10 +1,8 @@
 /*
-	useTextMeasuring.js
-	-------------------
+	textMeasuring.js
+	----------------
 
 	Provide some methods for measuring text
-
-	Not sure if these needs to be in a "hook" but w/e.
 */
 
 /**

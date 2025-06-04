@@ -101,7 +101,7 @@ import WindowFrame from '@classes/WindowFrame';
 import Window from '@classes/Window';
 
 // hooks
-import { getTextWidth, getCanvasFont } from '@hooks/useTextMeasuring';
+import { getTextWidth, getCanvasFont } from '@misc/textMeasuring';
 
 // define our props
 const props = defineProps({

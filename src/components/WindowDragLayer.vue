@@ -93,7 +93,7 @@ import { nextTick, ref, watch } from 'vue';
 
 // hooks
 import useWindowManagement from '@hooks/useWindowManagement';
-import { getTextWidth, getCanvasFont } from '@hooks/useTextMeasuring';
+import { getTextWidth, getCanvasFont } from '@misc/textMeasuring';
 
 // invoke hooks
 const { windowMgr } = useWindowManagement();
