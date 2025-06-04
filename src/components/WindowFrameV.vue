@@ -17,7 +17,7 @@
 		class="windowFrame"
 		
 		:class="{
-			debug: useWindowingDebug==true,
+			debug: windowMgr.useWindowingDebug==true,
 			noHeader: frame.frameStyle.value==WindowFrame.STYLE.MWI,
 		}"
 		
@@ -216,7 +216,6 @@ import WindowFrame from '@classes/WindowFrame';
 import Window from '@classes/Window';
 
 // hooks
-import { useWindowingDebug } from '@hooks/useFlags';
 import useWindowManagement from '@hooks/useWindowManagement';
 import useDragHelper from '@hooks/useDragHelper';
 

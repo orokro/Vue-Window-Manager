@@ -24,7 +24,7 @@
 	<div ref="containerRef" class="windowFrameContainer">
 
 		<!-- debug message, if applicable -->
-		<div v-if="false && useWindowingDebug==true" class="debugPanel t r">
+		<div v-if="false && windowMgr.useWindowingDebug==true" class="debugPanel t r">
 			Windows go here.<br>
 			Size is: width: {{ windowContainerSize.width }}, height: {{ windowContainerSize.height }}
 		</div>
@@ -59,14 +59,12 @@ import WindowDragLayer from './WindowDragLayer.vue';
 
 // hooks
 import useWindowManagement from '@hooks/useWindowManagement';
-import { useWindowingDebug } from '@hooks/useFlags';
 
 // invoke hooks
 const { windowMgr } = useWindowManagement();
 
 // DOM refs
 const containerRef = ref(null);
-
 
 // our calculated DOM size, updated automatically when our component resizes
 const windowContainerSize = shallowRef({width: 0, height: 0});

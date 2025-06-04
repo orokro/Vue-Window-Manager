@@ -96,7 +96,6 @@
 import { ref, shallowRef } from 'vue';
 
 // hooks
-import { useWindowingDebug } from '@hooks/useFlags';
 import useDragHelper from '@hooks/useDragHelper';
 
 // classes
@@ -128,11 +127,16 @@ export default class WindowManager {
 
 	/**
 	 * Constructs new WindowManager object
+	 * 
+	 * @param {Boolean} useDebugging - OPTIONAL; if true, will enable debugging features
 	 */
-	constructor() {
+	constructor(useDebugging) {
 
 		// our list of WindowFrames we manage
 		this.frames = [];
+
+		// save our debug mode param as a ref so maybe we can change it dynamically later
+		this.useWindowingDebug = ref(useDebugging || false);
 
 		// the reactive version of the array, that doesn't recursively make all objects inside reactive
 		this.framesRef = shallowRef([]);
@@ -177,7 +181,7 @@ export default class WindowManager {
 		this.selectedEdges = shallowRef([]);
 
 		// for debug
-		if (useWindowingDebug.value == true) {
+		if (this.useWindowingDebug.value == true) {
 			console.log('Building new WindowManager');
 			window.wm = this;
 		}
