@@ -11,11 +11,7 @@
 	Therefore, this component just handles the actual window frames and windows,
 	not the top bar or status bar.
 
-	The actual data for the window's will be stored in the useWindowManagement object.
-
-	See the comment block in useWindowManagement.js for more details on how the system
-	is built.
-
+	The actual data for the window's will be stored in the WindowManager object.
 -->
 <template>
 
@@ -56,7 +52,6 @@ import { onMounted, onUnmounted, ref, shallowRef, provide } from 'vue';
 import WindowFrameV from './WindowFrameV.vue';
 import WindowPen from './WindowPen.vue';
 import WindowDragLayer from './WindowDragLayer.vue';
-
 
 // classes
 import WindowManager from '@classes/WindowManager';
