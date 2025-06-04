@@ -101,11 +101,7 @@ import WindowFrame from '@classes/WindowFrame';
 import Window from '@classes/Window';
 
 // hooks
-import useDragHelper from '@hooks/useDragHelper';
 import { getTextWidth, getCanvasFont } from '@hooks/useTextMeasuring';
-
-// invoke hooks
-const { dragHelper } = useDragHelper();
 
 // define our props
 const props = defineProps({
@@ -302,6 +298,7 @@ function startSingleDrag(e, tab){
 	draggingSingleTitleBar.value = true;
 
 	// start monitoring mouse position for dragging the tab
+	const dragHelper = props.frame.mgr.dragHelper;
 	dragHelperCBRefID = dragHelper.dragStart(
 		
 		// during drag operation
@@ -349,6 +346,7 @@ function selectTabAndStartDrag(e, tab){
 	dragTitleBarRef = e.target;
 
 	// start monitoring mouse position for dragging the tab
+	const dragHelper = props.frame.mgr.dragHelper;
 	dragHelperCBRefID = dragHelper.dragStart(
 		
 		// during drag operation
@@ -406,6 +404,7 @@ function startWindowTear(tab){
 	const win = props.frame.windows.filter(win => win.windowID==tab.id)[0];
 
 	// start a new drag helper with empty callbacks to cancel out the old log
+	const dragHelper = props.frame.mgr.dragHelper;
 	if(dragHelperCBRefID!=null){
 		dragHelper.cancelCallback(dragHelperCBRefID);
 		dragHelperCBRefID = null;

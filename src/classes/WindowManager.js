@@ -95,9 +95,6 @@
 // vue
 import { ref, shallowRef } from 'vue';
 
-// hooks
-import useDragHelper from '@hooks/useDragHelper';
-
 // classes
 import WindowLayoutHelper from '@classes/WindowLayoutHelper';
 import WindowFrame from '@classes/WindowFrame';
@@ -107,9 +104,7 @@ import WindowDragSystem from '@classes/WindowDragSystem';
 
 // lib/misc
 import { rangeOverlap } from '@misc/Utils';
-
-// invoke hooks
-const { dragHelper } = useDragHelper();
+import DragHelper from 'gdraghelper';
 
 // the main money, the WindowManager export
 export default class WindowManager {
@@ -137,6 +132,9 @@ export default class WindowManager {
 
 		// save our debug mode param as a ref so maybe we can change it dynamically later
 		this.useWindowingDebug = ref(useDebugging || false);
+
+		// make a single instance reusable drag helper, anyone can reference
+		this.dragHelper = new DragHelper();
 
 		// the reactive version of the array, that doesn't recursively make all objects inside reactive
 		this.framesRef = shallowRef([]);
@@ -507,7 +505,7 @@ export default class WindowManager {
 		const initialDragPos = frame.preferredPos[edge];
 
 		// use our drag helper library to handle mouse input during the drag
-		dragHelper.dragStart(
+		this.dragHelper.dragStart(
 
 			// during drag operation callback
 			(dx, dy) => {

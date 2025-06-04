@@ -106,12 +106,6 @@ import { ref, watch } from 'vue';
 import WindowFrame from '@classes/WindowFrame';
 import Window from '@classes/Window';
 
-// hooks
-import useDragHelper from '@hooks/useDragHelper';
-
-// invoke hooks
-const { dragHelper } = useDragHelper();
-
 // define our props
 const props = defineProps({
 
@@ -202,6 +196,7 @@ function startWindowTear(window){
 	windowBeingDragged = null;
 
 	// cancel old drag helper now
+	const dragHelper = props.frame.mgr.dragHelper;
 	if(dragHelperCBRefID!=null){
 		dragHelper.cancelCallback(dragHelperCBRefID);
 		dragHelperCBRefID = null;
@@ -243,6 +238,7 @@ function resizeMWI(win, sides){
 	sides = (Array.isArray(sides)==false) ? [sides] : sides;
 
 	// use our drag helper to move the windows
+	const dragHelper = props.frame.mgr.dragHelper;
 	dragHelper.dragStart(
 
 		// during drag operation
@@ -317,6 +313,7 @@ function startMWIDrag(e){
 	isDraggingBG.value = true;
 
 	// use our drag helper to move the windows
+	const dragHelper = props.frame.mgr.dragHelper;
 	dragHelper.dragStart(
 
 		// during drag operation
@@ -367,6 +364,7 @@ function startWindowDrag(e, win){
 	windowBeingDragged = win;
 
 	// use our drag helper to move the window
+	const dragHelper = props.frame.mgr.dragHelper;
 	dragHelperCBRefID = dragHelper.dragStart(
 
 		// during drag operation

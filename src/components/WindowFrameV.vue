@@ -217,11 +217,9 @@ import Window from '@classes/Window';
 
 // hooks
 import useWindowManagement from '@hooks/useWindowManagement';
-import useDragHelper from '@hooks/useDragHelper';
 
 // invoke hooks
 const { windowMgr } = useWindowManagement();
-const { dragHelper } = useDragHelper();
 
 // x/y position for positioning the split cursor
 const splitPos = ref(0);
@@ -884,6 +882,7 @@ function startSplitMergeDrag(hSide, vSide){
 	
 
 	// start drag operation
+	const dragHelper = windowMgr.dragHelper;
 	dragHelper.dragStart(
 
 		// function called whilst computing the drag

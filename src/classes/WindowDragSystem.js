@@ -26,14 +26,7 @@ import { ref } from 'vue';
 import WindowManager from '@classes/WindowManager';
 import WindowFrame from '@classes/WindowFrame';
 
-// hooks
-import useDragHelper from '@hooks/useDragHelper';
-
-// invoke hooks
-const { dragHelper } = useDragHelper();
-
 // lib/misc
-
 
 // the main money
 export default class WindowDragSystem {
@@ -100,7 +93,7 @@ export default class WindowDragSystem {
 		const initialHandleDIM = titleBarEl.getBoundingClientRect();
 
 		// get the position the cursor is currently at, in global window space
-		const cursorPos = dragHelper.getCursorPos();
+		const cursorPos = this.mgr.dragHelper.getCursorPos();
 
 		// assemble object with details about our drag operation
 		const details = {
@@ -151,13 +144,13 @@ export default class WindowDragSystem {
 		details.fromFrame.removeWindow(details.window, true);
 
 		// start dragging
-		dragHelper.dragStart(
+		this.mgr.dragHelper.dragStart(
 
 			// during drag
 			(dx, dy) => {
 
 				// we'll ignore the deltas and get just the window pos
-				const cursorPosNow = dragHelper.getCursorPos();
+				const cursorPosNow = this.mgr.dragHelper.getCursorPos();
 				this.dragPos.x.value = cursorPosNow.x;
 				this.dragPos.y.value = cursorPosNow.y;
 
@@ -387,7 +380,7 @@ export default class WindowDragSystem {
 
 				// get the elements position & use it to compute left
 				const r = el.getBoundingClientRect();
-				const cursorX = dragHelper.getCursorPos().x;
+				const cursorX = this.mgr.dragHelper.getCursorPos().x;
 				this.dropRegion.tabLeft.value = (cursorX - r.left) - 10;
 				break;
 
