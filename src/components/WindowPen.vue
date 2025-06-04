@@ -67,7 +67,7 @@ const thePenRef = ref(null);
 		display: none;
 
 		// make other impossible to render conditions
-		position: fixed;
+		position: absolute;
 		top: -1px;
 		left: 1px;
 		width: 1px;

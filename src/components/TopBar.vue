@@ -25,7 +25,7 @@
 	.topBar {
 
 		// fill entire width of top, with fixed height
-		position: fixed;
+		position: absolute;
 		inset: 0px 0px auto 0px;
 		height: 40px;
 

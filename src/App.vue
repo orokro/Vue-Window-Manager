@@ -7,20 +7,17 @@
 <template>
 	<main @contextmenu="disableContextMenus">
 
-		<!-- The top bar with menus and controls that cannot be replaced. -->
-		<TopBar></TopBar>
+		<div class="demoBox">
 
-		<!-- The component that manages all spawned windows / window divisions, etc -->
-		<WindowingSystem />
+			<WindowManager/>
+		</div>
 
-		<!-- The status bar that shows info and instructions, app-wide. -->
-		<StatusBar/>
+		<!-- <div class="demoBox box2">
 
-		<!-- Library of SVG Symbols we'll load in, that our ContextMenu system uses -->
-		<MenuIconSVGs/>
+			<WindowManager/>
+		</div> -->
 
-		<!-- when we're dragging something (like windows) they will teleport to this layer -->
-		<div ref="dragHoverLayerRef" class="dragHoverLayer"></div>
+		
 
 	</main>
 </template>
@@ -29,17 +26,12 @@
 // vue
 import { ref } from 'vue';
 
-// components
-import TopBar from './components/TopBar.vue';
-import WindowingSystem from './components/WindowingSystem.vue';
-import StatusBar from './components/StatusBar.vue';
-import MenuIconSVGs from './components/MenuIconSVGs.vue';
-
 // lib/misc
 import { checkParentsForClass } from '../src/misc/Utils';
 
-// dom refs
-const dragHoverLayerRef = ref(null);
+// main window component
+import WindowManager from './components/WindowManager.vue';
+
 
 /**
  * Disable right-click context menu from browser, unless Shift is held, for debug
@@ -56,7 +48,6 @@ function disableContextMenus(event){
 		return false;
 	}
 }
-
 
 </script>
 <style lang="scss">
@@ -76,30 +67,25 @@ function disableContextMenus(event){
 		font-family: sans-serif;
 
 		// don't let body ever scroll
-		overflow: clip;
+		/* overflow: clip; */
 
 	}// body
 
-	// affect all DIVS with these base properties
-	div {
-		box-sizing: border-box;
+	.demoBox {
 
-	}// div
+		position: absolute;
+		top: 50px;
+		left: 100px;
+		width: 1200px;
+		height: 800px;
 
-	// fill the entire screen
-	.dragHoverLayer {
-		
-		// fill screen, always on top
-		position: fixed;
-		inset: 0px 0px 0px 0px;
-		z-index: 9001;
+		border: 2px solid red;
+		border-radius: 5px;
+		overflow: clip;
 
-		// no pointer events on this bad boy
-		pointer-events: none;
-
-		// for debug
-		// background: rgba(255, 0, 0, 0.2);
-
-	}// .dragHoverLayer
+		&.box2 {
+			top: 950px;
+		}
+	}
 
 </style>

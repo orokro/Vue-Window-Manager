@@ -28,7 +28,7 @@
 	.statusBar {
 
 		// fill entire width of bottom, with fixed height
-		position: fixed;
+		position: absolute;
 		inset: auto 0px 0px 0px;
 		height: 30px;
 

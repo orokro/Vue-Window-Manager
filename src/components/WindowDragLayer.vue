@@ -255,7 +255,7 @@ async function startDrag(){
 		pointer-events: none;
 		
 		// fill screen
-		position: fixed;
+		position: absolute;
 		inset: 0px 0px 0px 0px;
 		z-index: 9001;
 

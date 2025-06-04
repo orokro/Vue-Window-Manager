@@ -2,13 +2,16 @@
 	WindowingSystem.vue
 	-------------------
 
-	This file will be the top-level component in the app, that handles all the various Windows
+	This file will be the top-level component, that handles all the various Windows
 	that can spawn in, be moved around, etc.
 
-	Nothing in the app should exist outside this component, except maybe a full screen modal
-	if one is implemented later.
+	NOTE: this used to be considered the top-level component, but now that duty has been
+	moved to WindowManager.vue - which also builds in the top bar and status bar.
 
-	The actual data for the window's will be stored in the useWindowManagement hook.
+	Therefore, this component just handles the actual window frames and windows,
+	not the top bar or status bar.
+
+	The actual data for the window's will be stored in the useWindowManagement object.
 
 	See the comment block in useWindowManagement.js for more details on how the system
 	is built.
@@ -141,7 +144,7 @@ function handleWindowTearOff(tearData){
 		box-sizing: border-box;
 
 		// fixed size under the top/bottom bar
-		position: fixed;
+		position: absolute;
 		inset: 38px 1px 28px 1px;
 
 		// thicc borders
