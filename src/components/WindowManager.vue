@@ -14,8 +14,10 @@
 -->
 <template>
 
-	<div class="windowManager">
-
+	<div 
+		ref="containerRef"
+		class="windowManager"
+	>
 		<!-- The top bar with menus and controls that cannot be replaced. -->
 		<TopBar v-if="showTopBar">
 			<slot name="topBar">
@@ -45,7 +47,7 @@
 <script setup>
 
 // vue
-import { ref, provide } from 'vue';
+import { ref, provide, computed } from 'vue';
 
 // components
 import TopBar from './TopBar.vue';
@@ -92,6 +94,10 @@ const props = defineProps({
 	}
 
 });
+
+// get HTML DOM ref to the main container for this component, so we can compute
+// x/y position for offsetting mouse coordinates
+const containerRef = ref(null);
 
 // make a new window manager if one doesn't exist yet
 const windowMgr = new WindowManager(props.useWindowingDebug);

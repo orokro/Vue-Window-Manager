@@ -12,10 +12,16 @@
 			<WindowManager/>
 		</div>
 
-		<!-- <div class="demoBox box2">
+		<div ref="testThingEl" class="testThing">
+			<pre>
+{{ pos }}
+			</pre>
+		</div>
+
+		<div class="demoBox box2">
 
 			<WindowManager/>
-		</div> -->
+		</div>
 
 	</main>
 </template>
@@ -29,6 +35,12 @@ import { checkParentsForClass } from '@misc/Utils';
 
 // main window component
 import WindowManager from './components/WindowManager.vue';
+
+import { useElementPosition } from '@hooks/useElementPosition';
+
+const testThingEl = ref(null);
+
+const pos = useElementPosition(testThingEl);
 
 
 /**
@@ -72,8 +84,8 @@ function disableContextMenus(event){
 	.demoBox {
 
 		position: absolute;
-		top: 0px;
-		left: 0px;
+		top: 50px;
+		left: 100px;
 		width: 1200px;
 		height: 800px;
 
@@ -84,6 +96,24 @@ function disableContextMenus(event){
 		&.box2 {
 			top: 950px;
 		}
+	}
+
+	.testThing {
+
+		position: absolute;
+		top: 100px;
+		left: 300px;
+
+		width: 200px;
+		height: 200px;
+
+		border: 2px solid red;
+		border-radius: 5px;
+		background: rgba(0, 0, 0, 0.5);
+
+		padding: 5px;
+		font-size: 11px;
+		color: white;
 	}
 
 </style>
