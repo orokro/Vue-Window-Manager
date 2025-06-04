@@ -99,8 +99,6 @@ import { onMounted, ref, shallowRef, watch } from 'vue';
 import { arrayDiff } from 'garraydiff';
 import WindowFrame from '@classes/WindowFrame';
 import Window from '@classes/Window';
-
-// hooks
 import { getTextWidth, getCanvasFont } from '@misc/textMeasuring';
 
 // define our props

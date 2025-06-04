@@ -50,18 +50,22 @@
 <script setup>
 
 // vue
-import { onMounted, onUnmounted, ref, shallowRef } from 'vue';
+import { onMounted, onUnmounted, ref, shallowRef, provide } from 'vue';
 
 // components
 import WindowFrameV from './WindowFrameV.vue';
 import WindowPen from './WindowPen.vue';
 import WindowDragLayer from './WindowDragLayer.vue';
 
-// hooks
-import useWindowManagement from '@hooks/useWindowManagement';
 
-// invoke hooks
-const { windowMgr } = useWindowManagement();
+// classes
+import WindowManager from '@classes/WindowManager';
+
+// make a new window manager if one doesn't exist yet
+const windowMgr = new WindowManager();
+
+// provide the window manager for all our components down stream
+provide('windowManager', windowMgr);
 
 // DOM refs
 const containerRef = ref(null);

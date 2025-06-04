@@ -2,10 +2,6 @@
 	WindowManager.js
 	----------------
 
-	This file provides a WindowManager class that will be
-	used in the useWindowManagement hook to manager a list of
-	window's.
-
 	Right, so, in useWindowManger.js we have a big comment block describing
 	the windowing system, but to recap in short here:
 
@@ -77,7 +73,6 @@
 	For now, all Window components (in Window.vue) will include all
 	our various different system's components, but only enable/mount one at a time.
 
-
 	WindowManager:
 	--------------
 
@@ -85,8 +80,8 @@
 		- Window Frames
 		- Windows
 
-	And our various components that use the useWindowManagement.js
-	hook will be able to access our window framing/window system.
+	And our various components that use the reference it
+	will be able to access our window framing/window system.
 
 	Note that, another related class and file is the LayoutHelper,
 	which can serialize and deserialize custom window Layouts for saving & loading.

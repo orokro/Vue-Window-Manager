@@ -42,17 +42,13 @@
 <script setup>
 
 // vue
-import { ref } from 'vue';
+import { ref, inject } from 'vue';
 
 // components
 import WindowV from './WindowV.vue';
 
-
-// hooks
-import useWindowManagement from '@hooks/useWindowManagement';
-
-// invoke hooks
-const { windowMgr } = useWindowManagement();
+// get our local components window manager
+const windowMgr = inject('windowManager');
 
 // DOM refs
 const thePenRef = ref(null);

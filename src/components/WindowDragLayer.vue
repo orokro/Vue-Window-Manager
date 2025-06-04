@@ -89,14 +89,13 @@
 <script setup>
 
 // vue
-import { nextTick, ref, watch } from 'vue';
+import { nextTick, ref, watch, inject } from 'vue';
 
 // hooks
-import useWindowManagement from '@hooks/useWindowManagement';
 import { getTextWidth, getCanvasFont } from '@misc/textMeasuring';
 
-// invoke hooks
-const { windowMgr } = useWindowManagement();
+// get our local components window manager
+const windowMgr = inject('windowManager');
 
 // the title of window being dragged at the moment
 const title = ref('a');

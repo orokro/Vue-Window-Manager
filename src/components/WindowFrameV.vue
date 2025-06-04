@@ -202,7 +202,7 @@
 <script setup>
 
 // vue
-import { ref, watch } from 'vue';
+import { ref, watch, inject } from 'vue';
 import ContextMenu from '@imengyu/vue3-context-menu';
 
 // components
@@ -215,11 +215,8 @@ import WindowManager from '@classes/WindowManager';
 import WindowFrame from '@classes/WindowFrame';
 import Window from '@classes/Window';
 
-// hooks
-import useWindowManagement from '@hooks/useWindowManagement';
-
-// invoke hooks
-const { windowMgr } = useWindowManagement();
+// get our local components window manager
+const windowMgr = inject('windowManager');
 
 // x/y position for positioning the split cursor
 const splitPos = ref(0);
