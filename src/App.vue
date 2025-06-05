@@ -14,6 +14,8 @@
 				:showStatusBar="true"
 			/>
 		</template>
+
+		<!-- unless we have the double test mode on (for dev testing) -->
 		<template v-else>
 
 			<div class="demoBox">
@@ -28,14 +30,12 @@
 
 		</template>
 		
-
+		<!-- debug box to test our code that monitors element positions -->
 		<div v-if="false" ref="testThingEl" class="testThing">
 			<pre>
 {{ pos }}
 			</pre>
 		</div>
-
-		
 
 	</main>
 </template>
@@ -52,10 +52,11 @@ import WindowManager from './components/WindowManager.vue';
 
 import { useElementPosition } from '@hooks/useElementPosition';
 
+// for demoing the tracking of an element position on screen
 const testThingEl = ref(null);
-
 const pos = useElementPosition(testThingEl);
 
+// some const flags to toggle the demo view
 const showTestThing = ref(false);
 const showDoubleTest = ref(false);
 
