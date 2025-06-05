@@ -2,9 +2,6 @@
 	WindowManager.js
 	----------------
 
-	Right, so, in useWindowManger.js we have a big comment block describing
-	the windowing system, but to recap in short here:
-
 	Windows can be split/joined/drag/dropped or made to be floating like an
 	old school MDI system.
 
@@ -15,9 +12,9 @@
 
 	A WindowFrame is a container that can contain one or more windows.
 	Window frames can exist in one of three Modes:
-		- Blender Like
+		- Single
 		- Tabbed
-		- Tabbed-Iconified
+		- Tabbed-Iconified (Idea Shelved for now)
 		- MWI
 
 	Blender Like: (Single)

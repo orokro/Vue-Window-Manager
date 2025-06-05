@@ -31,7 +31,7 @@
 		</template>
 		
 		<!-- debug box to test our code that monitors element positions -->
-		<div v-if="false" ref="testThingEl" class="testThing">
+		<div v-if="showTestThing" ref="testThingEl" class="testThing">
 			<pre>
 {{ pos }}
 			</pre>

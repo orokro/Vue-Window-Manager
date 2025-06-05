@@ -15,7 +15,6 @@
 <template>
 
 	<div 
-		ref="containerRef"
 		class="windowManager"
 		:style="{
 			'--window-system-inset': windowSystemInset,	
@@ -29,7 +28,10 @@
 		</TopBar>
 
 		<!-- wrapper to position the windowing system to make room for the top / status bars if enabled -->
-		<div class="windowingSystemWrapper">
+		<div 
+			ref="containerRef"
+			class="windowingSystemWrapper"
+		>
 		
 			<!-- The component that manages all spawned windows / window divisions, etc -->
 			<WindowingSystem />
