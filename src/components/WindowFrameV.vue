@@ -625,7 +625,7 @@ function positionSplitCursor(e){
 	const isHorizontal = props.frame.splitMode.value==WindowFrame.SPLIT_MODE.HORIZONTAL;
 	let pos = isHorizontal 
 		? 
-		(e.y - props.frame.screenPos.value.t - 42 - windowMgr.pos.screenPos.y) // -42 is the height of the header
+		(e.y - props.frame.screenPos.value.t - windowMgr.pos.screenPos.y)
 		: 
 		(e.x - props.frame.screenPos.value.l - windowMgr.pos.screenPos.x);
 

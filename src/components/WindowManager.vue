@@ -17,6 +17,9 @@
 	<div 
 		ref="containerRef"
 		class="windowManager"
+		:style="{
+			'--window-system-inset': windowSystemInset,	
+		}"
 	>
 		<!-- The top bar with menus and controls that cannot be replaced. -->
 		<TopBar v-if="showTopBar">
@@ -25,8 +28,13 @@
 			</slot>
 		</TopBar>
 
-		<!-- The component that manages all spawned windows / window divisions, etc -->
-		<WindowingSystem />
+		<!-- wrapper to position the windowing system to make room for the top / status bars if enabled -->
+		<div class="windowingSystemWrapper">
+		
+			<!-- The component that manages all spawned windows / window divisions, etc -->
+			<WindowingSystem />
+		
+		</div>
 
 		<!-- The status bar that shows info and instructions, app-wide. -->
 		<StatusBar v-if="showStatusBar">
@@ -73,13 +81,13 @@ const props = defineProps({
 	// true if we should show the top bar
 	showTopBar: {
 		type: Boolean,
-		default: true
+		default: false
 	},
 
 	// true if we should show the status bar
 	showStatusBar: {
 		type: Boolean,
-		default: true
+		default: false
 	},
 
 	// component to use for the top bar if any
@@ -111,6 +119,13 @@ const windowMgr = new WindowManager(containerPosition, props.useWindowingDebug);
 // provide the window manager for all our components down stream
 provide('windowManager', windowMgr);
 
+// affect the CSS for our windowing system
+const windowSystemInset = computed(() => {
+	const topInset = props.showTopBar ? 38 : 1;
+	const bottomInset = props.showStatusBar ? 28 : 1;
+	return `${topInset}px 1px ${bottomInset}px 1px`;
+});
+
 // dom refs
 const dragHoverLayerRef = ref(null);
 
@@ -125,6 +140,18 @@ const dragHoverLayerRef = ref(null);
 		height: 100%;
 		position: absolute;
 		inset: 0px 0px 0px 0px;
+
+
+		// wrapper around the part where the windows spawn/divide/join, etc
+		.windowingSystemWrapper {
+
+			// for debug
+			/* border: 1px solid yellow; */
+
+			position: absolute;
+			inset: var(--window-system-inset);
+
+		}// .windowingSystemWrapper
 
 		// fill the entire screen
 		.dragHoverLayer {

@@ -9,7 +9,10 @@
 
 		<div class="demoBox">
 
-			<WindowManager/>
+			<WindowManager
+				:showTopBar="true"
+				:showStatusBar="true"
+			/>
 		</div>
 
 		<div v-if="false" ref="testThingEl" class="testThing">
@@ -96,6 +99,8 @@ function disableContextMenus(event){
 		&.box2 {
 			left: 300px;
 			top: 950px;
+
+			border: 2px solid red;
 		}
 	}
 

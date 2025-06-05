@@ -178,8 +178,9 @@ export default class WindowFrame {
 		dim.height = dim.bottom - dim.top;
 
 		// handle optional parameter
-		const yOffset = (includeHeaderOffset === undefined) ? 0 : 40;
-		dim.top += yOffset;
+		// const yOffset = (includeHeaderOffset === undefined) ? 0 : 40;
+		// note: header logic disabled for now, just add generic padding
+		dim.top += 2;
 
 		return dim;
 	}

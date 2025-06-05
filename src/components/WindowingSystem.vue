@@ -17,7 +17,11 @@
 
 	<!-- this will be the outermost wrapper that is fixed to screen width/height, 
 		because all windows must be children. -->
-	<div ref="containerRef" class="windowFrameContainer">
+	<div 
+		ref="containerRef" 
+		class="windowFrameContainer"
+		v
+	>
 
 		<!-- debug message, if applicable -->
 		<div v-if="false && windowMgr.useWindowingDebug==true" class="debugPanel t r">
@@ -136,7 +140,8 @@ function handleWindowTearOff(tearData){
 
 		// fixed size under the top/bottom bar
 		position: absolute;
-		inset: 38px 1px 28px 1px;
+		inset: 1px 1px 1px 1px;
+		/* inset: 38px 1px 28px 1px; */
 
 		// thicc borders
 		border-top: 2px solid black;

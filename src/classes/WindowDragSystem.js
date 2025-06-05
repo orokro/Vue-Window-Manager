@@ -316,7 +316,7 @@ export default class WindowDragSystem {
 		this.dropRegion.isMWI.value = false;
 
 		// compute the region parameters based on this frame
-		const fDim = frame.getFrameDim(true);
+		const fDim = frame.getFrameDim(false);
 		switch (targetRegion) {
 
 			case 'left':
