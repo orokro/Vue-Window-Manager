@@ -544,7 +544,7 @@ function setFrameStyle(style){
 /**
  * When the mouse is over one of our curtains, check if we're in super split mode
  * 
- * SSM lets the split operation cary over to other windows that the one that intially started it
+ * SSM lets the split operation cary over to other windows that the one that initially started it
  */
 function handleSuperSplitMode(){
 
@@ -623,7 +623,11 @@ function positionSplitCursor(e){
 
 	// update split mode pos
 	const isHorizontal = props.frame.splitMode.value==WindowFrame.SPLIT_MODE.HORIZONTAL;
-	let pos = isHorizontal ? (e.y - props.frame.screenPos.value.t - 42) : (e.x - props.frame.screenPos.value.l);
+	let pos = isHorizontal 
+		? 
+		(e.y - props.frame.screenPos.value.t - 42 - windowMgr.pos.screenPos.y) // -42 is the height of the header
+		: 
+		(e.x - props.frame.screenPos.value.l - windowMgr.pos.screenPos.x);
 
 	// the smallest allowed width or height of a window, for now
 	const smallestAllowedWidthOrHeight = WindowManager.SMALLEST_WIDTH_OR_HEIGHT;

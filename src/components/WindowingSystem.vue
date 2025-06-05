@@ -120,6 +120,7 @@ function handleWindowTearOff(tearData){
 	windowMgr.windowDragSystem.tearWindow(window, frame, titleBar);
 }
 
+
 </script>
 <style lang="scss">
 
