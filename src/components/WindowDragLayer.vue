@@ -259,7 +259,8 @@ async function startDrag(){
 		z-index: 9001;
 
 		// for debug
-		// background: rgba(255, 0, 0, 0.1);
+		/* background: rgba(255, 0, 0, 0.1);
+		border: 10px solid yellow; */
 
 		// the dashed box to show off our drop-region
 		.targetRegion {

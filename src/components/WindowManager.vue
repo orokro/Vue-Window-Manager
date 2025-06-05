@@ -58,6 +58,9 @@ import MenuIconSVGs from './MenuIconSVGs.vue';
 // classes
 import WindowManager from '@classes/WindowManager';
 
+// hooks
+import { useElementPosition } from '@hooks/useElementPosition';
+
 // set up some props
 const props = defineProps({
 
@@ -99,8 +102,11 @@ const props = defineProps({
 // x/y position for offsetting mouse coordinates
 const containerRef = ref(null);
 
+// track the position of the container element, so we can offset mouse coordinates
+const containerPosition = useElementPosition(containerRef, false);
+
 // make a new window manager if one doesn't exist yet
-const windowMgr = new WindowManager(props.useWindowingDebug);
+const windowMgr = new WindowManager(containerPosition, props.useWindowingDebug);
 
 // provide the window manager for all our components down stream
 provide('windowManager', windowMgr);

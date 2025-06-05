@@ -34,7 +34,8 @@
 		position: absolute;
 		inset: auto 0px 0px 0px;
 		height: 30px;
-
+		box-sizing: border-box;
+		
 		// black bar on top
 		border-top: 2px solid black;
 

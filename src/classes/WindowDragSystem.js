@@ -80,6 +80,22 @@ export default class WindowDragSystem {
 	}
 
 
+	getCursorPos(withOffset = false) {	
+
+		const cursorPos = this.mgr.dragHelper.getCursorPos();
+
+		// cursorPos.x -= window.scrollX;
+		// cursorPos.y -= window.scrollY;
+
+		if(!withOffset)
+			return cursorPos;
+
+		cursorPos.x -= this.mgr.pos.pagePos.x;
+		cursorPos.y -= this.mgr.pos.pagePos.y;
+		return cursorPos;
+	}
+
+
 	/**
 	 * Tears off a window (i.e. starts dragging the window)
 	 * 
@@ -93,8 +109,8 @@ export default class WindowDragSystem {
 		const initialHandleDIM = titleBarEl.getBoundingClientRect();
 
 		// get the position the cursor is currently at, in global window space
-		const cursorPos = this.mgr.dragHelper.getCursorPos();
-
+		const cursorPos = this.getCursorPos();
+		
 		// assemble object with details about our drag operation
 		const details = {
 
@@ -150,11 +166,14 @@ export default class WindowDragSystem {
 			(dx, dy) => {
 
 				// we'll ignore the deltas and get just the window pos
-				const cursorPosNow = this.mgr.dragHelper.getCursorPos();
-				this.dragPos.x.value = cursorPosNow.x;
-				this.dragPos.y.value = cursorPosNow.y;
+				let cursorPosNow = this.getCursorPos(true);
+				this.dragPos.x.value = cursorPosNow.x; // - this.mgr.pos.pagePos.x;
+				this.dragPos.y.value = cursorPosNow.y; // - this.mgr.pos.pagePos.y;
 
 				// see if we're over a drop-target
+				cursorPosNow = this.getCursorPos(false);
+				cursorPosNow.x -= window.scrollX;
+				cursorPosNow.y -= window.scrollY;
 				this.raycastForDropTarget(cursorPosNow.x, cursorPosNow.y);
 
 			},
@@ -178,7 +197,7 @@ export default class WindowDragSystem {
 				this.dropRegion.x.value = -10;
 				this.dropRegion.y.value = -10;
 				this.dropRegion.width.value = 0;
-				this.dropRegion.height.value = 0;
+				this.dropRegion.height.value = -0;
 				this.dropRegion.isTab.value = false;
 				this.dropRegion.tabFrame.value = null;
 				this.dropRegion.tabLeft.value = 0;
@@ -304,7 +323,7 @@ export default class WindowDragSystem {
 				this.dropRegion.x.value = fDim.left;
 				this.dropRegion.y.value = fDim.top;
 				this.dropRegion.width.value = fDim.width * 0.5;
-				this.dropRegion.height.value = fDim.height;
+				this.dropRegion.height.value = fDim.height - 4;
 				this.dropRegion.tabFrame.value = null;
 				this.dropRegion.tabLeft.value = null;
 				break;
@@ -313,7 +332,7 @@ export default class WindowDragSystem {
 				this.dropRegion.x.value = fDim.left + fDim.width * 0.5;
 				this.dropRegion.y.value = fDim.top;
 				this.dropRegion.width.value = fDim.width * 0.5;
-				this.dropRegion.height.value = fDim.height;
+				this.dropRegion.height.value = fDim.height - 4;
 				this.dropRegion.tabFrame.value = null;
 				this.dropRegion.tabLeft.value = null;
 				break;
@@ -321,7 +340,7 @@ export default class WindowDragSystem {
 			case 'top':
 				this.dropRegion.x.value = fDim.left;
 				this.dropRegion.y.value = fDim.top;
-				this.dropRegion.width.value = fDim.width;
+				this.dropRegion.width.value = fDim.width - 4;
 				this.dropRegion.height.value = fDim.height * 0.5;
 				this.dropRegion.tabFrame.value = null;
 				this.dropRegion.tabLeft.value = null;
@@ -329,8 +348,8 @@ export default class WindowDragSystem {
 
 			case 'bottom':
 				this.dropRegion.x.value = fDim.left;
-				this.dropRegion.y.value = fDim.top + fDim.height * 0.5;
-				this.dropRegion.width.value = fDim.width;
+				this.dropRegion.y.value = fDim.top + fDim.height * 0.5 - 4;
+				this.dropRegion.width.value = fDim.width - 4;
 				this.dropRegion.height.value = fDim.height * 0.5;
 				this.dropRegion.tabFrame.value = null;
 				this.dropRegion.tabLeft.value = null;
@@ -339,8 +358,8 @@ export default class WindowDragSystem {
 			case 'frame':
 				this.dropRegion.x.value = fDim.left;
 				this.dropRegion.y.value = fDim.top;
-				this.dropRegion.width.value = fDim.width;
-				this.dropRegion.height.value = fDim.height;
+				this.dropRegion.width.value = fDim.width - 4;
+				this.dropRegion.height.value = fDim.height - 4;
 				this.dropRegion.tabFrame.value = null;
 				this.dropRegion.tabLeft.value = null;
 
@@ -373,14 +392,14 @@ export default class WindowDragSystem {
 			case 'tab':
 				this.dropRegion.x.value = fDim.left;
 				this.dropRegion.y.value = fDim.top + tabHeight;
-				this.dropRegion.width.value = fDim.width;
-				this.dropRegion.height.value = fDim.height - tabHeight;
+				this.dropRegion.width.value = fDim.width - 4;
+				this.dropRegion.height.value = fDim.height - tabHeight - 4;
 				this.dropRegion.isTab.value = true;
 				this.dropRegion.tabFrame.value = frameID;
 
 				// get the elements position & use it to compute left
 				const r = el.getBoundingClientRect();
-				const cursorX = this.mgr.dragHelper.getCursorPos().x;
+				const cursorX = this.getCursorPos().x;
 				this.dropRegion.tabLeft.value = (cursorX - r.left) - 10;
 				break;
 

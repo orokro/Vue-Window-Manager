@@ -12,7 +12,7 @@
 			<WindowManager/>
 		</div>
 
-		<div ref="testThingEl" class="testThing">
+		<div v-if="false" ref="testThingEl" class="testThing">
 			<pre>
 {{ pos }}
 			</pre>
@@ -85,7 +85,7 @@ function disableContextMenus(event){
 
 		position: absolute;
 		top: 50px;
-		left: 100px;
+		left: 150px;
 		width: 1200px;
 		height: 800px;
 
@@ -94,6 +94,7 @@ function disableContextMenus(event){
 		overflow: clip;
 
 		&.box2 {
+			left: 300px;
 			top: 950px;
 		}
 	}

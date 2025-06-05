@@ -118,12 +118,16 @@ export default class WindowManager {
 	/**
 	 * Constructs new WindowManager object
 	 * 
+	 * @param {Object} screenPos - the screen position of the WindowManager, reactive measured by the WindowingSystem component
 	 * @param {Boolean} useDebugging - OPTIONAL; if true, will enable debugging features
 	 */
-	constructor(useDebugging) {
+	constructor(screenPos, useDebugging) {
 
 		// our list of WindowFrames we manage
 		this.frames = [];
+
+		// save our reactive screen position object
+		this.pos = screenPos;
 
 		// save our debug mode param as a ref so maybe we can change it dynamically later
 		this.useWindowingDebug = ref(useDebugging || false);

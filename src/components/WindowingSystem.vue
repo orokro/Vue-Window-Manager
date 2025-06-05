@@ -149,6 +149,4 @@ function handleWindowTearOff(tearData){
 
 	}// .windowFrameContainer
 
-	// the layer that fills the screen for 
-
 </style>

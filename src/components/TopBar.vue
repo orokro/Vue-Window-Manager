@@ -30,6 +30,7 @@
 		inset: 0px 0px auto 0px;
 		height: 40px;
 
+		box-sizing: border-box;
 		// black bar on bottom
 		border-bottom: 2px solid black;
 
