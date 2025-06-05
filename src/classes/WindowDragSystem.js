@@ -368,8 +368,8 @@ export default class WindowDragSystem {
 
 					// get the position of the floating tab dragged by the user
 					const r = this.dragTitleEl.value.getBoundingClientRect();
-					this.dropRegion.x.value = r.left;
-					this.dropRegion.y.value = r.top;
+					this.dropRegion.x.value = r.left - this.mgr.pos.screenPos.x;
+					this.dropRegion.y.value = r.top - this.mgr.pos.screenPos.y;
 					this.dropRegion.width.value = window.size.width;
 					this.dropRegion.height.value = window.size.height;
 					this.dropRegion.isMWI.value = true;
