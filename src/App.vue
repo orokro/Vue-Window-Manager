@@ -7,13 +7,27 @@
 <template>
 	<main @contextmenu="disableContextMenus">
 
-		<div class="demoBox">
-
+		<!-- show a single full screen window manager by default -->
+		<template v-if="showDoubleTest==false">
 			<WindowManager
 				:showTopBar="true"
 				:showStatusBar="true"
 			/>
-		</div>
+		</template>
+		<template v-else>
+
+			<div class="demoBox">
+				<WindowManager
+					:showTopBar="true"
+					:showStatusBar="true"
+				/>
+			</div>
+			<div class="demoBox box2">
+				<WindowManager/>
+			</div>
+
+		</template>
+		
 
 		<div v-if="false" ref="testThingEl" class="testThing">
 			<pre>
@@ -21,10 +35,7 @@
 			</pre>
 		</div>
 
-		<div class="demoBox box2">
-
-			<WindowManager/>
-		</div>
+		
 
 	</main>
 </template>
@@ -44,6 +55,9 @@ import { useElementPosition } from '@hooks/useElementPosition';
 const testThingEl = ref(null);
 
 const pos = useElementPosition(testThingEl);
+
+const showTestThing = ref(false);
+const showDoubleTest = ref(false);
 
 
 /**
