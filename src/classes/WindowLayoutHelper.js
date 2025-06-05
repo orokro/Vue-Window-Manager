@@ -121,7 +121,7 @@ export default class WindowLayoutHelper {
 			{
 				// Main  editor:
 				name: "MainEditor",
-				windows: [Window.KIND.EDITOR],
+				windows: [], //[Window.KIND.EDITOR],
 				style: WindowFrame.STYLE.SINGLE,
 				left: 0,
 				right: ["ref", "window.right-330"],
@@ -131,7 +131,7 @@ export default class WindowLayoutHelper {
 			{
 				// debug view under main view
 				name: "debug",
-				windows: [Window.KIND.DEBUG],
+				windows: [], //[Window.KIND.DEBUG],
 				left: 0,
 				style: WindowFrame.STYLE.TABBED,
 				//left: ["ref", "VerticalToolBar.right"],
@@ -141,7 +141,7 @@ export default class WindowLayoutHelper {
 			},
 			{	// Tool palette, on right by default
 				name: "tools",
-				windows: [Window.KIND.TOOLS],
+				windows: [], // [Window.KIND.TOOLS],
 				style: WindowFrame.STYLE.TABBED,
 				left: ["ref", "MainEditor.right"],
 				right: ["ref", "window.right"],

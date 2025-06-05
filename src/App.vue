@@ -95,7 +95,7 @@ function disableContextMenus(event){
 		font-family: sans-serif;
 
 		// don't let body ever scroll
-		/* overflow: clip; */
+		overflow: clip;
 
 	}// body
 

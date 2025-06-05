@@ -161,7 +161,8 @@ export default class WindowManager {
 		this.mergePreviewID = ref(null);
 		this.mergePreviewDirection = ref(null);
 
-		// when we're in split-mode, this will be an object, otherwise null
+		// when we're in split-mode, this will be an object, containing details about
+		// the current split operation, otherwise null
 		this.splitModeDetails = shallowRef(null);
 
 		// our EdgeMap object will move some of the window scaling & fitting code outside this class
