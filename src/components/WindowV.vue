@@ -62,7 +62,7 @@ const windowMgr = props.window.mgr;
 
 // returns the constructor for our component
 function getComponent(kind) {
-	return windowMgr.availableWindowList.getWindowByName(kind);
+	return windowMgr.availableWindowList.getWindowBySlug(kind).window;
 }
 
 </script>

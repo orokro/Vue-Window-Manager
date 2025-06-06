@@ -5,8 +5,9 @@
 	A simple class to manage the list of available windows
 	in the windowing system.
 
-	We will take a list of raw Vue3 component constructors &
-	turn them into a list of available windows.
+	Supports either a list of Vue3 component constructors or
+
+a list of metadata objects describing the windows.
 */
 
 /**
@@ -17,32 +18,31 @@ export default class AvailableWindowList {
 	/**
 	 * Constructor for the AvailableWindowList.
 	 * 
-	 * @param {Array<Function>} initialWindows - Array of Vue component constructors to initialize the list with.
+	 * @param {Array<Function|Object>} initialWindows - Array of Vue component constructors or window descriptor objects.
 	 */
 	constructor(initialWindows = []) {
 
-		// constructor -> name
-		this._componentToName = new Map();
-		
-		// name -> constructor
-		this._nameToComponent = new Map();			
+		// component -> slug
+		this._componentToSlug = new Map();
 
-		// currently available names
-		this._visibleNames = new Set();
+		// slug -> full window object { window, title, slug, icon }
+		this._slugToWindow = new Map();
 
-		// used for when we cannot find a suitable name for a component
+		// currently visible slugs
+		this._visibleSlugs = new Set();
+
+		// for fallback slugs
 		this._anonymousCounter = 0;
 
-		// Initialize with the provided list of components
+		// Initialize with the provided list
 		this.setAvailableWindows(initialWindows);
 	}
-
 
 	/**
 	 * Helper function to convert a string to PascalCase.
 	 * 
-	 * @param {String} str - String to convert to PascalCase.
-	 * @returns {String} - The PascalCase version of the input string.
+	 * @param {String} str - String to convert.
+	 * @returns {String}
 	 */
 	_pascalCase(str) {
 		return str
@@ -50,14 +50,26 @@ export default class AvailableWindowList {
 			.replace(/^\w/, c => c.toUpperCase());
 	}
 
+	/**
+	 * Converts PascalCase or camelCase into spaced Title Case.
+	 * 
+	 * @param {String} str - String to convert.
+	 * @returns {String}
+	 */
+	_pascalToTitle(str) {
+		return str
+			.replace(/([A-Z])/g, ' $1')
+			.replace(/^\s*/, '')
+			.replace(/^\w/, c => c.toUpperCase());
+	}
 
 	/**
-	 * Generates a unique name for a Vue component.
+	 * Generates a slug for a Vue component.
 	 * 
-	 * @param {Component} component - Vue component constructor to generate a name for.
-	 * @returns {String} - A unique name for the component, in PascalCase.
+	 * @param {Component} component - Vue component constructor.
+	 * @returns {String} - A unique slug.
 	 */
-	_generateName(component) {
+	_generateSlug(component) {
 		const raw =
 			component.name ||
 			component.__name ||
@@ -67,81 +79,80 @@ export default class AvailableWindowList {
 		return `AnonymousComponent`;
 	}
 
-
 	/**
-	 * Gets or creates a unique name for a Vue component.
+	 * Gets or creates a unique slug for a Vue component.
 	 * 
-	 * @param {Component} component - Vue component constructor to get or create a unique name for.
-	 * @returns {String} - A unique name for the component, ensuring no name collisions.
+	 * @param {Component} component - Vue component constructor.
+	 * @returns {String} - A unique slug.
 	 */
-	_getOrCreateUniqueName(component) {
+	_getOrCreateUniqueSlug(component) {
+		if (this._componentToSlug.has(component))
+			return this._componentToSlug.get(component);
 
-		// Already registered?
-		if (this._componentToName.has(component))
-			return this._componentToName.get(component);
-
-		// Start with base name
-		let baseName = this._generateName(component);
-		let name = baseName;
+		let baseSlug = this._generateSlug(component);
+		let slug = baseSlug;
 		let index = 1;
 
-		// Make sure no name collision (name points to a *different* constructor)
-		while(this._nameToComponent.has(name) && this._nameToComponent.get(name) !== component)
-			name = `${baseName}${index++}`;
-		
-		// Register
-		this._componentToName.set(component, name);
-		this._nameToComponent.set(name, component);
+		while(this._slugToWindow.has(slug) && this._slugToWindow.get(slug).window !== component)
+			slug = `${baseSlug}${index++}`;
 
-		return name;
+		this._componentToSlug.set(component, slug);
+		return slug;
 	}
 
-
 	/**
-	 * If the available list of windows changes, can update the list of available windows.
+	 * Sets the list of available windows.
 	 * 
-	 * @param {Array<Component>} newWindowsArray - new list of available window Components
+	 * @param {Array<Function|Object>} newWindowsArray - New list of windows.
 	 */
 	setAvailableWindows(newWindowsArray) {
+		this._visibleSlugs.clear();
 
-		this._visibleNames.clear();
+		for (const entry of newWindowsArray) {
+			let window, title, slug, icon;
 
-		for (const component of newWindowsArray) {
+			if (typeof entry === 'object' && entry.window) {
+				window = entry.window;
+				slug = entry.slug || this._getOrCreateUniqueSlug(window);
+				title = entry.title || this._pascalToTitle(slug);
+				icon = entry.icon || "";
 
-			const name = this._getOrCreateUniqueName(component);
-			this._visibleNames.add(name);
+			} else {
+				window = entry;
+				slug = this._getOrCreateUniqueSlug(window);
+				title = this._pascalToTitle(slug);
+				icon = "";
+			}
 
-		}// next component
+			const windowObj = { window, title, slug, icon };
+
+			this._componentToSlug.set(window, slug);
+			this._slugToWindow.set(slug, windowObj);
+			this._visibleSlugs.add(slug);
+		}// next entry
 	}
 
-
 	/**
-	 * Gets the Vue component constructor for a window by its name.
+	 * Gets a window descriptor by its slug.
 	 * 
-	 * @param {String} name - The name of the window to retrieve.
-	 * @returns {Component|null} - The Vue component constructor for the window with the given name, or null if not found.
+	 * @param {String} slug - The slug to look up.
+	 * @returns {Object|null} - Full window descriptor object or null.
 	 */
-	getWindowByName(name) {
-		return this._nameToComponent.get(name) || null;
+	getWindowBySlug(slug) {
+		return this._slugToWindow.get(slug) || null;
 	}
 
-
 	/**
-	 * Gets an array of all currently visible windows.
+	 * Returns an array of all currently visible window descriptor objects.
 	 * 
-	 * @returns {Array<Object>} - An array of objects containing the name and constructor of each visible window.
+	 * @returns {Array<Object>} - List of window descriptor objects.
 	 */
 	getWindows() {
 		const result = [];
-		for (const name of this._visibleNames) {
-			
-			const component = this._nameToComponent.get(name);
-
-			if (component)
-				result.push({ name, constructor: component });
-			
-		}// next name
-
+		for (const slug of this._visibleSlugs) {
+			const windowObj = this._slugToWindow.get(slug);
+			if (windowObj) result.push(windowObj);
+		}// next slug
 		return result;
 	}
 

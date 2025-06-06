@@ -72,9 +72,13 @@ export default class Window {
 		// handle window kind type, defaulting to empty
 		kind = (kind === undefined) ? null : kind;
 		this.kind = kind;
+		this.windowSlug = this.kind;
 
-		// save our name for now
-		this.title = this.kind; //Window.window Data[this.kind].title;
+		// get the window details, based on our kind slug
+		this.windowDetails = this.mgr.availableWindowList.getWindowBySlug(this.windowSlug);
+
+		// save our name for now		
+		this.title = this.windowDetails.title;
 	}
 
 

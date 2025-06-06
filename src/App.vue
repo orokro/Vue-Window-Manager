@@ -65,25 +65,16 @@ const pos = useElementPosition(testThingEl);
 const showTestThing = ref(false);
 const showDoubleTest = ref(false);
 
-// list of windows to allow in our WindowMananger
+// list of windows to allow in our WindowManager
 const availableWindows = [
-	GoogleWindow,
+	{
+		window:GoogleWindow,
+		title: "TiCalc!",
+	},
 	DuckDuckGo,
 	BasicWindow
 ];
 
-function getComponentName(component) {
-  return (
-    component.name ||       // standard name key
-    component.__name ||     // internal fallback (sometimes populated)
-    (component?.__file?.split(/[\\/]/).pop()?.replace(/\.vue$/, '')) || // guess from filename
-    'AnonymousComponent'
-  );
-}
-
-availableWindows.forEach(cmp => {
-  console.log(getComponentName(cmp));
-});
 
 /**
  * Disable right-click context menu from browser, unless Shift is held, for debug

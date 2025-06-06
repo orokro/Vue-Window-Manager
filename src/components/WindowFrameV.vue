@@ -435,11 +435,11 @@ function showHamburgerMenu(e) {
 				label: frameStyleString,
 				svgIcon: frameIcon,
 				// hidden: true,
-				children: windowMgr.availableWindowList.getWindows().map(data =>{
+				children: windowMgr.availableWindowList.getWindows().map(window =>{
 					return {
-						label: data.name,
+						label: window.title,
 						// svgIcon: data.svgIcon,
-						onClick: ()=>addWindow(data.name)
+						onClick: ()=>addWindow(window.slug)
 					}
 				}),
 			},
