@@ -14,7 +14,11 @@
 				:showTopBar="true"
 				:showStatusBar="true"
 				:topBarComponent="DemoHeader"
-			/>
+			>
+				<template #statusBar>
+					<DemoStatusBar/>
+				</template>
+			</WindowManager>
 		</template>
 
 		<!-- unless we have the double test mode on (for dev testing) -->
@@ -24,8 +28,7 @@
 				<WindowManager
 					:showTopBar="true"
 					:showStatusBar="true"					
-				>
-				</WindowManager>
+				/>
 			</div>
 			<div class="demoBox box2">
 				<WindowManager/>
@@ -52,6 +55,7 @@ import WindowManager from './components/WindowManager.vue';
 
 // demo window components
 import DemoHeader from './DemoWindowComponents/DemoHeader.vue';
+import DemoStatusBar from './DemoWindowComponents/DemoStatusBar.vue';
 import GoogleWindow from '@demoWindows/GoogleWindow.vue';
 import DuckDuckGo from '@demoWindows/DuckDuckGoWindow.vue';
 import BasicWindow from '@demoWindows/BasicWindow.vue';
