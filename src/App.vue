@@ -11,6 +11,7 @@
 		<template v-if="showDoubleTest==false">
 			<WindowManager
 				:availableWindows="availableWindows"
+				:defaultLayout="layout"
 				:showTopBar="true"
 				:showStatusBar="true"
 				:topBarComponent="DemoHeader"
@@ -64,6 +65,7 @@ import BasicWindow from '@demoWindows/BasicWindow.vue';
 // lib/misc
 import { checkParentsForClass } from '@misc/Utils';
 import { useElementPosition } from '@hooks/useElementPosition';
+import WindowFrame from '@classes/WindowFrame';
 
 // for demoing the tracking of an element position on screen
 const testThingEl = ref(null);
@@ -91,6 +93,48 @@ const availableWindows = [
 		title: "Basic Window",
 		slug: "basic",
 		icon: 'http://localhost:5173/icons/window_icon.png',
+	}
+];
+
+// build a layout to test with
+const layout  = [
+
+	{	// we'll build layout in hypothetical 1080P space
+		name: "window",
+		top: 0,
+		left: 0,
+		bottom: 1080,
+		right: 1920
+	},
+	{
+		// Main  editor:
+		name: "MainView",
+		windows: ['basic'], 
+		style: WindowFrame.STYLE.SINGLE,
+		left: 0,
+		right: ["ref", "window.right-430"],
+		top: 0,
+		bottom: ["ref", "window.bottom-300"]
+	},
+	{
+		// debug view under main view
+		name: "bottom",
+		windows: ['basic', 'GoogleWindow', 'ddg'], 
+		left: 0,
+		style: WindowFrame.STYLE.TABBED,
+		//left: ["ref", "VerticalToolBar.right"],
+		right: ["ref", "MainView.right"],
+		top: ["ref", "MainView.bottom"],
+		bottom: ["ref", "window.bottom"]
+	},
+	{	// Tool palette, on right by default
+		name: "tools",
+		windows: ['basic'], 
+		style: WindowFrame.STYLE.TABBED,
+		left: ["ref", "MainView.right"],
+		right: ["ref", "window.right"],
+		top: 0,
+		bottom: ["ref", "window.bottom"]
 	}
 ];
 

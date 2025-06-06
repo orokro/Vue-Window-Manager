@@ -82,7 +82,7 @@ const props = defineProps({
 	
 	// the layout to use for the windows
 	defaultLayout: {
-		type: Object,
+		type: Array,
 		default: null,
 	},
 
