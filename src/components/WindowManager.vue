@@ -67,6 +67,7 @@ import MenuIconSVGs from './MenuIconSVGs.vue';
 
 // classes
 import WindowManager from '@classes/WindowManager';
+import WindowManagerContext from '../classes/WindowManagerContext';
 
 // hooks
 import { useElementPosition } from '@hooks/useElementPosition';
@@ -126,6 +127,14 @@ const props = defineProps({
 
 });
 
+// make local copies from our props
+const showTopBar = ref(props.showTopBar);
+const showStatusBar = ref(props.showStatusBar);
+const splitMergeHandles = ref(props.splitMergeHandles);
+
+// allow them to be updated
+const emit = defineEmits(['update:showTopBar', 'update:showStatusBar', 'update:splitMergeHandles'])
+
 // get HTML DOM ref to the main container for this component, so we can compute
 // x/y position for offsetting mouse coordinates
 const containerRef = ref(null);
@@ -149,16 +158,27 @@ provide('windowManager', windowMgr);
 
 // affect the CSS for our windowing system
 const windowSystemInset = computed(() => {
-	const topInset = props.showTopBar ? 38 : 1;
-	const bottomInset = props.showStatusBar ? 28 : 1;
+	const topInset = showTopBar.value ? 38 : 1;
+	const bottomInset = showStatusBar.value ? 28 : 1;
 	return `${topInset}px 1px ${bottomInset}px 1px`;
 });
 
 // dom refs
 const dragHoverLayerRef = ref(null);
 
-
 // set up some watches incase our props change
+watch(() => props.showTopBar, (newVal) => {
+	showTopBar.value = newVal;
+}, { immediate: true });
+
+watch(() => props.showStatusBar, (newVal) => {
+	showStatusBar.value = newVal;
+}, { immediate: true });
+
+watch(() => props.splitMergeHandles, (newVal) => {
+	splitMergeHandles.value = newVal;
+}, { immediate: true });
+
 watch(() => props.availableWindows, (newVal) => {
 	windowMgr.availableWindowList.setAvailableWindows(newVal);
 }, { immediate: true });
@@ -166,6 +186,43 @@ watch(() => props.availableWindows, (newVal) => {
 watch(() => props.splitMergeHandles, (newVal) => {
 	windowMgr.showBlenderSplitMergeHandles.value = newVal;
 }, { immediate: true });
+
+
+// emit events when certain properties change
+watch(() => showTopBar.value, (newVal) => {
+	emit('update:showTopBar', newVal);
+});
+
+watch(() => showStatusBar.value, (newVal) => {
+	emit('update:showStatusBar', newVal);
+});
+
+watch(() => splitMergeHandles.value, (newVal) => {
+	emit('update:splitMergeHandles', newVal);
+	windowMgr.showBlenderSplitMergeHandles.value = newVal;
+});
+
+// make a context object to return if requested
+const ctx = new WindowManagerContext(windowMgr, {
+	showTopBar,
+	showStatusBar,
+	splitMergeHandles,
+});
+
+
+/**
+ * Function to expose publicly to get the context
+ */
+function getContext() {
+	return ctx;
+}
+
+
+// allow components to access the window manager context
+defineExpose({
+	getContext,
+});
+
 
 </script>
 <style lang="scss">

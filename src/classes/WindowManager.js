@@ -194,6 +194,22 @@ export default class WindowManager {
 
 
 	/**
+	 * Clears our existing windows & layout so a new one can be loaded
+	 */
+	clearWindowLayout(){
+
+		this.frames = [];
+		this.framesRef.value = [];
+		this.windows = [];
+		this.windowsRef.value = [];
+		this.frameFocusID.value = null;
+		this.mergePreviewID.value = null;
+		this.edgeMap = new EdgeMap(this);
+		this.selectedEdges.value = [];
+	}
+
+
+	/**
 	 * Loads a WindowLayout once the WindowManager is ready
 	 */
 	loadWindowLayout() {

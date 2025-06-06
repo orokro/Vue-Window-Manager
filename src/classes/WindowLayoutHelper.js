@@ -336,7 +336,7 @@ export default class WindowLayoutHelper {
 	static getLayoutObject(wndMgr) {
 
 		// TODO: implement :P
-
+		return 'A layout';
 	}
 
 

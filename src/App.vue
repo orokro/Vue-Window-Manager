@@ -10,6 +10,7 @@
 		<!-- show a single full screen window manager by default -->
 		<template v-if="showDoubleTest==false">
 			<WindowManager
+				ref="windowManagerEl"
 				:availableWindows="availableWindows"
 				:defaultLayout="layout"
 				:showTopBar="true"
@@ -50,7 +51,7 @@
 <script setup>
 
 // vue
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 
 // main window manager component
 import WindowManager from './components/WindowManager.vue';
@@ -66,6 +67,9 @@ import BasicWindow from '@demoWindows/BasicWindow.vue';
 import { checkParentsForClass } from '@misc/Utils';
 import { useElementPosition } from '@hooks/useElementPosition';
 import WindowFrame from '@classes/WindowFrame';
+
+// ref to our window manager element!
+const windowManagerEl = ref(null);
 
 // for demoing the tracking of an element position on screen
 const testThingEl = ref(null);
@@ -139,6 +143,49 @@ const layout  = [
 ];
 
 
+// build a layout to test with
+const alternateLayout  = [
+
+	{	// we'll build layout in hypothetical 1080P space
+		name: "window",
+		top: 0,
+		left: 0,
+		bottom: 1080,
+		right: 1920
+	},
+	{
+		// Main  editor:
+		name: "MainView",
+		windows: ['basic'], 
+		style: WindowFrame.STYLE.SINGLE,
+		left: 300, // 300px from left edge
+		right: ["ref", "window.right"],
+		top: 0,
+		bottom: ["ref", "window.bottom-300"]
+	},
+	{
+		// debug view under main view
+		name: "bottom",
+		windows: ['basic', 'GoogleWindow', 'ddg'], 
+		left: 300,
+		style: WindowFrame.STYLE.TABBED,
+		//left: ["ref", "VerticalToolBar.right"],
+		right: ["ref", "window.right"],
+		top: ["ref", "MainView.bottom"],
+		bottom: ["ref", "window.bottom"]
+	},
+	{	// Tool palette, on right by default
+		name: "tools",
+		windows: ['basic'], 
+		style: WindowFrame.STYLE.TABBED,
+		left: ["ref", "window.left"],
+		right: ["ref", "MainView.left"],
+		top: 0,
+		bottom: ["ref", "window.bottom"]
+	}
+];
+window.al = alternateLayout;
+
 /**
  * Disable right-click context menu from browser, unless Shift is held, for debug
  * @param {Event} event - JS Event object
@@ -154,6 +201,12 @@ function disableContextMenus(event){
 		return false;
 	}
 }
+
+
+onMounted(()=>{
+	const ctx = windowManagerEl.value?.getContext();
+	window.wctx = ctx;
+});
 
 </script>
 <style lang="scss">
