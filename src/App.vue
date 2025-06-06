@@ -13,6 +13,7 @@
 				:availableWindows="availableWindows"
 				:showTopBar="true"
 				:showStatusBar="true"
+				:topBarComponent="DemoHeader"
 			/>
 		</template>
 
@@ -22,8 +23,9 @@
 			<div class="demoBox">
 				<WindowManager
 					:showTopBar="true"
-					:showStatusBar="true"
-				/>
+					:showStatusBar="true"					
+				>
+				</WindowManager>
 			</div>
 			<div class="demoBox box2">
 				<WindowManager/>
@@ -48,7 +50,8 @@ import { ref } from 'vue';
 // main window manager component
 import WindowManager from './components/WindowManager.vue';
 
-// window components
+// demo window components
+import DemoHeader from './DemoWindowComponents/DemoHeader.vue';
 import GoogleWindow from '@demoWindows/GoogleWindow.vue';
 import DuckDuckGo from '@demoWindows/DuckDuckGoWindow.vue';
 import BasicWindow from '@demoWindows/BasicWindow.vue';

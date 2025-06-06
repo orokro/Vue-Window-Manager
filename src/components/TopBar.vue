@@ -37,8 +37,6 @@
 		background-color: $panel-bg-default;
 		color: #5d5e62;
 
-		padding: 6px 10px;	
-
 	}// .topBar
 
 </style>
