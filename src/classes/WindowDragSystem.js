@@ -332,7 +332,7 @@ export default class WindowDragSystem {
 			case 'right':
 				this.dropRegion.x.value = fDim.left + fDim.width * 0.5;
 				this.dropRegion.y.value = fDim.top;
-				this.dropRegion.width.value = fDim.width * 0.5;
+				this.dropRegion.width.value = fDim.width * 0.5 -4;
 				this.dropRegion.height.value = fDim.height - 4;
 				this.dropRegion.tabFrame.value = null;
 				this.dropRegion.tabLeft.value = null;

@@ -110,7 +110,6 @@ export default class WindowManagerContext {
 
 		// otherwise, load the default layout
 		WindowLayoutHelper.loadDefaultLayout(this.#windowManager);
-
 	}
 
 
