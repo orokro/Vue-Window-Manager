@@ -75,11 +75,22 @@ const showDoubleTest = ref(false);
 // list of windows to allow in our WindowManager
 const availableWindows = [
 	{
-		window:GoogleWindow,
+		window: GoogleWindow,
 		title: "TiCalc!",
+		icon: 'https://ticalc.org/favicon.ico',
 	},
-	DuckDuckGo,
-	BasicWindow
+	{
+		window: DuckDuckGo,
+		title: "Duck Duck Gooooo",
+		slug: "ddg",
+		icon: 'https://duckduckgo.com/favicon.ico',
+	},
+	{
+		window: BasicWindow,
+		title: "Basic Window",
+		slug: "basic",
+		icon: 'http://localhost:5173/icons/window_icon.png',
+	}
 ];
 
 

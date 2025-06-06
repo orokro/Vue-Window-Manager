@@ -317,6 +317,7 @@ export default class WindowDragSystem {
 
 		// compute the region parameters based on this frame
 		const fDim = frame.getFrameDim(false);
+		fDim.top +=1;
 		switch (targetRegion) {
 
 			case 'left':

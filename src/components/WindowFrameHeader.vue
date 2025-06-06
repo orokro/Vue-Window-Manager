@@ -16,7 +16,15 @@
 			tabbed: frame.frameStyle.value==WindowFrame.STYLE.TABBED
 		}"
 	>	
-	
+		
+		<div 
+			v-if="frame.frameStyle.value==WindowFrame.STYLE.SINGLE && tabsRef[0]?.hasIcon"
+			class="icon"
+			:style="{
+				backgroundImage: `url(${tabsRef[0]?.iconPath})`,
+			}"
+		/>
+		
 		<!-- if we're in single mode, just show the title -->
 		<div 
 			v-show="frame.frameStyle.value==WindowFrame.STYLE.SINGLE"
@@ -56,7 +64,8 @@
 					dropTarget: tab.fantom==false,
 					selected: tab.id==frame.currentTab.value,
 					dragging: tab.id==dragTab,
-					fantom: tab.fantom==true
+					fantom: tab.fantom==true,
+					hasIcon: tab.hasIcon,
 				}"
 				:key="idx"
 				:idx="idx"
@@ -66,6 +75,13 @@
 				}"
 				@mousedown="e=>selectTabAndStartDrag(e, tab)"
 			>
+				<div 
+					v-if="tab.hasIcon"
+					class="icon"
+					:style="{
+						backgroundImage: `url(${tab.iconPath})`,
+					}"
+				/>
 				<div class="title">
 					{{tab.title}}
 				</div>
@@ -446,8 +462,13 @@ function makeTabData(window, fantom){
 	// compute the width of the text string:
 	const titleTextWidth = getTextWidth(window.title, tabContainerFontString);
 
+	// if we have an icon:
+	const iconPath = window.windowDetails.icon;
+	const hasIcon = (iconPath!='');
+	const iconPaddingWidth = hasIcon ? 24 : 0;
+
 	// well give some room for the icon, and later on, use some other scaling logic here
-	const tabWidth = titleTextWidth*1.1 + 30;
+	const tabWidth = titleTextWidth*1.1 + 30 + iconPaddingWidth;
 	
 	// return an object with "tab data" that this component will use to display tabs
 	return {
@@ -456,7 +477,9 @@ function makeTabData(window, fantom){
 		width: tabWidth,
 		order: 9999,
 		x: 0,
-		fantom: fantom
+		fantom: fantom,
+		hasIcon,
+		iconPath,
 	};
 }
 
@@ -587,12 +610,34 @@ function updateTabs(windows, fantomTab){
 			background: #2E2E30;
 		}
 
+		// icon for either single more OR tabs!
+		.icon {
+
+			// don't interfere with dragging
+			pointer-events: none;
+
+			// for debug
+			/* border: 1px solid red; */
+
+			// fixed on left of tab
+			position: absolute;
+			top: 1px;
+			left: 4px;
+			width: 22px;
+			height: 22px;
+			box-sizing: border-box;
+
+			background-size: contain;
+			background-repeat: no-repeat;
+
+		}// .icon
+
 		// the title that appears when a frame is switch to "single" mode
 		.singleTitle {
 
 			// fill area except under hamburger menu
 			position: absolute;
-			inset: 0px 20px 0px 0px;
+			inset: 0px 20px 0px 00px;
 
 			// smaller font size for tabs
 			font-size: 14px;
@@ -602,6 +647,8 @@ function updateTabs(windows, fantomTab){
 
 			// some padding for the text on top
 			padding-top: 4px;
+
+			overflow: clip;
 
 			&.isDragging {
 				cursor: move;
@@ -694,6 +741,10 @@ function updateTabs(windows, fantomTab){
 					.closeButton {
 						display: none;
 					}
+
+					.icon {
+						opacity: 0;
+					}
 				}
 
 				// true whilst tab is begging dragged horizontally
@@ -701,6 +752,13 @@ function updateTabs(windows, fantomTab){
 					cursor: move;
 					transition: left 0.0s ease-in-out;
 				}
+
+				// tab icon styles
+				.icon {
+					height: 20px;
+					width: 20px;
+
+				}// .icon
 
 				// position the title text & font color
 				.title {
@@ -712,9 +770,17 @@ function updateTabs(windows, fantomTab){
 					position: absolute;
 					top: 3px;
 					left: 8px;
-
 					
 				}// .title
+
+				// make room for icons if present
+				&.hasIcon {
+					
+					.title {
+						left: 30px;
+					}
+					
+				}// &.hasIcon
 
 				// the close button
 				.closeButton {

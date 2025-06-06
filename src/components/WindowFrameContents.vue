@@ -64,6 +64,15 @@
 				<!-- when in MDI mode, windows have title bars that can drag, close, etc -->
 				<div class="titleBar" @mousedown="e=>startWindowDrag(e, win)">
 
+					<!-- the icon, if applicable -->
+					<div 
+						v-if="win.windowDetails.icon!=''"
+						class="icon"
+						:style="{
+							backgroundImage: `url('${win.windowDetails.icon}')`,
+						}"
+					/>
+
 					<!-- the titlebar title text -->
 					<div class="titleText">{{ win.title }}</div>
 
@@ -592,6 +601,31 @@ function setRef(el, win){
 
 					cursor: move;
 
+					// optional icon
+					.icon {
+
+						// for debug
+						/* border: 1px solid red; */
+
+						// don't interfere with text selection
+						pointer-events: none;
+
+						// on left
+						position: absolute;
+						left: 4px;
+						top: 2px;
+
+						// fixed size
+						width: 22px;
+						height: 22px;
+
+						// background settings
+						background-size: cover;
+						background-repeat: no-repeat;
+						background-position: center center;
+
+					}// .icon
+
 					// the title text, centered
 					.titleText {
 
@@ -767,7 +801,7 @@ function setRef(el, win){
 		.MWIInnerShadow {
 			
 			// always on top
-			z-index: 150;
+			z-index: 100;
 
 			// fill entire window container
 			position: absolute;

@@ -102,9 +102,7 @@
 			<div
 				v-if="windowMgr.windowDragSystem.isDragging.value==true"
 				class="tabDropTargets"
-			>
-
-			
+			>			
 				<!-- drop target for the center -->
 				<div 
 					:frameID="frame.frameID" 
@@ -202,7 +200,7 @@
 <script setup>
 
 // vue
-import { ref, watch, inject } from 'vue';
+import { ref, watch, inject, h } from 'vue';
 import ContextMenu from '@imengyu/vue3-context-menu';
 
 // components
@@ -439,7 +437,16 @@ function showHamburgerMenu(e) {
 					return {
 						label: window.title,
 						// svgIcon: data.svgIcon,
-						onClick: ()=>addWindow(window.slug)
+						onClick: ()=>addWindow(window.slug),
+						icon: window.icon=="" ? null : (
+							h('img', {
+								src: window.icon,
+								style: {
+								width: '20px',
+								height: '20px',
+								}
+							})
+						),
 					}
 				}),
 			},

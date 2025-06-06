@@ -120,8 +120,6 @@ const props = defineProps({
 
 });
 
-console.log("aids", props.topBarComponent)
-
 // get HTML DOM ref to the main container for this component, so we can compute
 // x/y position for offsetting mouse coordinates
 const containerRef = ref(null);

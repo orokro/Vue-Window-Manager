@@ -55,12 +55,24 @@
 			<div
 				ref="dragTitleEl"
 				class="dragTitle"
+				:class="{
+					hasIcon: titleHasIcon==true,
+				}"
 				:style="{
 					left: `${titleBarX}px`,
 					top: `${titleBarY}px`,
 					width: `${titleBarWidth}px`,
 				}"
 			>
+				<!-- if we have an icon, show it -->
+				<div 
+					v-if="titleHasIcon" 
+					class="titleIcon"
+					:style="{
+						backgroundImage: `url(${titleIconPath})`,
+					}"
+				/>				
+
 				{{ title }}
 			</div>
 
@@ -124,6 +136,8 @@ let layerOffsetY = 0;
 const titleBarX = ref(0);
 const titleBarY = ref(0);
 const titleBarWidth = ref(0);
+const titleHasIcon = ref(false);
+const titleIconPath = ref('');
 
 // when we detect a drag operation started, we can set up our component and whatnot
 watch(
@@ -167,6 +181,12 @@ async function startDrag(){
 		// update our title
 		title.value = details.window.title;
 		
+		// add width for optional icon
+		const iconPath = details.window.windowDetails.icon;
+		titleHasIcon.value = (iconPath!='');
+		titleIconPath.value = iconPath;
+		const iconWidth = (titleHasIcon.value) ? 24 : 0;
+
 		const font = getCanvasFont(dragTitleEl.value);
 		let titleBoxWidth = getTextWidth(details.window.title, font) * 1.1 + 16; 
 
@@ -184,7 +204,7 @@ async function startDrag(){
 			// titleBarX.value = details.initialCursorPos.x - titleBoxWidth/2;
 			titleBarY.value = details.initialCursorPos.y - 10;
 			titleBarX.value = details.initialHandleDIM.left;
-			titleBarWidth.value = details.initialHandleDIM.width;
+			titleBarWidth.value = details.initialHandleDIM.width + iconWidth;
 		}
 
 		// set initial window container size
@@ -235,6 +255,7 @@ async function startDrag(){
 				// so our thumbnails are always minWidth after scaling..
 				const scaleRatio = 1/(newWidth / minWinWidth);
 
+				windowContainerWidth.value += (iconWidth/2) * (1/scaleRatio);
 
 				windowScale.value = scaleRatio;
 
@@ -366,9 +387,33 @@ async function startDrag(){
 				
 				.dragTitle {
 
+					&.hasIcon {
+						padding-left: 22px;
+					}
+
 					transition: 
 						width 0.2s ease-in-out,
 						left 0.2s ease-in-out;
+
+					.titleIcon {
+
+						// fixed box on top-left
+						position: absolute;
+						left: 4px;
+						top: 2px;
+						width: 20px;
+						height: 20px;
+
+						// background settings
+						background-size: cover;
+						background-position: center center;
+						background-repeat: no-repeat;
+
+						// for debug
+						/* border: 1px solid red; */
+
+					}// .titleIcon
+
 				}// .dragTitle
 
 				.windowThumb {
