@@ -57,7 +57,7 @@
 <script setup>
 
 // vue
-import { ref, provide, computed } from 'vue';
+import { ref, provide, computed, watch } from 'vue';
 
 // components
 import TopBar from './TopBar.vue';
@@ -116,7 +116,13 @@ const props = defineProps({
 	statusBarComponent: {
 		type: Object,
 		default: null
-	}
+	},
+
+	// turn on/off split merge handles:
+	splitMergeHandles: {
+		type: Boolean,
+		default: true
+	},
 
 });
 
@@ -135,6 +141,9 @@ const windowMgr = new WindowManager(
 	props.useWindowingDebug
 );
 
+// set settings on windowMgr
+windowMgr.showBlenderSplitMergeHandles.value = props.splitMergeHandles;
+
 // provide the window manager for all our components down stream
 provide('windowManager', windowMgr);
 
@@ -147,6 +156,16 @@ const windowSystemInset = computed(() => {
 
 // dom refs
 const dragHoverLayerRef = ref(null);
+
+
+// set up some watches incase our props change
+watch(() => props.availableWindows, (newVal) => {
+	windowMgr.availableWindowList.setAvailableWindows(newVal);
+}, { immediate: true });
+
+watch(() => props.splitMergeHandles, (newVal) => {
+	windowMgr.showBlenderSplitMergeHandles.value = newVal;
+}, { immediate: true });
 
 </script>
 <style lang="scss">

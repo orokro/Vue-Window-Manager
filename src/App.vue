@@ -14,6 +14,7 @@
 				:showTopBar="true"
 				:showStatusBar="true"
 				:topBarComponent="DemoHeader"
+				:splitMergeHandles="true"
 			>
 				<template #statusBar>
 					<DemoStatusBar/>
