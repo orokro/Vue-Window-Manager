@@ -435,11 +435,11 @@ function showHamburgerMenu(e) {
 				label: frameStyleString,
 				svgIcon: frameIcon,
 				// hidden: true,
-				children: Window.windowData.filter(d=>d.hidden!=true).map(data =>{
+				children: windowMgr.availableWindowList.getWindows().map(data =>{
 					return {
-						label: data.title,
-						svgIcon: data.svgIcon,
-						onClick: ()=>addWindow(data.kind)
+						label: data.name,
+						// svgIcon: data.svgIcon,
+						onClick: ()=>addWindow(data.name)
 					}
 				}),
 			},
@@ -522,7 +522,7 @@ function showHamburgerMenu(e) {
 /**
  * Adds a - ̗̀ new ̖́- Window to our frame
  * 
- * @param {Number} kind - one of the Window.KIND constants
+ * @param {String} kind - one of the names in our available window array
  */
 function addWindow(kind){
 

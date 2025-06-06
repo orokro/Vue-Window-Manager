@@ -29,25 +29,15 @@
 		<!-- spawn app views here -->
 		<div class="appViewContainer">
 
-			<!-- for now we'll just always use editor for all windows -->
-			<PreferencesViewD v-if="window.kind==Window.KIND.PREFERENCES" :window="window"/>
-			
-			<!-- for now we'll just always use editor for all windows -->
-			<DebugViewD v-else-if="window.kind==Window.KIND.DEBUG" :window="window"/>
-
-			<!-- for now we'll just always use editor for all windows -->
-			<EditorViewD v-else :window="window"/>
-
+			<component 
+				v-if="window.kind!=null"
+				:is="getComponent(window.kind)"
+			/>
 		</div>
 	</Teleport>
 	
 </template>
 <script setup>
-
-// components
-import EditorViewD from './DemoViews/EditorViewD.vue';
-import PreferencesViewD from './DemoViews/PreferencesViewD.vue';
-import DebugViewD from './DemoViews/DebugViewD.vue';
 
 // lib/misc
 import Window from '@classes/Window';
@@ -67,6 +57,13 @@ const props = defineProps({
 	}
 });
 
+// get the window manager from the window
+const windowMgr = props.window.mgr;
+
+// returns the constructor for our component
+function getComponent(kind) {
+	return windowMgr.availableWindowList.getWindowByName(kind);
+}
 
 </script>
 <style lang="scss" scoped>

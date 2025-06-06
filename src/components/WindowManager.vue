@@ -74,6 +74,18 @@ import { useElementPosition } from '@hooks/useElementPosition';
 // set up some props
 const props = defineProps({
 
+	// the list of available window components we can spawn as windows
+	availableWindows: {
+		type: Array,
+		default: () => []
+	},
+	
+	// the layout to use for the windows
+	defaultLayout: {
+		type: Object,
+		default: null,
+	},
+
 	// if we want to use the debug mode, which will show some extra info
 	useWindowingDebug: {
 		type: Boolean,
@@ -116,7 +128,12 @@ const containerRef = ref(null);
 const containerPosition = useElementPosition(containerRef, false);
 
 // make a new window manager if one doesn't exist yet
-const windowMgr = new WindowManager(containerPosition, props.useWindowingDebug);
+const windowMgr = new WindowManager(
+	props.availableWindows,
+	props.defaultLayout,
+	containerPosition, 
+	props.useWindowingDebug
+);
 
 // provide the window manager for all our components down stream
 provide('windowManager', windowMgr);

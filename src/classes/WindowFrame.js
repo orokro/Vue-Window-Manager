@@ -149,11 +149,11 @@ export default class WindowFrame {
 		this.preferredPosRef.value = { ...this.preferredPos };
 
 		// for debug, we'll give our selves 3 tabs for every new frame
-		if (options.addDebugWindows) {
-			this.addWindow(this.mgr.createWindow(Window.KIND.EDITOR));
-			this.addWindow(this.mgr.createWindow(Window.KIND.PREFERENCES));
-			this.addWindow(this.mgr.createWindow(Window.KIND.DEBUG));
-		}
+		// if (options.addDebugWindows) {
+		// 	this.addWindow(this.mgr.createWindow(EDITOR));
+		// 	this.addWindow(this.mgr.createWindow(PREFERENCES));
+		// 	this.addWindow(this.mgr.createWindow(DEBUG));
+		// }
 
 		// the x/y position to use when in WMI mode to translate the windows
 		this.mwiDragX = ref(0);

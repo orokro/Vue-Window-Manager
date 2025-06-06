@@ -93,6 +93,7 @@ import WindowFrame from '@classes/WindowFrame';
 import Window from '@classes/Window';
 import EdgeMap from '@classes/EdgeMap';
 import WindowDragSystem from '@classes/WindowDragSystem';
+import AvailableWindowList from './AvailableWindowList';
 
 // lib/misc
 import { rangeOverlap } from '@misc/Utils';
@@ -115,13 +116,22 @@ export default class WindowManager {
 	/**
 	 * Constructs new WindowManager object
 	 * 
+	 * @param {Array} availableWindows - an array of Window components that can be used in this WindowManager
+	 * @param {Object} defaultLayout - a Window layout object that will be used to initialize the WindowManager
 	 * @param {Object} screenPos - the screen position of the WindowManager, reactive measured by the WindowingSystem component
 	 * @param {Boolean} useDebugging - OPTIONAL; if true, will enable debugging features
 	 */
-	constructor(screenPos, useDebugging) {
+	constructor(availableWindows, defaultLayout, screenPos, useDebugging) {
 
 		// our list of WindowFrames we manage
 		this.frames = [];
+
+		// save our list of available windows, which will be used to spawn new windows
+		this.availableWindows = availableWindows || [];
+		this.availableWindowList = new AvailableWindowList(this.availableWindows);
+
+		// save our default layout, which will be used to initialize the WindowManager
+		this.defaultLayout = defaultLayout || null;
 
 		// save our reactive screen position object
 		this.pos = screenPos;
@@ -189,8 +199,6 @@ export default class WindowManager {
 	loadWindowLayout() {
 
 		console.log('Building a window layout...');
-
-		// WindowLayoutHelper.layoutSingleFrame(Window.KIND.EDITOR, this);
 		WindowLayoutHelper.loadDefaultLayout(this);
 	}
 
@@ -697,7 +705,7 @@ export default class WindowManager {
 	/**
 	 * Creates a window & adds it to our list & returns the reference.
 	 * 
-	 * @param {Number} kind - one of our Window.KIND constants
+	 * @param {Number} kind - one of the names in our available window list
 	 * @returns {Window} the newly instantiated Window
 	 */
 	createWindow(kind) {
@@ -729,4 +737,6 @@ export default class WindowManager {
 		this.windows = legitWindows;
 		this.windowsRef.value = [...this.windows];
 	}
+
+
 }

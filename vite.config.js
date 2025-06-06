@@ -15,6 +15,7 @@ export default defineConfig({
 			'@hooks': fileURLToPath(new URL('./src/hooks', import.meta.url)),
 			'@components': fileURLToPath(new URL('./src/components', import.meta.url)),
 			'@misc': fileURLToPath(new URL('./src/misc', import.meta.url)),
+			'@demoWindows': fileURLToPath(new URL('./src/DemoWindowComponents', import.meta.url)),
 		}
 	},
 	base: './'

@@ -35,7 +35,7 @@ export default class Window {
 	 * Constructs a new Window.
 	 * 
 	 * @param {WindowManager} mgr - the WindowManager class that instantiated us
-	 * @param {Number} kind - OPTIONAL; the view kind this window should render. Default is EMPTY.
+	 * @param {String} kind - OPTIONAL; the view kind this window should render.
 	 */
 	constructor(mgr, kind) {
 
@@ -70,11 +70,11 @@ export default class Window {
 		this.tabOrder = ref(0);
 
 		// handle window kind type, defaulting to empty
-		kind = (kind === undefined) ? Window.KIND.EMPTY : kind;
+		kind = (kind === undefined) ? null : kind;
 		this.kind = kind;
 
 		// save our name for now
-		this.title = Window.windowData[this.kind].title;
+		this.title = this.kind; //Window.window Data[this.kind].title;
 	}
 
 
@@ -114,69 +114,3 @@ export default class Window {
 	}
 
 }
-
-
-// Attached KINDS which are also the indices below
-Window.KIND = {
-	EMPTY: 0,
-	EDITOR: 1,
-	INSPECTOR: 2,
-	VIEWER: 3,
-	TOOLS: 4,
-	PREFERENCES: 5,
-	LOG: 6,
-	DEBUG: 7,
-};
-
-// we'll attach more data to the Window class, but below here
-Window.windowData = [
-	{
-		title: 'Empty',
-		icon: '',
-		svgIcon: '',
-		kind: Window.KIND.EMPTY,
-		hidden: true,
-	},
-	{
-		title: 'Editor',
-		svgIcon: '#iconFrameSingle',
-		icon: '',
-		kind: Window.KIND.EDITOR,
-	},
-	{
-		title: 'Inspector',
-		svgIcon: '#iconFrameSingle',
-		icon: '',
-		kind: Window.KIND.INSPECTOR,
-	},
-	{
-		title: 'Viewer',
-		svgIcon: '#iconFrameSingle',
-		icon: '',
-		kind: Window.KIND.VIEWER,
-	},
-	{
-		title: 'Tools',
-		svgIcon: '#iconFrameSingle',
-		icon: '',
-		kind: Window.KIND.TOOLS,
-	},
-	{
-		title: 'Preferences',
-		svgIcon: '#iconFrameSingle',
-		icon: '',
-		kind: Window.KIND.PREFERENCES,
-	},
-	{
-		title: 'Log',
-		svgIcon: '#iconFrameSingle',
-		icon: '',
-		kind: Window.KIND.LOG,
-	},
-	{
-		title: 'Debug',
-		svgIcon: '#iconFrameSingle',
-		icon: '',
-		kind: Window.KIND.DEBUG,
-	}
-];

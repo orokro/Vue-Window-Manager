@@ -52,7 +52,7 @@ export default class WindowLayoutHelper {
 				{
 					name: "Toolbar",
 					style: WindowFrame.STYLE.TABBED,
-					windows: [ <Window.KIND>, ... ],
+					windows: [ <Component Name>, ... ],
 					left: ["val", 0, "px"],
 					right: ["ref", "window.right"],
 					top: ["val", 0, "%"],
@@ -84,7 +84,7 @@ export default class WindowLayoutHelper {
 
 				{
 					name: "MainScreen",
-					windows: [ Window.KIND.Editor ],
+					windows: [ <Component Name> ],
 					left: 0,
 					right: ["ref", "window.right"],
 					bottom: ["ref", "window.bottom"],
@@ -121,7 +121,7 @@ export default class WindowLayoutHelper {
 			{
 				// Main  editor:
 				name: "MainEditor",
-				windows: [], //[Window.KIND.EDITOR],
+				windows: [], 
 				style: WindowFrame.STYLE.SINGLE,
 				left: 0,
 				right: ["ref", "window.right-330"],
@@ -131,7 +131,7 @@ export default class WindowLayoutHelper {
 			{
 				// debug view under main view
 				name: "debug",
-				windows: [], //[Window.KIND.DEBUG],
+				windows: [], 
 				left: 0,
 				style: WindowFrame.STYLE.TABBED,
 				//left: ["ref", "VerticalToolBar.right"],
@@ -141,7 +141,7 @@ export default class WindowLayoutHelper {
 			},
 			{	// Tool palette, on right by default
 				name: "tools",
-				windows: [], // [Window.KIND.TOOLS],
+				windows: [], 
 				style: WindowFrame.STYLE.TABBED,
 				left: ["ref", "MainEditor.right"],
 				right: ["ref", "window.right"],
@@ -149,6 +149,10 @@ export default class WindowLayoutHelper {
 				bottom: ["ref", "window.bottom"]
 			}
 		];
+
+		// if the window manager has a default layout, then we can add it to the default layout
+		if (windowMgr.defaultLayout !== null)
+			defaultLayout = windowMgr.defaultLayout;
 
 		// now just our our regular load layout method
 		WindowLayoutHelper.loadLayout(defaultLayout, windowMgr);
@@ -160,7 +164,7 @@ export default class WindowLayoutHelper {
 	 * 
 	 * Used for debug, etc.
 	 * 
-	 * @param {Number} windowKind - one of our Window.KIND constants
+	 * @param {String} windowKind - one of our available windows
 	 * @param {WindowManager} windowMgr - ref to the window manager
 	 */
 	static layoutSingleFrame(windowKind, windowMgr) {

@@ -10,6 +10,7 @@
 		<!-- show a single full screen window manager by default -->
 		<template v-if="showDoubleTest==false">
 			<WindowManager
+				:availableWindows="availableWindows"
 				:showTopBar="true"
 				:showStatusBar="true"
 			/>
@@ -44,12 +45,16 @@
 // vue
 import { ref } from 'vue';
 
-// lib/misc
-import { checkParentsForClass } from '@misc/Utils';
-
-// main window component
+// main window manager component
 import WindowManager from './components/WindowManager.vue';
 
+// window components
+import GoogleWindow from '@demoWindows/GoogleWindow.vue';
+import DuckDuckGo from '@demoWindows/DuckDuckGoWindow.vue';
+import BasicWindow from '@demoWindows/BasicWindow.vue';
+
+// lib/misc
+import { checkParentsForClass } from '@misc/Utils';
 import { useElementPosition } from '@hooks/useElementPosition';
 
 // for demoing the tracking of an element position on screen
@@ -60,6 +65,25 @@ const pos = useElementPosition(testThingEl);
 const showTestThing = ref(false);
 const showDoubleTest = ref(false);
 
+// list of windows to allow in our WindowMananger
+const availableWindows = [
+	GoogleWindow,
+	DuckDuckGo,
+	BasicWindow
+];
+
+function getComponentName(component) {
+  return (
+    component.name ||       // standard name key
+    component.__name ||     // internal fallback (sometimes populated)
+    (component?.__file?.split(/[\\/]/).pop()?.replace(/\.vue$/, '')) || // guess from filename
+    'AnonymousComponent'
+  );
+}
+
+availableWindows.forEach(cmp => {
+  console.log(getComponentName(cmp));
+});
 
 /**
  * Disable right-click context menu from browser, unless Shift is held, for debug
