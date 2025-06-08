@@ -186,6 +186,91 @@ const alternateLayout  = [
 ];
 window.al = alternateLayout;
 
+window.bl = [
+    {
+        "name": "window",
+        "top": 0,
+        "left": 0,
+        "bottom": 1237,
+        "right": 2001
+    },
+    {
+        "name": "frame_0",
+        "style": 0,
+        "windows": [
+            "basic"
+        ],
+        "top": 0,
+        "bottom": 790,
+        "left": 0,
+        "right": 510
+    },
+    {
+        "name": "frame_1",
+        "style": 10,
+        "windows": [
+            "basic",
+            "GoogleWindow",
+            "ddg"
+        ],
+        "top": 790,
+        "bottom": 1233,
+        "left": 0,
+        "right": 1150
+    },
+    {
+        "name": "frame_2",
+        "style": 10,
+        "windows": [
+            "basic"
+        ],
+        "top": 0,
+        "bottom": 580,
+        "left": 1150,
+        "right": 2001
+    },
+    {
+        "name": "frame_3",
+        "style": 10,
+        "windows": [
+            "GoogleWindow"
+        ],
+        "top": 0,
+        "bottom": 790,
+        "left": 510,
+        "right": 1150
+    },
+    {
+        "name": "frame_4",
+        "style": 10,
+        "windows": [],
+        "top": 580,
+        "bottom": 790,
+        "left": 1150,
+        "right": 2001
+    },
+    {
+        "name": "frame_5",
+        "style": 10,
+        "windows": [],
+        "top": 790,
+        "bottom": 1233,
+        "left": 1150,
+        "right": 1570
+    },
+    {
+        "name": "frame_6",
+        "style": 10,
+        "windows": [
+            "basic"
+        ],
+        "top": 790,
+        "bottom": 1233,
+        "left": 1570,
+        "right": 2001
+    }
+];
+
 /**
  * Disable right-click context menu from browser, unless Shift is held, for debug
  * @param {Event} event - JS Event object

@@ -330,13 +330,43 @@ export default class WindowLayoutHelper {
 
 	/**
 	 * Generates a layout like the ones hard-coded. This way, someday we can serialize layouts to disk / documents, etc.
-	 * 
+	 *
 	 * @param {WindowMgr} wndMgr - reference to a WindowManager (aka THE window manager)
+	 * @returns {Array<Object>} - layout array suitable for serialization
 	 */
 	static getLayoutObject(wndMgr) {
+		
+		// First, create the root window object that defines the full screen size
+		const containerWidth = wndMgr.windowDOMContainer.offsetWidth;
+		const containerHeight = wndMgr.windowDOMContainer.offsetHeight;
 
-		// TODO: implement :P
-		return 'A layout';
+		const layout = [
+			{
+				name: "window",
+				top: 0,
+				left: 0,
+				bottom: containerHeight,
+				right: containerWidth
+			}
+		];
+
+		// Iterate over all frames and extract their layout data
+		for (const frame of wndMgr.frames) {
+			const { t, b, l, r } = frame.screenPos.value;
+			const windows = frame.windows.map(win => win.windowSlug); // Convert to slug strings
+
+			layout.push({
+				name: frame.frameID,
+				style: frame.frameStyle.value,
+				windows,
+				top: t,
+				bottom: b,
+				left: l,
+				right: r
+			});
+		}
+
+		return layout;
 	}
 
 
