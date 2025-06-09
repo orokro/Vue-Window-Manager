@@ -200,7 +200,7 @@
 <script setup>
 
 // vue
-import { ref, watch, inject, h } from 'vue';
+import { ref, watch, inject, h, provide } from 'vue';
 import ContextMenu from '@imengyu/vue3-context-menu';
 
 // components
@@ -235,6 +235,9 @@ const props = defineProps({
 // define some events
 const emits = defineEmits(['onWindowTearOff']);
 
+// provide just the frame context for child components
+provide('frameCtx', props.frame.frameContext);
+console.log("aids", props.frame.frameContext);
 
 // watch our split-mode & focus the frame automatically if we enter a split mode
 watch(

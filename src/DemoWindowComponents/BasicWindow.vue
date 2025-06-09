@@ -15,7 +15,11 @@
 			<p>
 				{{ randomNumberOnStartUp }}
 			</p>
+
+			<h2>Buttons</h2>
+			<button type="button" @click="testFrameContext">Print Frame Context</button>
 			
+			<br/><br/>
 			<h2>Other Stuffs:</h2>
 			<p>
 				Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
@@ -30,7 +34,7 @@
 <script setup>
 
 // vue
-import { ref } from 'vue';
+import { ref, inject } from 'vue';
 
 // define our props
 const props = defineProps({
@@ -42,6 +46,18 @@ const props = defineProps({
 });
 
 const randomNumberOnStartUp = ref(Math.floor(Math.random() * 100));
+
+const frameCtx = inject('frameCtx');
+
+const testFrameContext = () => {
+	
+	if (frameCtx) {
+		frameCtx.printFrame();
+	} else {
+		console.warn("No frame context available!", frameCtx);
+	}
+};
+
 
 </script>
 <style lang="scss" scoped>

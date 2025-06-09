@@ -14,6 +14,7 @@ import { reactive, ref, shallowRef } from 'vue';
 // classes
 import WindowManager from './WindowManager';
 import Window from './Window';
+import WindowFrameContext from './WindowFrameContext';
 
 // lib/misc
 import { clamp01, parseParams, rangeOverlap } from '@misc/Utils';
@@ -158,6 +159,9 @@ export default class WindowFrame {
 		// the x/y position to use when in WMI mode to translate the windows
 		this.mwiDragX = ref(0);
 		this.mwiDragY = ref(0);
+
+		// for public api
+		this.frameContext = new WindowFrameContext(this);
 	}
 
 
