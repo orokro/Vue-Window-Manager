@@ -235,10 +235,6 @@ const props = defineProps({
 // define some events
 const emits = defineEmits(['onWindowTearOff']);
 
-// provide just the frame context for child components
-provide('frameCtx', props.frame.frameContext);
-console.log("aids", props.frame.frameContext);
-
 // watch our split-mode & focus the frame automatically if we enter a split mode
 watch(
 	()=>props.frame.splitMode.value,
