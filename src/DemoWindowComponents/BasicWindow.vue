@@ -18,6 +18,8 @@
 
 			<h2>Buttons</h2>
 			<button type="button" @click="testFrameContext">Print Frame Context</button>
+			<br><br>
+			<button type="button" @click="printFrameDim">Print Frame Dim</button>
 			
 			<br/><br/>
 			<h2>Other Stuffs:</h2>
@@ -70,6 +72,15 @@ const testFrameContext = () => {
 
 
 
+const printFrameDim = () => {
+
+	if (frameCtx) {
+		const frameDim = frameCtx.getFrameDimensions();
+		console.log("Frame Dimensions:", frameDim);
+	} else {
+		console.warn("No frame context available!", frameCtx);
+	}
+};
 
 </script>
 <style lang="scss" scoped>

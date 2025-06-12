@@ -80,8 +80,17 @@ export default class WindowFrameContext {
 	 * @returns {Array<String>} - an array of the available window slugs
 	 */
 	getAvailableWindowKinds(){
-
 		return this.#windowManager.availableWindowList.getAvailableWindowKinds();
+	}
+
+
+	/**
+	 * Let's user get the current frame's dimensions
+	 * 
+	 * @returns {Object} - an object like {top, bottom, left, right, width, height}
+	 */
+	getFrameDimensions() {
+		return this.#windowFrame.getFrameDim();
 	}
 
 }
