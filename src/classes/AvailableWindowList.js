@@ -38,6 +38,7 @@ export default class AvailableWindowList {
 		this.setAvailableWindows(initialWindows);
 	}
 
+
 	/**
 	 * Helper function to convert a string to PascalCase.
 	 * 
@@ -49,6 +50,7 @@ export default class AvailableWindowList {
 			.replace(/[-_ ]+(\w)/g, (_, c) => c.toUpperCase())
 			.replace(/^\w/, c => c.toUpperCase());
 	}
+
 
 	/**
 	 * Converts PascalCase or camelCase into spaced Title Case.
@@ -62,6 +64,7 @@ export default class AvailableWindowList {
 			.replace(/^\s*/, '')
 			.replace(/^\w/, c => c.toUpperCase());
 	}
+
 
 	/**
 	 * Generates a slug for a Vue component.
@@ -78,6 +81,7 @@ export default class AvailableWindowList {
 		if (raw) return this._pascalCase(raw);
 		return `AnonymousComponent`;
 	}
+
 
 	/**
 	 * Gets or creates a unique slug for a Vue component.
@@ -99,6 +103,7 @@ export default class AvailableWindowList {
 		this._componentToSlug.set(component, slug);
 		return slug;
 	}
+
 
 	/**
 	 * Sets the list of available windows.
@@ -132,6 +137,7 @@ export default class AvailableWindowList {
 		}// next entry
 	}
 
+
 	/**
 	 * Gets a window descriptor by its slug.
 	 * 
@@ -141,6 +147,7 @@ export default class AvailableWindowList {
 	getWindowBySlug(slug) {
 		return this._slugToWindow.get(slug) || null;
 	}
+
 
 	/**
 	 * Returns an array of all currently visible window descriptor objects.
@@ -154,6 +161,26 @@ export default class AvailableWindowList {
 			if (windowObj) result.push(windowObj);
 		}// next slug
 		return result;
+	}
+
+
+	/**
+	 * Helper to get a list of our window slugs.
+	 * 
+	 * @returns {Array<String>} - An array of slugs for currently visible windows.
+	 */
+	getWindowSlugs(){
+		return Array.from(this._visibleSlugs);
+	}
+	
+	
+	/**
+	 * Alias for getWindowSlugs, perhaps more memorable.
+	 * 
+	 * @returns {Array<String>} - An array of slugs for currently available windows.
+	 */
+	getAvailableWindowKinds(){
+		return this.getWindowSlugs()
 	}
 
 }

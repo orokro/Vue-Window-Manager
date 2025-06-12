@@ -52,11 +52,23 @@ const frameCtx = inject('frameCtx');
 const testFrameContext = () => {
 	
 	if (frameCtx) {
-		frameCtx.printFrame();
+
+		// get list of window string slugs
+		const windowSlugs = frameCtx.getAvailableWindowKinds();
+		console.log(windowSlugs);
+		
+		// pick a random slug from the above array
+		const randomSlug = windowSlugs[Math.floor(Math.random() * windowSlugs.length)];
+
+		// test context by adding a random window to the frame we're currently in
+		frameCtx.addWindow(randomSlug);
+
 	} else {
 		console.warn("No frame context available!", frameCtx);
 	}
 };
+
+
 
 
 </script>

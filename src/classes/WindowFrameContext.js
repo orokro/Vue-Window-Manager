@@ -22,6 +22,7 @@ export default class WindowFrameContext {
 
 	#windowFrame = null;
 	#refs = {};
+	#windowManager = null;
 
 	/**
 	 * Constructs a new WindowFrameContext.
@@ -34,6 +35,9 @@ export default class WindowFrameContext {
 		// save our private things
 		this.#windowFrame = windowFrame;
 		this.#refs = refs;
+
+		// break out window manager
+		this.#windowManager = this.#windowFrame.mgr;
 	}
 
 
@@ -44,4 +48,40 @@ export default class WindowFrameContext {
 		console.log("Printing from WindowFrameContext");
 		console.log(this.#windowFrame)
 	}	
+
+
+	/**
+	 * Adds a window to the frame...
+	 * 
+	 * ... either a tab if it's tabbed, a MWI if it's MWI, or replace the current window
+	 * @param {String} slug - the slug of the window to add
+	 */
+	addWindow(slug){
+
+		// get array of valid slugs
+		const availableSlugs = this.getAvailableWindowKinds();
+
+		// GTFO & error if it's not present
+		if (!availableSlugs.includes(slug)) {
+			throw new Error(`Window slug "${slug}" is not available in this frame.`);
+		}
+
+		// make a new window w/ our slug
+		const window = this.#windowManager.createWindow(slug);
+
+		// add it to our frame
+		this.#windowFrame.addWindow(window);
+	}
+	
+
+	/**
+	 * Returns kinds to user
+	 * 
+	 * @returns {Array<String>} - an array of the available window slugs
+	 */
+	getAvailableWindowKinds(){
+
+		return this.#windowManager.availableWindowList.getAvailableWindowKinds();
+	}
+
 }

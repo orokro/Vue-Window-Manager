@@ -317,6 +317,31 @@ export default class WindowManager {
 
 
 	/**
+	 * Helper to find a WindowFrame that contains a given window
+	 * 
+	 * @param {Window} window - the Window object to find the frame for
+	 * @returns {WindowFrame|null} - either a reference to the WindowFrame that contains this window, or null if not found
+	 */
+	getFrameFromWindow(window){
+
+		// if we have a window, find the frame it belongs to
+		if (window == null)
+			return null;
+
+		// loop through our frames and find the one that contains this window
+		for (let i = 0; i < this.frames.length; i++) {
+			const frame = this.frames[i];
+			if (frame.windows.includes(window)) {
+				return frame;
+			}
+		}
+
+		// if we didn't find a frame, return null
+		return null;
+	}
+
+
+	/**
 	 * Removes a WindowFrame from our system
 	 * 
 	 * @param {Number|String|WindowFrame} frameHandle - either a frameID number, string, or reference to the frame itself

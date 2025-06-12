@@ -39,6 +39,9 @@
 </template>
 <script setup>
 
+// vue
+import { provide } from 'vue';
+
 // lib/misc
 import Window from '@classes/Window';
 
@@ -64,6 +67,10 @@ const windowMgr = props.window.mgr;
 function getComponent(kind) {
 	return windowMgr.availableWindowList.getWindowBySlug(kind).window;
 }
+
+// get the frame context from the window manager & provide it to the component tree
+const frameCtx = windowMgr.getFrameFromWindow(props.window).frameContext;
+provide('frameCtx', frameCtx);
 
 </script>
 <style lang="scss" scoped>
