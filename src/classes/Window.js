@@ -21,6 +21,7 @@ import { reactive, ref } from 'vue';
 // classes
 import WindowFrame from './WindowFrame';
 import WindowManager from './WindowManager';
+import WindowContext from './WindowContext';
 
 // lib/misc
 import { parseParams, applyKeys } from '@misc/Utils';
@@ -79,6 +80,13 @@ export default class Window {
 
 		// save our name for now		
 		this.title = this.windowDetails.title;
+		this.titleRef = ref(this.title);
+
+		// make an new WindowContext for this window
+		this.ctx = new WindowContext(this, {
+			titleRef: this.titleRef,
+			domContainer: this.domContainer
+		});
 	}
 
 
@@ -115,6 +123,17 @@ export default class Window {
 
 		// update our existing size object
 		applyKeys(this.size, size, ['width', 'height']);
+	}
+
+
+	/**
+	 * Method to set the title of the window.
+	 * 
+	 * @param {String} title - the title to set for this window
+	 */
+	setTitle(title) {
+		this.title = title;
+		this.titleRef.value = title;
 	}
 
 }

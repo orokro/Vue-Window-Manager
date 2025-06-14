@@ -36,7 +36,7 @@
 			}"
 			@mousedown="e=>startSingleDrag(e, tabsRef[0])"
 		>
-			{{ tabsRef[0]?.title }}
+			{{ tabsRef[0]?.title.value }}
 		</div>
 
 		<!-- render tabs if we're in tabbed mode -->
@@ -83,7 +83,7 @@
 					}"
 				/>
 				<div class="title">
-					{{tab.title}}
+					{{tab.title.value}}
 				</div>
 				<div class="closeButton" @mousedown="closeTab(tab)">
 					<span>✖</span>
@@ -473,7 +473,7 @@ function makeTabData(window, fantom){
 	// return an object with "tab data" that this component will use to display tabs
 	return {
 		id: window.windowID,
-		title: window.title,
+		title: window.titleRef,
 		width: tabWidth,
 		order: 9999,
 		x: 0,

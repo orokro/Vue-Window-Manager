@@ -71,6 +71,7 @@ function getComponent(kind) {
 // get the frame context from the window manager & provide it to the component tree
 const frameCtx = windowMgr.getFrameFromWindow(props.window).frameContext;
 provide('frameCtx', frameCtx);
+provide('windowCtx', props.window.ctx);
 
 </script>
 <style lang="scss" scoped>

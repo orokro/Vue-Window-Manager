@@ -74,7 +74,7 @@
 					/>
 
 					<!-- the titlebar title text -->
-					<div class="titleText">{{ win.title }}</div>
+					<div class="titleText">{{ win.titleRef.value }}</div>
 
 					<!-- close button -->
 					<div class="closeButton" @mousedown="closeWindow(win)">
@@ -157,6 +157,7 @@ watch(
 		}
 	}
 );
+
 
 // when our window style changes, we need to update our tabs list.
 watch(

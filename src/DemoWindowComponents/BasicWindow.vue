@@ -20,7 +20,10 @@
 			<button type="button" @click="testFrameContext">Print Frame Context</button>
 			<br><br>
 			<button type="button" @click="printFrameDim">Print Frame Dim</button>
-			
+			<br><br>
+			<input type="text" v-model="newTitle" placeholder="Change Window Title" />
+			<button type="button" @click="doChangeTitle">Change Title</button>
+
 			<br/><br/>
 			<h2>Other Stuffs:</h2>
 			<p>
@@ -50,6 +53,9 @@ const props = defineProps({
 const randomNumberOnStartUp = ref(Math.floor(Math.random() * 100));
 
 const frameCtx = inject('frameCtx');
+const windowCtx = inject('windowCtx');
+
+const newTitle = ref("New Title!");
 
 const testFrameContext = () => {
 	
@@ -79,6 +85,16 @@ const printFrameDim = () => {
 		console.log("Frame Dimensions:", frameDim);
 	} else {
 		console.warn("No frame context available!", frameCtx);
+	}
+};
+
+
+const doChangeTitle = () => {
+
+	if (windowCtx) {
+		windowCtx.setTitle(newTitle.value);
+	} else {
+		console.warn("No window context available!", windowCtx);
 	}
 };
 
