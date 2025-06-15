@@ -109,7 +109,7 @@
 <script setup>
 
 // vue
-import { onMounted, ref, shallowRef, watch } from 'vue';
+import { onMounted, ref, shallowRef, watch, nextTick } from 'vue';
 
 // lib/misc
 import { arrayDiff } from 'garraydiff';
@@ -149,6 +149,9 @@ const count = ref(0);
 // in the list of tabs
 let tabs = [];
 const tabsRef = shallowRef([]);
+
+// these will be used to watch titles incase they change (needing recompute of sizes)
+let titleWatchStopFns = [];
 
 // ref to drag helper callbacks id for cancellation
 let dragHelperCBRefID = null;
@@ -460,7 +463,7 @@ function makeTabData(window, fantom){
 	const tabContainerFontString = tabContainerEl.value==null ? '' : getCanvasFont(tabContainerEl.value);
 
 	// compute the width of the text string:
-	const titleTextWidth = getTextWidth(window.title, tabContainerFontString);
+	const titleTextWidth = getTextWidth(window.titleRef.value, tabContainerFontString);
 
 	// if we have an icon:
 	const iconPath = window.windowDetails.icon;
@@ -492,6 +495,10 @@ function makeTabData(window, fantom){
  */
 function updateTabs(windows, fantomTab){
 	
+	// if we were previously watching any tab titles, stop everything for now
+	titleWatchStopFns.forEach(stop => stop());
+	titleWatchStopFns = [];
+
 	// for debug
 	count.value = props.frame.windows.length;	
 
@@ -506,7 +513,23 @@ function updateTabs(windows, fantomTab){
 	}
 
 	// make tab data for all windows, and we'll do a DIFF after we have the current status
-	const newTabData = windows.map(window => makeTabData(window));
+	const newTabData = windows.map(window => {
+
+		// get tab data for this window
+		const tabData = makeTabData(window);
+
+		// Watch for title changes, because we'll need to recompute the width
+		const stop = watch(() => window.titleRef.value, () => {
+
+			// this will recompute everything for this frame
+			updateTabs(props.frame.windows);
+		});
+
+		// save the stop function so we can stop watching later
+		titleWatchStopFns.push(stop);
+
+		return tabData;
+	});
 
 	// if we have fantom tab data
 	if(fantomTab!==undefined){
@@ -528,6 +551,15 @@ function updateTabs(windows, fantomTab){
 
 	// mix in the new items
 	newTabsList = [...newTabsList, ...tabDiff.newItems];
+
+	// copy over all new widths by id
+	newTabsList.map(tab=>{
+
+		// find the new tab data by ID
+		const newTab = newTabData.filter(t => t.id == tab.id)[0];
+		if(newTab)
+			tab.width = newTab.width;		
+	});
 
 	// the new items will have a default sort order of 9999, so let's sort them to the right
 	// note that sort mutates array in place
@@ -558,6 +590,7 @@ function updateTabs(windows, fantomTab){
 	// update our static/dynamic arrays
 	tabs = newTabsList;
 	tabsRef.value = [...tabs];
+
 
 	// if we don't yet have a selected tab, select the first tab
 	if(props.frame.currentTab.value==null){
