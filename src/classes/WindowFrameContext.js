@@ -14,6 +14,7 @@
 	In the future, this can be expanded to include more functionality as needed.
 */
 
+import WindowContext from "./WindowContext";
 import WindowFrame from "./WindowFrame";
 import WindowLayoutHelper from "./WindowLayoutHelper";
 import WindowManager from "./WindowManager";
@@ -91,6 +92,22 @@ export default class WindowFrameContext {
 	 */
 	getFrameDimensions() {
 		return this.#windowFrame.getFrameDim();
+	}
+
+
+	/**
+	 * Gets all the window contexts in the frame.
+	 * 
+	 * @returns {Array<WindowContext>} - an array of WindowContext objects for each window in the frame
+	 */
+	getWindows(){
+
+		const windows = [...this.#windowFrame.windows];
+		const windowContexts = windows.map((window) => {
+			return window.ctx;
+		});
+
+		return windowContexts;
 	}
 
 }

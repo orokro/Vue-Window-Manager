@@ -34,6 +34,8 @@ export default class WindowContext {
 		this.#window = window;
 		this.#refs = refs;
 
+		this.id = window.id;
+
 		// break out window manager
 		this.#windowManager = this.#window.mgr;
 	}

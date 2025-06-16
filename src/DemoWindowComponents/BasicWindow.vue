@@ -23,7 +23,7 @@
 			<br><br>
 			<input type="text" v-model="newTitle" placeholder="Change Window Title" />
 			<button type="button" @click="doChangeTitle">Change Title</button>
-
+			<button type="button" @click="changeAllTitles">Change All Titles</button>
 			<br/><br/>
 			<h2>Other Stuffs:</h2>
 			<p>
@@ -96,6 +96,15 @@ const doChangeTitle = () => {
 	} else {
 		console.warn("No window context available!", windowCtx);
 	}
+};
+
+const changeAllTitles = () => {
+
+	const windows = frameCtx.getWindows();
+	console.log('Windows in Frame', windows);
+	windows.map(window=>{
+		window.setTitle(newTitle.value);
+	});
 };
 
 </script>
