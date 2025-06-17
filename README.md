@@ -2,10 +2,6 @@
 
 This provides a Blender / QT / Unity, etc like Window Manager.
 
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
 ## Project Setup
 
 ```sh
