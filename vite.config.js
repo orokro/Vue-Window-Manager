@@ -12,8 +12,8 @@ export default defineConfig({
 	build: {
 		lib: {
 			entry: fileURLToPath(new URL('./src/export.ts', import.meta.url)),
-			name: 'VueWindowManager',
-			fileName: (format) => `vue-window-manager.${format}.js`,
+			name: 'VueWinMgr',
+			fileName: (format) => `vue-win-mgr.${format}.js`,
 		},
 		rollupOptions: {
 			// Make sure to externalize Vue to avoid bundling it
