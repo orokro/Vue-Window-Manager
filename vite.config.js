@@ -8,6 +8,25 @@ export default defineConfig({
 	plugins: [
 		vue(),
 	],
+
+	build: {
+		lib: {
+			entry: fileURLToPath(new URL('./src/export.ts', import.meta.url)),
+			name: 'VueWindowManager',
+			fileName: (format) => `vue-window-manager.${format}.js`,
+		},
+		rollupOptions: {
+			// Make sure to externalize Vue to avoid bundling it
+			external: ['vue'],
+			output: {
+				globals: {
+					vue: 'Vue',
+				},
+			},
+		},
+		emptyOutDir: true, // clears dist/ before build
+	},
+
 	resolve: {
 		alias: {
 			'@': fileURLToPath(new URL('./src', import.meta.url)),
