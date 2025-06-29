@@ -17,7 +17,7 @@ export default defineConfig({
 		},
 		rollupOptions: {
 			// Make sure to externalize Vue to avoid bundling it
-			external: ['vue'],
+			external: (id) => /^vue/.test(id), // this catches 'vue', 'vue-router', etc.
 			output: {
 				globals: {
 					vue: 'Vue',
