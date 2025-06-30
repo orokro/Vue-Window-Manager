@@ -26,7 +26,8 @@
 		"garraydiff": "^1.0.1",
 		"gdraghelper": "^1.0.1",
 		"sass": "^1.69.5",
-		"sass-loader": "^13.3.2"
+		"sass-loader": "^13.3.2",
+		"vite-plugin-dts": "^4.5.4"
 	},
 	"devDependencies": {
 		"@vitejs/plugin-vue": "^4.3.4",

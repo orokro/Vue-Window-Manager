@@ -2,11 +2,13 @@ import { fileURLToPath, URL } from 'node:url';
 
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
+import dts from 'vite-plugin-dts';
 
 // https://vitejs.dev/config/
 export default defineConfig({
 	plugins: [
 		vue(),
+		dts(),
 	],
 
 	build: {
@@ -17,13 +19,17 @@ export default defineConfig({
 		},
 		rollupOptions: {
 			// Make sure to externalize Vue to avoid bundling it
-			external: (id) => /^vue/.test(id), // this catches 'vue', 'vue-router', etc.
+			// external: (id) => /^vue/.test(id), // this catches 'vue', 'vue-router', etc.
+			external: ['vue'],
 			output: {
 				globals: {
 					vue: 'Vue',
 				},
 			},
 		},
+		optimizeDeps: {
+			exclude: ['vue'] // tell Vite not to pre-bundle vue
+		  },
 		emptyOutDir: true, // clears dist/ before build
 	},
 
