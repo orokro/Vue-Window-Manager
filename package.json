@@ -21,7 +21,7 @@
 		"vue": "^3.3.4"
 	},
 	"dependencies": {
-		"@imengyu/vue3-context-menu": "^1.2.10",
+		"@imengyu/vue3-context-menu": "^1.5.1",
 		"@stylistic/eslint-plugin-js": "^1.5.0",
 		"garraydiff": "^1.0.1",
 		"gdraghelper": "^1.0.1",

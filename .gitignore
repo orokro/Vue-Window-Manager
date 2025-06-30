@@ -26,6 +26,9 @@ coverage
 *.sln
 *.sw?
 
+# npm packs
+*.tgz
+
 # text files
 npmls.txt
 project_tree.txt

@@ -56,6 +56,9 @@
 </template>
 <script setup>
 
+// styles
+import '@imengyu/vue3-context-menu/lib/vue3-context-menu.css';
+
 // vue
 import { ref, provide, computed, watch } from 'vue';
 
@@ -236,6 +239,8 @@ defineExpose({
 		position: absolute;
 		inset: 0px 0px 0px 0px;
 
+		// fill bg w/ black
+		background: black;
 
 		// wrapper around the part where the windows spawn/divide/join, etc
 		.windowingSystemWrapper {
