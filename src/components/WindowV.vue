@@ -31,7 +31,7 @@
 
 			<component 
 				v-if="window.kind!=null"
-				:is="getComponent(window.kind)"
+				:is="getComponent(window.kindRef.value)"
 			/>
 		</div>
 	</Teleport>

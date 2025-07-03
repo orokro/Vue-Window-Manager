@@ -28,6 +28,9 @@
 			<button type="button" @click="windowCtx.close()">Close Window</button>
 			<button type="button" @click="frameCtx.closeAllWindows()">Close All Windows In Frame</button>
 			<br/><br/>
+			<button type="button" @click="windowCtx.setKind('ddg')">Change to DuckDuckGo</button>
+			<button type="button" @click="windowCtx.setKind('GoogleWindow')">Change to GoogleWindow</button>			
+			<br/><br/>
 			<h2>Other Stuffs:</h2>
 			<p>
 				Lorem ipsum dolor sit amet, consectetur adipiscing elit. 

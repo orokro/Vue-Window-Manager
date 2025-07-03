@@ -77,4 +77,16 @@ export default class WindowContext {
 		this.#window.close();
 	}
 
+
+	/**
+	 * Sets the kind of the window. (i.e. the slug)
+	 * 
+	 * @param {String} kind - window kind slug to set
+	 */
+	setKind(kind) {
+
+		// update the title reference
+		this.#window.setWindowKind(kind);
+	}	
+
 }

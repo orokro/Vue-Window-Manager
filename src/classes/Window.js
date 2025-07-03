@@ -73,6 +73,7 @@ export default class Window {
 		// handle window kind type, defaulting to empty
 		kind = (kind === undefined) ? null : kind;
 		this.kind = kind;
+		this.kindRef = ref(this.kind);
 		this.windowSlug = this.kind;
 
 		// get the window details, based on our kind slug
@@ -87,6 +88,32 @@ export default class Window {
 			titleRef: this.titleRef,
 			domContainer: this.domContainer
 		});
+	}
+
+	
+	/**
+	 * Changes the kind of this window.
+	 * 
+	 * @param {String} newKind - new kind slug to set for this window.
+	 */
+	setWindowKind(newKind){
+
+		// if the new kind is the same as the current, GTFO
+		if (newKind === this.kind) {
+			return;
+		}
+
+		// update our window slug
+		this.kind = newKind;
+		this.kindRef.value = this.kind;
+		this.windowSlug = this.kind;
+
+		// get the window details, based on our kind slug
+		this.windowDetails = this.mgr.availableWindowList.getWindowBySlug(this.windowSlug);
+
+		// update our title
+		this.title = this.windowDetails.title;
+		this.titleRef.value = this.title;
 	}
 
 
@@ -150,5 +177,5 @@ export default class Window {
 		// remove the window from the frame
 		frame.removeWindow(this, { noMerge: true });
 	}
-	
+
 }
