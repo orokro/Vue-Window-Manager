@@ -190,6 +190,9 @@ export default class WindowManager {
 			console.log('Building new WindowManager');
 			window.wm = this;
 		}
+
+		// background image path for MWI windows
+		this.mwiBGImagePath = ref('');
 	}
 
 

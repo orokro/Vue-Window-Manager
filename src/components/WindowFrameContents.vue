@@ -18,14 +18,17 @@
 -->
 <template>
 	<div 
+		:style="{
+			'background-position': `${frame.mwiDragX.value}px ${frame.mwiDragY.value}px`,
+			'--bg-image--old': `url('/mwi_dot.png')`,
+			'--bg-image': `url(${frame.mgr.mwiBGImagePath.value})`,
+		}"
 		:class="{
 			frameContents: true,
 			noHeader: frame.frameStyle.value==WindowFrame.STYLE.MWI,
 			isDragging: isDraggingBG
 		}"
-		:style="{
-			'background-position': `${frame.mwiDragX.value}px ${frame.mwiDragY.value}px`
-		}"
+		
 		@mousedown="e=>startMWIDrag(e)"
 		@mouseleave="mouseLeave"
 	>
@@ -541,6 +544,7 @@ function setRef(el, win){
 	win.domContainer.value = el;
 }
 
+// http://localhost:5173/icons/mwi_dot.png
 
 </script>
 <style lang="scss" scoped>
@@ -563,7 +567,10 @@ function setRef(el, win){
 			top: 0px;
 
 			background: #39393E;
-			background-image: url('../assets/img/mwi_bg.png');
+			background-image: var(--bg-image);
+			/* background-image: url(../assets/img/mwi_bg.png); */
+			/* background-image: url('/mwi_dot.png'); */
+			/* background-image: url('../assets/img/mwi_bg.png'); */
 			background-repeat: repeat;
 
 			.dragLayer {

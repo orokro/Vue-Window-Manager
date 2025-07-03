@@ -17,6 +17,8 @@
 				:showStatusBar="true"
 				:topBarComponent="DemoHeader"
 				:splitMergeHandles="true"
+				:useWindowingDebug="true"
+				mwiBGPattern="/mwi_dot.png"
 			>
 				<template #statusBar>
 					<DemoStatusBar/>

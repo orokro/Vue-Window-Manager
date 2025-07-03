@@ -128,6 +128,12 @@ const props = defineProps({
 		default: true
 	},
 
+	// optional background image for MWI frames
+	mwiBGPattern: {
+		type: String,
+		default: null
+	},
+
 });
 
 // make local copies from our props
@@ -169,6 +175,16 @@ const windowSystemInset = computed(() => {
 // dom refs
 const dragHoverLayerRef = ref(null);
 
+
+// set image path to use for MWI windows
+import defaultMWIImage from '@assets/img/mwi_bg.png';
+function setMWIPath(){
+	console.log(defaultMWIImage);
+	windowMgr.mwiBGImagePath.value = props.mwiBGPattern || defaultMWIImage;
+}
+setMWIPath();
+
+
 // set up some watches incase our props change
 watch(() => props.showTopBar, (newVal) => {
 	showTopBar.value = newVal;
@@ -190,7 +206,6 @@ watch(() => props.splitMergeHandles, (newVal) => {
 	windowMgr.showBlenderSplitMergeHandles.value = newVal;
 }, { immediate: true });
 
-
 // emit events when certain properties change
 watch(() => showTopBar.value, (newVal) => {
 	emit('update:showTopBar', newVal);
@@ -203,6 +218,10 @@ watch(() => showStatusBar.value, (newVal) => {
 watch(() => splitMergeHandles.value, (newVal) => {
 	emit('update:splitMergeHandles', newVal);
 	windowMgr.showBlenderSplitMergeHandles.value = newVal;
+});
+
+watch(() => props.mwiBGPattern, (newVal) => {
+	setMWIPath();
 });
 
 // make a context object to return if requested
