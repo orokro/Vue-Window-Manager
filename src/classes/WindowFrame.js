@@ -494,5 +494,25 @@ export default class WindowFrame {
 			r: WindowFrame.EDGE.LEFT
 		}[edge];
 	}
+	
+
+	/**
+	 * Closes all the windows on this frame
+	 */
+	closeAllWindows(){
+
+		// clone our array to loop over it without mutating
+		const windowsToClose = [...this.windows];
+
+		// loop over all windows and close them
+		for (let i = 0; i < windowsToClose.length; i++) {
+			windowsToClose[i].close();
+		}
+
+		// clear our windows array
+		this.windows = [];
+		this.windowsRef.value = [];
+		this.currentTab.value = null;
+	}
 
 }

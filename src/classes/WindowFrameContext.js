@@ -110,4 +110,14 @@ export default class WindowFrameContext {
 		return windowContexts;
 	}
 
+
+	/**
+	 * Closes all the windows in this frame
+	 */
+	closeAllWindows(){
+
+		// close all windows in the frame
+		this.#windowFrame.closeAllWindows();
+	}
+
 }

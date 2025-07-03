@@ -26,6 +26,7 @@
 			<button type="button" @click="changeAllTitles">Change All Titles</button>
 			<br/><br/>
 			<button type="button" @click="windowCtx.close()">Close Window</button>
+			<button type="button" @click="frameCtx.closeAllWindows()">Close All Windows In Frame</button>
 			<br/><br/>
 			<h2>Other Stuffs:</h2>
 			<p>
