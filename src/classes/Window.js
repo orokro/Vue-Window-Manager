@@ -137,4 +137,18 @@ export default class Window {
 	}
 
 
+	/**
+	 * closes this window
+	 */
+	close(){
+
+		// get the frame we belong in or GTFO if for some reason we're not parented to a frame
+		const frame = this.mgr.getFrameFromWindow(this);
+		if(frame==null)
+			return;
+
+		// remove the window from the frame
+		frame.removeWindow(this, { noMerge: true });
+	}
+	
 }

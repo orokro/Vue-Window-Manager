@@ -73,15 +73,8 @@ export default class WindowContext {
 	 */
 	close(){
 
-		// find the frame we live in...
-		const frame = this.#windowManager.getFrameFromWindow(this.#window);
-
-		// nothing to close if window doesn't belong to a frame
-		if(frame==null)
-			return;
-
-		// remove the window from the frame
-		frame.removeWindow(this.#window, { noMerge: true });
+		// simply forward to the window's close method
+		this.#window.close();
 	}
 
 }
