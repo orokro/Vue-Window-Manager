@@ -31,6 +31,11 @@
 			<button type="button" @click="windowCtx.setKind('ddg')">Change to DuckDuckGo</button>
 			<button type="button" @click="windowCtx.setKind('GoogleWindow')">Change to GoogleWindow</button>			
 			<br/><br/>
+			<button type="button" @click="printFrameStyle">Log Frame Style</button>
+			<button type="button" @click="frameCtx.setFrameStyle('0')">Set Single</button>
+			<button type="button" @click="frameCtx.setFrameStyle('tabbed')">Set Tabbed</button>
+			<button type="button" @click="frameCtx.setFrameStyle(WindowFrame.STYLE.MWI)">Set MWI</button>
+			<br/><br/>
 			<h2>Other Stuffs:</h2>
 			<p>
 				Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
@@ -46,6 +51,7 @@
 
 // vue
 import { ref, inject } from 'vue';
+import WindowFrame from '../classes/WindowFrame';
 
 // define our props
 const props = defineProps({
@@ -62,6 +68,16 @@ const frameCtx = inject('frameCtx');
 const windowCtx = inject('windowCtx');
 
 const newTitle = ref("New Title!");
+
+const printFrameStyle = () => {
+
+	if (frameCtx) {
+		const frameStyle = frameCtx.getFrameStyle();
+		console.log("Frame Style:", frameStyle);
+	} else {
+		console.warn("No frame context available!", frameCtx);
+	}
+};
 
 const testFrameContext = () => {
 	

@@ -120,4 +120,65 @@ export default class WindowFrameContext {
 		this.#windowFrame.closeAllWindows();
 	}
 
+
+	/**
+	 * Sets the frame type for the frame
+	 * 
+	 * @param {String|Number} newType - either the raw value from WindowFrame.STYLE constants, or either a number, or string like "10" or "TABBED"
+	 */
+	setFrameStyle(newType) {
+
+        // get the valid styles, from static object:
+        const styleValues = Object.values(WindowFrame.STYLE);
+        const styleKeys = Object.keys(WindowFrame.STYLE);
+
+        // if new type is not a string or a number, throw an error
+        if (typeof newType !== 'string' && typeof newType !== 'number') {
+            throw new Error(`Invalid frame style type: ${typeof newType}. Must be a string or number.`);
+        }
+
+        // if it's a string, process it
+        if (typeof newType === 'string') {
+
+            // Check if it's a numeric string
+            if (!isNaN(newType)) {
+                newType = parseInt(newType, 10);
+
+            } else {
+
+                // Convert to uppercase and check if it's a valid key
+                newType = newType.toUpperCase();
+                if (!styleKeys.includes(newType)) {
+                    throw new Error(`Invalid frame style key: ${newType}. Must be one of ${styleKeys.join(', ')}.`);
+                }
+
+                // Convert the key to its corresponding value
+                newType = WindowFrame.STYLE[newType];
+            }
+        }
+
+        // if it's a number, check if it's a valid value
+        if (typeof newType === 'number' && !styleValues.includes(newType)) {
+            throw new Error(`Invalid frame style value: ${newType}. Must be one of ${styleValues.join(', ')}.`);
+        }
+
+        // Set the frame style
+        this.#windowFrame.frameStyle.value = newType;
+    }
+
+	/**
+	 * Gets the current frame style as an object like {styleName, styleValue}
+	 * 
+	 * @return {Object} - an object with the styleName and styleValue
+	 */
+	getFrameStyle(){
+		const styleValue = this.#windowFrame.frameStyle.value;
+		const styleName = Object.keys(WindowFrame.STYLE).find(key => WindowFrame.STYLE[key] === styleValue);
+
+		return {
+			styleName: styleName,
+			styleValue: styleValue
+		};
+	}
+
 }
