@@ -381,12 +381,24 @@ export default class WindowFrame {
 	 * Removes a window by ref or by id
 	 * 
 	 * @param {Window|String} window - either a Window reference, or windowID string
-	 * @param {Boolean} noCull - OPTIONAL, don't delete windows (useful for dragging), default = false
+	 * @param {Object|Boolean} options - either a boolean for noCull, or an options object
 	 */
-	removeWindow(window, noCull) {
+	removeWindow(window, options) {
 
-		// handle optional parameter
-		noCull = (noCull === undefined) ? false : noCull;
+		//defaults
+		let noCull = false;
+		let noMerge = false;
+
+		// if options is a boolean, we'll just set noCull
+		if (typeof options === 'boolean') {
+			noCull = options;
+		
+		}else if (typeof options === 'object') {
+
+			// otherwise, parse the options object
+			noCull = options.noCull || false;
+			noMerge = options.noMerge || false;
+		}
 
 		// if it's a string, convert to window reference
 		if (typeof window === 'string') {
@@ -415,47 +427,52 @@ export default class WindowFrame {
 		this.windows = this.windows.filter(w => w != window);
 		this.windowsRef.value = [...this.windows];
 
-		// if we're out of windows and we're not MWI, try to merge
-		if (this.frameStyle.value != WindowFrame.STYLE.MWI && this.windows.length <= 0) {
+		// if we closed the last window & we have noMerg set false, we should attempt to merge windows
+		if(noMerge==false){
 
-			// the order we should check for auto merge
-			let mergeCheckOrder = [
-				{
-					check: WindowFrame.EDGE.RIGHT,
-					opposite: WindowFrame.EDGE.LEFT,
-				},
-				{
-					check: WindowFrame.EDGE.BOTTOM,
-					opposite: WindowFrame.EDGE.TOP,
-				},
-				{
-					check: WindowFrame.EDGE.LEFT,
-					opposite: WindowFrame.EDGE.RIGHT,
-				},
-				{
-					check: WindowFrame.EDGE.TOP,
-					opposite: WindowFrame.EDGE.BOTTOM,
-				},
-			];
+			// if we're out of windows and we're not MWI, try to merge
+			if (this.frameStyle.value != WindowFrame.STYLE.MWI && this.windows.length <= 0) {
 
-			// check each edge and stop when we find one to potentially merge with
-			for (let i = 0; i < mergeCheckOrder.length; i++) {
+				// the order we should check for auto merge
+				let mergeCheckOrder = [
+					{
+						check: WindowFrame.EDGE.RIGHT,
+						opposite: WindowFrame.EDGE.LEFT,
+					},
+					{
+						check: WindowFrame.EDGE.BOTTOM,
+						opposite: WindowFrame.EDGE.TOP,
+					},
+					{
+						check: WindowFrame.EDGE.LEFT,
+						opposite: WindowFrame.EDGE.RIGHT,
+					},
+					{
+						check: WindowFrame.EDGE.TOP,
+						opposite: WindowFrame.EDGE.BOTTOM,
+					},
+				];
 
-				const edgeToCheck = mergeCheckOrder[i].check;
-				const oppositeEdge = mergeCheckOrder[i].opposite;
+				// check each edge and stop when we find one to potentially merge with
+				for (let i = 0; i < mergeCheckOrder.length; i++) {
 
-				// if we have a perfectly adjacent frame on this side, merge with it
-				if (this.neighborStatus[edgeToCheck] == WindowFrame.EDGE_NEIGHBOR_STATUS.ADJACENT) {
+					const edgeToCheck = mergeCheckOrder[i].check;
+					const oppositeEdge = mergeCheckOrder[i].opposite;
 
-					// get our neighbor & merge with it's opposite edge
-					const neighborFrame = this.neighbors[edgeToCheck]
-					this.mgr.mergeWindowFrames(neighborFrame, oppositeEdge);
+					// if we have a perfectly adjacent frame on this side, merge with it
+					if (this.neighborStatus[edgeToCheck] == WindowFrame.EDGE_NEIGHBOR_STATUS.ADJACENT) {
 
-					// GTFO of for loop, because we found a match
-					break;
-				}
+						// get our neighbor & merge with it's opposite edge
+						const neighborFrame = this.neighbors[edgeToCheck]
+						this.mgr.mergeWindowFrames(neighborFrame, oppositeEdge);
 
-			}// next i
+						// GTFO of for loop, because we found a match
+						break;
+					}
+
+				}// next i
+
+			}// end if we're out of windows and not MWI
 
 		}
 

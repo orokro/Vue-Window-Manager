@@ -67,4 +67,21 @@ export default class WindowContext {
 		this.#window.titleRef.value = title;
 	}
 
+
+	/**
+	 * closes this window
+	 */
+	close(){
+
+		// find the frame we live in...
+		const frame = this.#windowManager.getFrameFromWindow(this.#window);
+
+		// nothing to close if window doesn't belong to a frame
+		if(frame==null)
+			return;
+
+		// remove the window from the frame
+		frame.removeWindow(this.#window, { noMerge: true });
+	}
+
 }

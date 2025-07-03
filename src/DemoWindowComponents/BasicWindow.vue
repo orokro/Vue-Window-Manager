@@ -25,6 +25,8 @@
 			<button type="button" @click="doChangeTitle">Change Title</button>
 			<button type="button" @click="changeAllTitles">Change All Titles</button>
 			<br/><br/>
+			<button type="button" @click="windowCtx.close()">Close Window</button>
+			<br/><br/>
 			<h2>Other Stuffs:</h2>
 			<p>
 				Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
