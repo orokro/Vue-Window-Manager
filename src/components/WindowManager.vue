@@ -203,6 +203,11 @@ const defaultThemeColors = {
 	hamburgerCircleColor: 'none',
 	hamburgerCircleColorHover: 'rgba(255, 255, 255, 0.25)',
 	
+	// close buttons for floating windows & tabs
+	closeButtonCircle: 'none',
+	closeButtonCircleHover: 'rgba(255, 0, 0, 0.3)',
+	closeButtonXColor: 'rgba(0, 0, 0, 0.5)',
+	closeButtonXColorHover: 'rgba(255, 255, 255, 1)',
 };
 
 

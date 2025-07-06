@@ -823,9 +823,11 @@ function updateTabs(windows, fantomTab){
 					top: 4px;
 					right: 4px;
 
+					background: var(--theme-closeButtonCircle);
+
 					// text setting
 					font-size: 12px;
-					color: rgba(0, 0, 0, 0.5);
+					color: var(--theme-closeButtonXColor);
 
 					border-radius: 100px;
 					width: 14px;
@@ -841,8 +843,8 @@ function updateTabs(windows, fantomTab){
 					// hover styles
 					&:hover {
 
-						background: rgba(255, 0, 0, 0.3);
-						color: white;
+						background: var(--theme-closeButtonCircleHover);
+						color: var(--theme-closeButtonXColorHover);
 
 					}//&:hover
 

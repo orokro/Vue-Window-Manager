@@ -39,6 +39,10 @@
 					// hamburgerIconColorHover: 'pink',
 					// hamburgerCircleColor: 'red',
 					// hamburgerCircleColorHover: 'pink',
+					// closeButtonCircle: '#efefef',
+					// closeButtonCircleHover: '#ff0000',
+					// closeButtonXColor: 'magenta',
+					// closeButtonXColorHover: 'white',
 				}"
 			>
 				<template #statusBar>
