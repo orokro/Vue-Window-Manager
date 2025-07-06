@@ -288,15 +288,14 @@ function updateThemeColors(theme = {}) {
 	// (see the style block below that defines the theme)
 	styleEl.innerText = `
 		& {
-			--theme-menuBGColor: ${cssVars.value['--theme-menuBGColor']};
-			--theme-menuActiveBGColor: ${cssVars.value['--theme-menuActiveBGColor']};
-			--theme-menuTextColor: ${cssVars.value['--theme-menuTextColor']};
-			--theme-menuActiveTextColor: ${cssVars.value['--theme-menuActiveTextColor']};
-			--theme-menuDisabledTextColor: ${cssVars.value['--theme-menuDisabledTextColor'] || '#5d5e62'};
-			--theme-menuBlur: ${cssVars.value['--theme-menuBlur'] || '2px'};
+			--vue-win-mgr-theme-menuBGColor: ${cssVars.value['--theme-menuBGColor']};
+			--vue-win-mgr-theme-menuActiveBGColor: ${cssVars.value['--theme-menuActiveBGColor']};
+			--vue-win-mgr-theme-menuTextColor: ${cssVars.value['--theme-menuTextColor']};
+			--vue-win-mgr-theme-menuActiveTextColor: ${cssVars.value['--theme-menuActiveTextColor']};
+			--vue-win-mgr-theme-menuDisabledTextColor: ${cssVars.value['--theme-menuDisabledTextColor']};
+			--vue-win-mgr-theme-menuBlur: ${cssVars.value['--theme-menuBlur']};
 		}
 	`;
-
 }
 
 // provide the theme colors and css vars to all components
@@ -392,21 +391,21 @@ onMounted(()=>{
 	.mx-context-menu.vue-win-mgr-theme {
 		& {
 			//Overwrite the value of the default css variable here
-			--mx-menu-backgroud: var(--theme-menuBGColor);
-			--mx-menu-hover-backgroud: var(--theme-menuActiveBGColor);
-			--mx-menu-open-backgroud: var(--theme-menuActiveBGColor);
-			--mx-menu-open-hover-backgroud: var(--theme-menuActiveBGColor);
+			--mx-menu-backgroud: var(--vue-win-mgr-theme-menuBGColor);
+			--mx-menu-hover-backgroud: var(--vue-win-mgr-theme-menuActiveBGColor);
+			--mx-menu-open-backgroud: var(--vue-win-mgr-theme-menuActiveBGColor);
+			--mx-menu-open-hover-backgroud: var(--vue-win-mgr-theme-menuActiveBGColor);
 
-			--mx-menu-text: var(--theme-menuTextColor);
+			--mx-menu-text: var(--vue-win-mgr-theme-menuTextColor);
 
-			--mx-menu-hover-text: var(--theme-menuActiveTextColor);
-			--mx-menu-active-text: var(--theme-menuActiveTextColor);
-			--mx-menu-open-text: var(--theme-menuActiveTextColor);;
-			--mx-menu-open-hover-text: var(--theme-menuActiveTextColor);
-			--mx-menu-disabled-text: var(--theme-menuDisabledTextColor);
+			--mx-menu-hover-text: var(--vue-win-mgr-theme-menuActiveTextColor);
+			--mx-menu-active-text: var(--vue-win-mgr-theme-menuActiveTextColor);
+			--mx-menu-open-text: var(--vue-win-mgr-theme-menuActiveTextColor);;
+			--mx-menu-open-hover-text: var(--vue-win-mgr-theme-menuActiveTextColor);
+			--mx-menu-disabled-text: var(--vue-win-mgr-theme-menuDisabledTextColor);
 		}
 
-		backdrop-filter: blur(var(--theme-menuBlur, 2px));
+		backdrop-filter: blur(var(--vue-win-mgr-theme-menuBlur));
 		border-radius: 5px;
 		.icon.svg {
 			mix-blend-mode: difference;

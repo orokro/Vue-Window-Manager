@@ -3,14 +3,13 @@
 	----------------
 
 	The library we're using for popup context menus uses SVGs for it's icons.
-	Specifically we're using @imengyu/vue3-context-menu@1.2.10, and it's quirky.
+	Specifically we're using @imengyu/vue3-context-menu, and it's quirky.
 
 	Anyway, it lets you specify a SVG Symbol by #ID, so hopefully
 	we can just stick all our menu icons in this component, instead of cluttering up the components where
 	there needed.
 
-	This will just export a SVG that has a symbol library to use as menu icons.
-	
+	This will just export a SVG that has a symbol library to use as menu icons.	
 -->
 <template>
 

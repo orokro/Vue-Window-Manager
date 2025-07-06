@@ -28,8 +28,8 @@
 					// menuBGColor: 'rgba(0, 0, 0, 0.5)',
 					// menuActiveBGColor: '#EFEFEF',
 					// menuTextColor: 'red',
-					// menuBlur: '2px'
-					// menuDisabledTextColor: '#999'
+					// menuBlur: '20px',
+					// menuDisabledTextColor: '#999',
 					// frameHeaderColor: 'red',
 					// frameTabsHeaderColor: 'green',
 					// frameTabsColor: 'darkgreen',
