@@ -369,29 +369,29 @@ function showEdgeContextMenu(e, edge, dir){
 			{
 				label: 'Merge Left',
 				hidden: canMerge(edge)==false || dir=='h',
-				// svgIcon: '#iconMergeLeft',
-				svgIcon: '#iconVSplit',
+				svgIcon: '#iconMergeLeft',
+				// svgIcon: '#iconVSplit',
 				onClick: ()=>mergeFrame(edge, (edge==WindowFrame.EDGE.RIGHT))
 			},
 			{
 				label: 'Merge Right',
 				hidden: canMerge(edge)==false || dir=='h',
 				// svgIcon: '#iconMergeLeft',
-				svgIcon: '#iconVSplit',
+				svgIcon: '#iconMergeRight',
 				onClick: ()=>mergeFrame(edge, (edge==WindowFrame.EDGE.LEFT))
 			},
 			{
 				label: 'Merge Up',
 				hidden: (canMerge(edge)==false) || dir=='v',
-				// svgIcon: '#iconMergeUp',
-				svgIcon: '#iconHSplit',
+				svgIcon: '#iconMergeUp',
+				// svgIcon: '#iconHSplit',
 				onClick: ()=>mergeFrame(edge, (edge==WindowFrame.EDGE.BOTTOM))
 			},
 			{
 				label: 'Merge Down',
 				hidden: (canMerge(edge)==false) || dir=='v',
 				// svgIcon: '#iconMergeUp',
-				svgIcon: '#iconHSplit',
+				svgIcon: '#iconMergeDown',
 				onClick: ()=>mergeFrame(edge, (edge==WindowFrame.EDGE.TOP))
 			},
 		],
@@ -441,8 +441,8 @@ function showHamburgerMenu(e) {
 							h('img', {
 								src: window.icon,
 								style: {
-								width: '20px',
-								height: '20px',
+									width: '20px',
+									height: '20px',
 								}
 							})
 						),

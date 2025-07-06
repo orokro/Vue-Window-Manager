@@ -396,7 +396,11 @@ onMounted(()=>{
 		}
 
 		backdrop-filter: blur(var(--theme-menuBlur, 2px));
-
+		border-radius: 5px;
+		.icon.svg {
+			mix-blend-mode: difference;
+		}
+		
 	}// .mx-context-menu.vue-win-mgr-theme
 
 	// main component!
