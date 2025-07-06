@@ -50,6 +50,13 @@ export default defineConfig({
 			transformMixedEsModules: true,
 		},
 
+		minify: 'terser', 
+		
+		// ✅ Preserve class names like LayoutCtxAPI
+		terserOptions: {
+			keep_classnames: /^(WindowManagerContext|WindowFrameContext|WindowContext)$/,
+		},
+
 	},
 
 	resolve: {
