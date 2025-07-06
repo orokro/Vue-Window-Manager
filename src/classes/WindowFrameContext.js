@@ -56,8 +56,9 @@ export default class WindowFrameContext {
 	 * 
 	 * ... either a tab if it's tabbed, a MWI if it's MWI, or replace the current window
 	 * @param {String} slug - the slug of the window to add
+	 * @param {Object} props - additional properties to pass to the window
 	 */
-	addWindow(slug){
+	addWindow(slug, props = {}) {
 
 		// get array of valid slugs
 		const availableSlugs = this.getAvailableWindowKinds();
@@ -68,7 +69,7 @@ export default class WindowFrameContext {
 		}
 
 		// make a new window w/ our slug
-		const window = this.#windowManager.createWindow(slug);
+		const window = this.#windowManager.createWindow(slug, props);
 
 		// add it to our frame
 		this.#windowFrame.addWindow(window);
@@ -165,6 +166,7 @@ export default class WindowFrameContext {
         // Set the frame style
         this.#windowFrame.frameStyle.value = newType;
     }
+	
 
 	/**
 	 * Gets the current frame style as an object like {styleName, styleValue}

@@ -37,8 +37,10 @@ export default class Window {
 	 * 
 	 * @param {WindowManager} mgr - the WindowManager class that instantiated us
 	 * @param {String} kind - OPTIONAL; the view kind this window should render.
+	 * @param {Object} props - OPTIONAL; additional properties to pass to the window.
 	 */
-	constructor(mgr, kind) {
+	constructor(mgr, kind, props) {
+
 
 		// give ourself a unique ID
 		this.windowID = `window_${Window.IDCounter++}`;
@@ -48,6 +50,9 @@ export default class Window {
 
 		// save a string we can test against later
 		this.typeName = 'Window';
+
+		// save props or default to empty object
+		this.props = props || {};
 
 		// we'll store the position and size of the window on the window object,
 		// but note that these values are only used when the window is placed in a "MWI" frame

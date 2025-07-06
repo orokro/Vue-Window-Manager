@@ -15,11 +15,14 @@
 			<p>
 				{{ randomNumberOnStartUp }}
 			</p>
-
+			
 			<h2>Buttons</h2>
 			<button type="button" @click="testFrameContext">Print Frame Context</button>
-			<br><br>
 			<button type="button" @click="printFrameDim">Print Frame Dim</button>
+			<br><br>
+			<input type="text" v-model="spawnTitle" placeholder="Window Title" />
+			<input type="text" v-model="spawnMessage" placeholder="Window Message" />
+			<button type="button" @click="spawnPropsWindow">Spawn Props Window</button>
 			<br><br>
 			<input type="text" v-model="newTitle" placeholder="Change Window Title" />
 			<button type="button" @click="doChangeTitle">Change Title</button>
@@ -68,6 +71,23 @@ const frameCtx = inject('frameCtx');
 const windowCtx = inject('windowCtx');
 
 const newTitle = ref("New Title!");
+const spawnTitle = ref("A");
+const spawnMessage = ref("B");
+			
+
+const spawnPropsWindow = () => {
+
+	if (frameCtx) {
+		// spawn a new props window with the title and message from the input fields
+		frameCtx.addWindow('demoProps', {
+			title: spawnTitle.value,
+			message: spawnMessage.value
+		});
+	} else {
+		console.warn("No frame context available!", frameCtx);
+	}
+};
+
 
 const printFrameStyle = () => {
 
@@ -78,6 +98,7 @@ const printFrameStyle = () => {
 		console.warn("No frame context available!", frameCtx);
 	}
 };
+
 
 const testFrameContext = () => {
 	
@@ -97,7 +118,6 @@ const testFrameContext = () => {
 		console.warn("No frame context available!", frameCtx);
 	}
 };
-
 
 
 const printFrameDim = () => {
@@ -122,6 +142,7 @@ const doChangeTitle = () => {
 	}
 };
 
+
 const changeAllTitles = () => {
 
 	const windows = frameCtx.getWindows();
@@ -140,7 +161,6 @@ const changeAllTitles = () => {
 		height: 100%;
 		position: relative;
 		background-color: #f0f0f0;
-		border: 1px solid #ccc;
 		border-radius: 8px;
 		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 		display: flex;
@@ -152,8 +172,6 @@ const changeAllTitles = () => {
 			padding: 10px;
 			font-size: 1.2em;
 			text-align: center;
-			border-top-left-radius: 8px;
-			border-top-right-radius: 8px;
 			
 		}// .title
 

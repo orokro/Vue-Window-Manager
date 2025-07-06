@@ -89,6 +89,7 @@ import DemoStatusBar from './DemoWindowComponents/DemoStatusBar.vue';
 import GoogleWindow from '@demoWindows/GoogleWindow.vue';
 import DuckDuckGo from '@demoWindows/DuckDuckGoWindow.vue';
 import BasicWindow from '@demoWindows/BasicWindow.vue';
+import DemoProps from '@demoWindows/DemoProps.vue';
 
 // lib/misc
 import { checkParentsForClass } from '@misc/Utils';
@@ -124,13 +125,19 @@ const availableWindows = [
 		title: "Basic Window",
 		slug: "basic",
 		icon: 'http://localhost:5173/icons/window_icon.png',
+	},
+	{
+		window: DemoProps,
+		title: 'Demo Props Window',
+		slug: 'demoProps',
 	}
 ];
 
 // build a layout to test with
 const layout  = [
 
-	{	// we'll build layout in hypothetical 1080P space
+	{	
+		// we'll build layout in hypothetical 1080P space
 		name: "window",
 		top: 0,
 		left: 0,
@@ -150,7 +157,7 @@ const layout  = [
 	{
 		// debug view under main view
 		name: "bottom",
-		windows: ['basic', 'GoogleWindow', 'ddg'], 
+		windows: ['basic', 'GoogleWindow', 'ddg', 'demoProps'], 
 		left: 0,
 		style: WindowFrame.STYLE.TABBED,
 		//left: ["ref", "VerticalToolBar.right"],
@@ -158,7 +165,8 @@ const layout  = [
 		top: ["ref", "MainView.bottom"],
 		bottom: ["ref", "window.bottom"]
 	},
-	{	// Tool palette, on right by default
+	{	
+		// Tool palette, on right by default
 		name: "tools",
 		windows: ['basic'], 
 		style: WindowFrame.STYLE.TABBED,
@@ -173,7 +181,8 @@ const layout  = [
 // build a layout to test with
 const alternateLayout  = [
 
-	{	// we'll build layout in hypothetical 1080P space
+	{	
+		// we'll build layout in hypothetical 1080P space
 		name: "window",
 		top: 0,
 		left: 0,
@@ -201,7 +210,8 @@ const alternateLayout  = [
 		top: ["ref", "MainView.bottom"],
 		bottom: ["ref", "window.bottom"]
 	},
-	{	// Tool palette, on right by default
+	{	
+		// Tool palette, on right by default
 		name: "tools",
 		windows: ['basic'], 
 		style: WindowFrame.STYLE.TABBED,

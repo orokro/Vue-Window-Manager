@@ -750,13 +750,24 @@ export default class WindowManager {
 	 * Creates a window & adds it to our list & returns the reference.
 	 * 
 	 * @param {Number} kind - one of the names in our available window list
+	 * @param {Object} props - optional; an object of props to pass into the new window component
 	 * @returns {Window} the newly instantiated Window
 	 */
-	createWindow(kind) {
+	createWindow(kind, props) {
+
+		// if we don't have a kind, GTFO
+		if (kind == null) {
+			throw new Error('Cannot create a window without a kind.');
+		}
+
+		// if we don't have a props object, make it empty
+		if (props == null || typeof props !== 'object') {
+			props = {};
+		}
 
 		// make the new window
-		const newWin = new Window(this, kind);
-
+		const newWin = new Window(this, kind, props);
+		
 		// add it to our arrays
 		this.windows.push(newWin);
 		this.windowsRef.value = [...this.windows];
