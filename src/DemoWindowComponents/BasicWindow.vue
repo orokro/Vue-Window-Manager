@@ -113,6 +113,8 @@ const printFrameDim = () => {
 
 const doChangeTitle = () => {
 
+	console.log(windowCtx);
+	
 	if (windowCtx) {
 		windowCtx.setTitle(newTitle.value);
 	} else {
