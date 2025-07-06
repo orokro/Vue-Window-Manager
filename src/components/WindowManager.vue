@@ -52,6 +52,8 @@
 		<!-- when we're dragging something (like windows) they will teleport to this layer -->
 		<div ref="dragHoverLayerRef" class="dragHoverLayer"></div>
 
+		<!-- we'll programmatically add a style block here -->
+		<div ref="styleMountEl" class="styleMountEl"></div>
 	</div>
 
 </template>
@@ -151,6 +153,13 @@ const splitMergeHandles = ref(props.splitMergeHandles);
 // allow them to be updated
 const emit = defineEmits(['update:showTopBar', 'update:showStatusBar', 'update:splitMergeHandles'])
 
+// place to mount a style block
+const styleMountEl = ref(null);
+const styleEl = document.createElement('style');
+styleEl.type = 'text/css';
+styleEl.setAttribute('data-vue-window-manager', 'true');
+styleEl.wasMounted = false;
+
 // get HTML DOM ref to the main container for this component, so we can compute
 // x/y position for offsetting mouse coordinates
 const containerRef = ref(null);
@@ -168,8 +177,8 @@ const defaultThemeColors = {
 	frameBGColor: '#737378',
 	windowBGColor: '#EFEFEF',
 	mwiBGColor: '#39393E',
-	menuBGColor: '#31313B',
-	menuActiveBGColor: '#4A4A4E',
+	menuBGColor: 'rgba(0, 0, 0, 0.7)',
+	menuActiveBGColor: 'rgba(255, 255, 255, 0.8)',
 
 	// header colors for windows & tabs
 	frameHeaderColor: '#5C5C60',
@@ -181,11 +190,13 @@ const defaultThemeColors = {
 	windowTitleTextColor: '#fff',
 	tabTextColor: '#fff',
 	activeTabTextColor: '#fff',
-	menuTextColor: '#fff',
-	menuActiveTextColor: '#fff',
+	menuTextColor: '#EFEFEF',
+	menuActiveTextColor: '#000',
+	menuDisabledTextColor: '#999',
 
 	// misc other
-	hamburgerIconColor: '#fff',			 
+	hamburgerIconColor: '#fff',
+	menuBlur: '2px',
 };
 
 
@@ -238,7 +249,7 @@ function updateThemeColors(theme = {}) {
 		theme = {};
 	}
 
-	// build obect of CSS vars to use in our template
+	// build object of CSS vars to use in our template
 	const nextCssVars = {};
 
 	// loop over the keys in our default theme colors
@@ -261,6 +272,20 @@ function updateThemeColors(theme = {}) {
 
 	// set the CSS vars ref to the new object
 	cssVars.value = nextCssVars;
+
+	// update the global style vars so that the @imengyu/vue3-context-menu@1.5.1 library CSS can see them
+	// (see the style block below that defines the theme)
+	styleEl.innerText = `
+		& {
+			--theme-menuBGColor: ${cssVars.value['--theme-menuBGColor']};
+			--theme-menuActiveBGColor: ${cssVars.value['--theme-menuActiveBGColor']};
+			--theme-menuTextColor: ${cssVars.value['--theme-menuTextColor']};
+			--theme-menuActiveTextColor: ${cssVars.value['--theme-menuActiveTextColor']};
+			--theme-menuDisabledTextColor: ${cssVars.value['--theme-menuDisabledTextColor'] || '#5d5e62'};
+			--theme-menuBlur: ${cssVars.value['--theme-menuBlur'] || '2px'};
+		}
+	`;
+
 }
 
 // provide the theme colors and css vars to all components
@@ -337,6 +362,10 @@ defineExpose({
 // onMounted hook to set up the window manager
 onMounted(()=>{
 
+	// make a style element in vanilla HTML and add it to styleMountEl
+	styleMountEl.value.appendChild(styleEl);
+	styleEl.wasMounted = true;
+
 	// update theme on mounted
 	updateThemeColors(props.theme);
 });
@@ -344,6 +373,31 @@ onMounted(()=>{
 
 </script>
 <style lang="scss">
+
+	// this will create a custom theme to be consumed by the @imengyu/vue3-context-menu@1.5.1 library
+	// note: the var()s here are added to a vanilla JS style block added to the DOM of this component
+	// because the scope needs to by global (thats where the menu mounts)
+	// also note: background was misspelled as 'backgroud' in library itself.
+	.mx-context-menu.vue-win-mgr-theme {
+		& {
+			//Overwrite the value of the default css variable here
+			--mx-menu-backgroud: var(--theme-menuBGColor);
+			--mx-menu-hover-backgroud: var(--theme-menuActiveBGColor);
+			--mx-menu-open-backgroud: var(--theme-menuActiveBGColor);
+			--mx-menu-open-hover-backgroud: var(--theme-menuActiveBGColor);
+
+			--mx-menu-text: var(--theme-menuTextColor);
+
+			--mx-menu-hover-text: var(--theme-menuActiveTextColor);
+			--mx-menu-active-text: var(--theme-menuActiveTextColor);
+			--mx-menu-open-text: var(--theme-menuActiveTextColor);;
+			--mx-menu-open-hover-text: var(--theme-menuActiveTextColor);
+			--mx-menu-disabled-text: var(--theme-menuDisabledTextColor);
+		}
+
+		backdrop-filter: blur(var(--theme-menuBlur, 2px));
+
+	}// .mx-context-menu.vue-win-mgr-theme
 
 	// main component!
 	.windowManager {

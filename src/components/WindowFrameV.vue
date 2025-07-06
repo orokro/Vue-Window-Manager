@@ -350,7 +350,7 @@ function showEdgeContextMenu(e, edge, dir){
 	ContextMenu.showContextMenu({
 		x: e.x,
 		y: e.y,
-		theme: 'mac',
+		theme: 'vue-win-mgr-theme',
 		items: [
 			{
 				label: 'Split Vertically',
@@ -426,7 +426,7 @@ function showHamburgerMenu(e) {
 	ContextMenu.showContextMenu({
 		x: e.x,
 		y: e.y,
-		theme: 'mac',
+		theme: 'vue-win-mgr-theme',
 		items: [
 			{
 				label: frameStyleString,

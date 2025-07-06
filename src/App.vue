@@ -25,6 +25,11 @@
 					// statusBarBGColor: 'blue',
 					// frameBGColor: '#00ABAE',
 					// mwiBGColor: '#00ABAE',
+					// menuBGColor: 'rgba(0, 0, 0, 0.5)',
+					// menuActiveBGColor: '#EFEFEF',
+					// menuTextColor: 'red',
+					// menuBlur: '2px'
+					// menuDisabledTextColor: '#999'
 				}"
 			>
 				<template #statusBar>
