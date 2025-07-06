@@ -635,12 +635,12 @@ function updateTabs(windows, fantomTab){
 
 		// just darken a bit
 		// background: rgba(0, 0, 0, 0.2);
-		background: #5C5C60;
+		background: var(--theme-frameHeaderColor);
 
 		// darker bg when tabbed because tabs will be lighter
 		&.tabbed {
 			// background: rgba(0, 0, 0, 0.6);
-			background: #2E2E30;
+			background: var(--theme-frameTabsHeaderColor);
 		}
 
 		// icon for either single more OR tabs!
@@ -676,6 +676,7 @@ function updateTabs(windows, fantomTab){
 			font-size: 14px;
 			letter-spacing: 0.8px;
 			color: rgb(209, 209, 209);
+			color: var(--theme-windowTitleTextColor);
 			text-align: center;
 
 			// some padding for the text on top
@@ -741,19 +742,19 @@ function updateTabs(windows, fantomTab){
 				border-radius: 6px 6px 0px 0px;
 
 				// darker bg and text unless selected
-				background: #4a4a4e;
-				color: rgb(150, 149, 149);
-							
+				background: var(--theme-frameTabsColor);
+				color: var(--theme-tabTextColor);
+
 				// light up on hover
 				&:hover {
-					// background: #707074;
-					color: rgb(209, 209, 209);
+					color: var(--theme-activeTabTextColor);
 				}// &:hover
 				
 				// when we're the selected tab
 				&.selected {
 					background: #737378;
-					color: rgb(209, 209, 209);
+					background: var(--theme-frameTabsActiveColor);
+					color: var(--theme-activeTabTextColor);
 
 					// always on top
 					z-index: 99;			
@@ -876,19 +877,19 @@ function updateTabs(windows, fantomTab){
 			inset: 0px 0px 0px 0px;
 
 			// for debug
-			background: red;
+			/* background: red; */
 
 			// specific styles for left/right
 			&.left {
 				right: auto;
 				width: 6px;
-				background: linear-gradient(90deg, rgba(46,46,48,1) 15%, rgba(46,46,48,0) 100%);
+				background: linear-gradient(90deg, var(--theme-frameTabsHeaderColor) 15%, rgba(46,46,48,0) 100%);
 			}
 
 			&.right {
 				left: auto;
 				width: 25px;
-				background: linear-gradient(-90deg, rgba(46,46,48,1) 70%, rgba(46,46,48,0) 100%);
+				background: linear-gradient(-90deg, var(--theme-frameTabsHeaderColor) 70%, rgba(46,46,48,0) 100%);
 			}
 		}// .gradientFade
 

@@ -30,6 +30,11 @@
 					// menuTextColor: 'red',
 					// menuBlur: '2px'
 					// menuDisabledTextColor: '#999'
+					// frameHeaderColor: 'red',
+					// frameTabsHeaderColor: 'green',
+					// frameTabsColor: 'darkgreen',
+					// frameTabsActiveColor: 'lightgreen',
+					// windowTitleTextColor: 'rgb(209, 209, 209)'
 				}"
 			>
 				<template #statusBar>

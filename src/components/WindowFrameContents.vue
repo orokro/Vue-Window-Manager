@@ -650,7 +650,7 @@ function setRef(el, win){
 						text-align: center;
 						font-size: 14px;
 						letter-spacing: 0.8px;
-						color: rgb(209, 209, 209);
+						color: var(--theme-windowTitleTextColor);
 					
 					}// .titleText
 
@@ -718,7 +718,9 @@ function setRef(el, win){
 						inset: 0px 0px auto 0px;
 						height: 25px;
 
-						background: #5C5C60;
+						/* background: #5C5C60; */
+						background: var(--theme-frameHeaderColor);
+						
 					}// .title bar
 
 					// move the container down when 

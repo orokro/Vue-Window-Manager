@@ -187,9 +187,9 @@ const defaultThemeColors = {
 	frameTabsActiveColor: '#737378',
 
 	// text colors
-	windowTitleTextColor: '#fff',
-	tabTextColor: '#fff',
-	activeTabTextColor: '#fff',
+	windowTitleTextColor: 'rgb(209, 209, 209)',
+	tabTextColor: 'rgb(150, 149, 149)',
+	activeTabTextColor: 'rgb(209, 209, 209)',
 	menuTextColor: '#EFEFEF',
 	menuActiveTextColor: '#000',
 	menuDisabledTextColor: '#999',
@@ -400,7 +400,7 @@ onMounted(()=>{
 		.icon.svg {
 			mix-blend-mode: difference;
 		}
-		
+
 	}// .mx-context-menu.vue-win-mgr-theme
 
 	// main component!
