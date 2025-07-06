@@ -988,7 +988,7 @@ function startSplitMergeDrag(hSide, vSide){
 		box-sizing: border-box;
 
 		// frame border between our window frames w/ subtle rounding
-		border: 2px solid black;
+		border: 2px solid var(--theme-systemBGColor);
 		border-radius: 8px;
 
 		// inner wrapper with clipping turned on, but sibling to grab-handles

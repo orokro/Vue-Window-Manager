@@ -19,6 +19,9 @@
 				:splitMergeHandles="true"
 				:useWindowingDebug="true"
 				mwiBGPattern="/mwi_dot.png"
+				:theme="{
+					systemBGColor: 'black',
+				}"
 			>
 				<template #statusBar>
 					<DemoStatusBar/>
@@ -306,9 +309,6 @@ onMounted(()=>{
 	*/
 	body {
 
-		// black bg by default
-		background: black;
-		
 		// default page font styles
 		font-family: sans-serif;
 

@@ -144,8 +144,8 @@ function handleWindowTearOff(tearData){
 		/* inset: 38px 1px 28px 1px; */
 
 		// thicc borders
-		border-top: 2px solid black;
-		border-bottom: 2px solid black;
+		border-top: 2px solid var(--theme-systemBGColor);
+		border-bottom: 2px solid var(--theme-systemBGColor);
 
 		// no scroll
 		overflow: clip;

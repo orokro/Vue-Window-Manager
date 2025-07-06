@@ -37,7 +37,7 @@
 		box-sizing: border-box;
 		
 		// black bar on top
-		border-top: 2px solid black;
+		border-top: 2px solid var(--theme-systemBGColor);
 
 		background-color: $panel-bg-default;
 		color: #5d5e62;

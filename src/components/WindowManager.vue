@@ -355,7 +355,7 @@ onMounted(()=>{
 		inset: 0px 0px 0px 0px;
 
 		// fill bg w/ black
-		background: black;
+		background: var(--theme-systemBGColor);
 
 		// wrapper around the part where the windows spawn/divide/join, etc
 		.windowingSystemWrapper {
