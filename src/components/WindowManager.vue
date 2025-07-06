@@ -193,10 +193,16 @@ const defaultThemeColors = {
 	menuTextColor: '#EFEFEF',
 	menuActiveTextColor: '#000',
 	menuDisabledTextColor: '#999',
-
-	// misc other
-	hamburgerIconColor: '#fff',
+	
+	// blur for the window menus
 	menuBlur: '2px',
+
+	// hamburger theme
+	hamburgerIconColor: 'rgba(255, 255, 255, 0.5)',
+	hamburgerIconColorHover: '#FFF',
+	hamburgerCircleColor: 'none',
+	hamburgerCircleColorHover: 'rgba(255, 255, 255, 0.25)',
+	
 };
 
 

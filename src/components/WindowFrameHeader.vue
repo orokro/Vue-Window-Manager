@@ -675,7 +675,6 @@ function updateTabs(windows, fantomTab){
 			// smaller font size for tabs
 			font-size: 14px;
 			letter-spacing: 0.8px;
-			color: rgb(209, 209, 209);
 			color: var(--theme-windowTitleTextColor);
 			text-align: center;
 

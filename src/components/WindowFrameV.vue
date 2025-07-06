@@ -43,7 +43,9 @@
 				class="hamburgerMenu noSel"
 				title="Click for Window Frame Options"
 				@click="showHamburgerMenu"
-			/>
+			>
+				<div class="icon"/>
+			</div>
 
 			<!-- actual window frame content -->
 			<WindowFrameContents :frame="frame" @on-window-tear-off="handleTear"/>
@@ -1016,16 +1018,33 @@ function startSplitMergeDrag(hSide, vSide){
 
 				// make gray circle
 				border-radius: 100px;
-				// background-color: rgba(255, 255, 255, 0.15);
-				background-image: url('../assets/img/borger.png');
-				background-size: contain;
+
+				.icon {
+					position: absolute;
+					inset: 0px;
+
+					background: var(--theme-hamburgerIconColor);
+					mask-image: url('../assets/img/borger.png');
+					mask-position: center;
+					mask-size: contain;
+
+				}// .icon 
 
 				// appear clickable to user
-				cursor: pointer;
+				cursor: default;
+
+				// change bg on hover
+				background-color: var(--theme-hamburgerCircleColor);
 
 				// hover stylez
 				&:hover {
-					background-color: rgba(255, 255, 255, 0.25);
+
+					background-color: var(--theme-hamburgerCircleColorHover);
+					/* mask-image: none;				 */
+
+					.icon {
+						background: var(--theme-hamburgerIconColorHover);
+					}
 				}// &:hover
 
 

@@ -35,6 +35,10 @@
 					// frameTabsColor: 'darkgreen',
 					// frameTabsActiveColor: 'lightgreen',
 					// windowTitleTextColor: 'rgb(209, 209, 209)'
+					// hamburgerIconColor: 'red',
+					// hamburgerIconColorHover: 'pink',
+					// hamburgerCircleColor: 'red',
+					// hamburgerCircleColorHover: 'pink',
 				}"
 			>
 				<template #statusBar>
