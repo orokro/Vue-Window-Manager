@@ -39,7 +39,7 @@
 		// black bar on top
 		border-top: 2px solid var(--theme-systemBGColor);
 
-		background-color: $panel-bg-default;
+		background-color: var(--theme-statusBarBGColor);
 		color: #5d5e62;
 		
 	}// .statusBar

@@ -21,6 +21,10 @@
 				mwiBGPattern="/mwi_dot.png"
 				:theme="{
 					systemBGColor: 'black',
+					// topBarBGColor: 'red',
+					// statusBarBGColor: 'blue',
+					// frameBGColor: '#00ABAE',
+					// mwiBGColor: '#00ABAE',
 				}"
 			>
 				<template #statusBar>

@@ -979,7 +979,7 @@ function startSplitMergeDrag(hSide, vSide){
 	.windowFrame {
 
 		// default bg color
-		background-color: #737378;
+		background-color: var(--theme-frameBGColor);
 
 		// absolutely positioned inside our parent WindowingSystem.vue's container
 		position: absolute;

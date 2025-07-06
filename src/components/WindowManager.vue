@@ -18,7 +18,7 @@
 		class="windowManager"
 		:style="{
 			...cssVars,
-			'--window-system-inset': windowSystemInset
+			'--window-system-inset': windowSystemInset,
 		}"
 	>
 		<!-- The top bar with menus and controls that cannot be replaced. -->
@@ -166,7 +166,7 @@ const defaultThemeColors = {
 	topBarBGColor: '#31313B',
 	statusBarBGColor: '#31313B',
 	frameBGColor: '#737378',
-	windowBGColor: '#111',
+	windowBGColor: '#EFEFEF',
 	mwiBGColor: '#39393E',
 	menuBGColor: '#31313B',
 	menuActiveBGColor: '#4A4A4E',

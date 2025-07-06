@@ -34,7 +34,7 @@
 		// black bar on bottom
 		border-bottom: 2px solid var(--theme-systemBGColor);
 
-		background-color: $panel-bg-default;
+		background-color: var(--theme-topBarBGColor);
 		color: #5d5e62;
 
 	}// .topBar

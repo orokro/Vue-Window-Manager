@@ -83,6 +83,7 @@ provide('windowCtx', props.window.ctx);
 		position: absolute;
 		inset: 0px 0px 0px 0px;
 
+		background: var(--theme-windowBGColor);
 	}// .appViewContainer
 
 </style>

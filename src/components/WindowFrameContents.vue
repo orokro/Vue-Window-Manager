@@ -566,7 +566,7 @@ function setRef(el, win){
 		&.noHeader {
 			top: 0px;
 
-			background: #39393E;
+			background: var(--theme-mwiBGColor);
 			background-image: var(--bg-image);
 			/* background-image: url(../assets/img/mwi_bg.png); */
 			/* background-image: url('/mwi_dot.png'); */
