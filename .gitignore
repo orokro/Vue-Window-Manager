@@ -32,3 +32,6 @@ coverage
 # text files
 npmls.txt
 project_tree.txt
+
+# misc folder
+misc/
