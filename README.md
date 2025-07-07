@@ -2,7 +2,7 @@
 
 This provides a Blender / QT / Unity, etc like Window Manager.
 
-Last commit before library mode.
+Full documentation coming soon!
 
 ## Project Setup
 

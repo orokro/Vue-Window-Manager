@@ -157,7 +157,7 @@ const layout  = [
 	{
 		// debug view under main view
 		name: "bottom",
-		windows: ['basic', 'GoogleWindow', 'ddg', 'demoProps'], 
+		windows: ['basic', 'GoogleWindow', 'ddg', 'demoProps', {kind: 'demoProps', props: {title: 'Layout Title', message: 'This is a layout message!'}}], 
 		left: 0,
 		style: WindowFrame.STYLE.TABBED,
 		//left: ["ref", "VerticalToolBar.right"],

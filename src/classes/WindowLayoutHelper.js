@@ -314,8 +314,16 @@ export default class WindowLayoutHelper {
 			// add the windows from our list to this frame
 			for (let w = 0; w < windows.length; w++) {
 
-				const kind = windows[w];
-				const newWindow = windowMgr.createWindow(kind);
+				// check if we got an object or a string
+				const wIsObject = (typeof (windows[w]) === 'object');
+
+				// get the kind...
+				const kind = wIsObject ? windows[w].kind : windows[w];
+
+				// get props if any
+				const props = wIsObject ? windows[w].props : {};
+
+				const newWindow = windowMgr.createWindow(kind, props);
 				newFrame.addWindow(newWindow);
 
 			}// next w
