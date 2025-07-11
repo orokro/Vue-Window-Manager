@@ -187,7 +187,7 @@ export default class WindowManager {
 
 		// for debug
 		if (this.useWindowingDebug.value == true) {
-			console.log('Building new WindowManager');
+			// console.log('Building new WindowManager');
 			window.wm = this;
 		}
 
@@ -217,7 +217,7 @@ export default class WindowManager {
 	 */
 	loadWindowLayout() {
 
-		console.log('Building a window layout...');
+		// console.log('Building a window layout...');
 		WindowLayoutHelper.loadDefaultLayout(this);
 	}
 
@@ -234,7 +234,7 @@ export default class WindowManager {
 		this.isReady.value = true;
 
 		// for debug
-		console.log('Window Manager is Ready');
+		// console.log('Window Manager is Ready');
 
 		// load a window layout now that we're ready
 		this.loadWindowLayout();

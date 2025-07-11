@@ -239,7 +239,6 @@ const dragHoverLayerRef = ref(null);
 // set image path to use for MWI windows
 import defaultMWIImage from '@assets/img/mwi_bg.png';
 function setMWIPath(){
-	console.log(defaultMWIImage);
 	windowMgr.mwiBGImagePath.value = props.mwiBGPattern || defaultMWIImage;
 }
 setMWIPath();
