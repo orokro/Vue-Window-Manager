@@ -1,6 +1,6 @@
 {
 	"name": "vue-win-mgr",
-	"version": "0.9.0",
+	"version": "0.9.1",
 	"description": "A drag/dock window manager for Vue 3 components.",
 	"main": "dist/vue-win-mgr.umd.js",
 	"module": "dist/vue-win-mgr.es.js",
