@@ -19,6 +19,12 @@
 				:splitMergeHandles="true"
 				:useWindowingDebug="true"
 				mwiBGPattern="/mwi_dot.png"
+
+				:mwiTaskBar="true"
+				:mwiStartMenu="true"
+				:keepEmptyFrames="true"
+				:showMergeButtons="true"
+				:mwiPanFromWindowBody="false"
 				:theme="{
 					systemBGColor: 'black',
 					// topBarBGColor: 'red',
@@ -147,8 +153,8 @@ const layout  = [
 	{
 		// Main  editor:
 		name: "MainView",
-		windows: ['basic'], 
-		style: WindowFrame.STYLE.SINGLE,
+		windows: ['basic', 'GoogleWindow', 'ddg'],
+		style: WindowFrame.STYLE.MWI,
 		left: 0,
 		right: ["ref", "window.right-430"],
 		top: 0,

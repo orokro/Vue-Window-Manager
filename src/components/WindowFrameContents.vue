@@ -30,6 +30,7 @@
 		}"
 		
 		@mousedown="e=>startMWIDrag(e)"
+		@contextmenu="onBgContextMenu"
 		@mouseleave="mouseLeave"
 	>
 			
@@ -62,6 +63,7 @@
 				:style="getContainerStyle(win)"
 				class="windowContentsContainer"
 				@mousedown="e=>onContainerMouseDown(e, win)"
+				@contextmenu="onContainerContextMenu"
 			>
 
 				<!-- when in MDI mode, windows have title bars that can drag, close, etc -->
@@ -85,7 +87,7 @@
 						class="minimizeButton"
 						@mousedown="minimizeWindow($event, win)"
 					>
-						<span>&#9472;</span>
+						<span>&#8722;</span>
 					</div>
 
 					<!-- close button -->
@@ -137,7 +139,7 @@
 <script setup>
 
 // vue
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 
 // components
 import MWITaskBar from './MWITaskBar.vue';
@@ -208,6 +210,15 @@ watch(
 		}
 	}
 );
+
+
+// when a layout declares an MWI frame directly, its windows are added before this
+// component mounts, so neither watcher above fires for them - lay them out once on mount
+// so they don't all stack at 0,0.
+onMounted(()=>{
+	if(props.frame.frameStyle.value==WindowFrame.STYLE.MWI)
+		cascadeWindows(props.frame.windows);
+});
 
 
 /**
@@ -488,6 +499,35 @@ function onContainerMouseDown(e, win){
 
 
 /**
+ * Right-click on the MWI background. Since right-click here is "ours" (pan / start menu),
+ * suppress the browser's context menu so it doesn't appear alongside our own.
+ *
+ * @param {Event} e - JavaScript Event Object
+ */
+function onBgContextMenu(e){
+
+	// only claim right-click for MWI frames; other frame styles keep default behavior
+	if(props.frame.frameStyle.value == WindowFrame.STYLE.MWI)
+		e.preventDefault();
+}
+
+
+/**
+ * Right-click on a window body. Unless pan-from-window-body is enabled, keep the event
+ * with the window-component (stop it from reaching the background's preventDefault) so the
+ * component can show its own context menu.
+ *
+ * @param {Event} e - JavaScript Event Object
+ */
+function onContainerContextMenu(e){
+
+	if(props.frame.frameStyle.value == WindowFrame.STYLE.MWI
+		&& props.frame.mgr.mwiPanFromWindowBody.value != true)
+		e.stopPropagation();
+}
+
+
+/**
  * When in MWI mode, the close button is like the close tab button, for a floating window
  * 
  * @param {Window} win - the window to close
@@ -653,6 +693,10 @@ function setRef(el, win){
 		position: absolute;
 		inset: 25px 0px 0px 0px;
 
+		// keep our internal stacking (floating windows + task bar) self-contained, so their
+		// z-indexes don't leak up to the body level and paint over teleported context menus.
+		isolation: isolate;
+
 		// for debug
 		// border: 1px solid greenyellow;
 
@@ -687,11 +731,11 @@ function setRef(el, win){
 		// the floating "start" button (MWI start menu when the task bar is off)
 		.floatingStartButton {
 
-			// bottom-left, above the windows & inner shadow
+			// bottom-left, above the windows & inner shadow (within the frame's isolated stacking)
 			position: absolute;
 			left: 10px;
 			bottom: 10px;
-			z-index: 101;
+			z-index: 1000;
 
 			width: 34px;
 			height: 34px;
@@ -849,6 +893,7 @@ function setRef(el, win){
 
 						// text setting
 						font-size: 12px;
+						line-height: 1;
 						color: var(--theme-closeButtonXColor);
 
 						border-radius: 100px;
@@ -858,11 +903,13 @@ function setRef(el, win){
 						// don't move cursor
 						cursor: default;
 
-						// the dash glyph lives in a span:
+						// center the minus glyph in the circle (like the close button's X)
+						display: flex;
+						align-items: center;
+						justify-content: center;
 						span {
 							position: relative;
-							left: 1px;
-							top: -3px;
+							top: -1px;
 						}// span
 
 						// hover styles

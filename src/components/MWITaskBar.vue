@@ -97,17 +97,29 @@ function onStart(e){
 
 
 /**
- * Handles a click on a window's task-bar button: restore (if minimized) & focus it.
+ * Handles a click on a window's task-bar button (Windows-style):
+ *   - minimized        -> restore & focus
+ *   - focused & visible -> minimize (click the active button to hide it)
+ *   - otherwise         -> focus / raise it
  *
  * @param {Window} win - the window the button represents
  */
 function onTaskButton(win){
 
-	// restoring also focuses; otherwise just focus/raise it
-	if(win.minimized.value == true)
+	// minimized -> bring it back
+	if(win.minimized.value == true){
 		win.restore();
-	else
-		props.frame.focusWindow(win);
+		return;
+	}
+
+	// already the focused, visible window -> minimize it
+	if(props.frame.focusedWindowID.value == win.windowID){
+		win.minimize();
+		return;
+	}
+
+	// otherwise just focus / raise it
+	props.frame.focusWindow(win);
 }
 
 </script>
@@ -115,13 +127,15 @@ function onTaskButton(win){
 
 	.mwiTaskBar {
 
-		// pinned along the bottom of the MWI frame, above the windows & inner shadow
+		// pinned along the bottom of the MWI frame, above the windows & inner shadow.
+		// (the parent .frameContents uses `isolation: isolate`, so this high z stays
+		// contained within the frame and never paints over teleported context menus.)
 		position: absolute;
 		left: 0px;
 		right: 0px;
 		bottom: 0px;
 		height: 30px;
-		z-index: 101;
+		z-index: 1000;
 
 		// lay out start button + task buttons in a row
 		display: flex;
