@@ -131,6 +131,42 @@ const props = defineProps({
 		default: true
 	},
 
+	// how a freshly-split frame is filled: 'clone' (copy source's active window) or 'picker' (empty + grid)
+	splitFillMode: {
+		type: String,
+		default: 'clone'
+	},
+
+	// keep empty (non-MWI) frames around instead of auto-merging them away when their last window closes
+	keepEmptyFrames: {
+		type: Boolean,
+		default: false
+	},
+
+	// show merge-arrow buttons on an empty frame's valid edges, so it can be collapsed
+	showMergeButtons: {
+		type: Boolean,
+		default: false
+	},
+
+	// show a Windows-style task bar in MWI frames (also enables per-window minimize)
+	mwiTaskBar: {
+		type: Boolean,
+		default: false
+	},
+
+	// show a "start menu" add-window affordance in MWI frames
+	mwiStartMenu: {
+		type: Boolean,
+		default: false
+	},
+
+	// allow right-click-drag over an MWI window body to pan the desktop (off keeps right-click for the component)
+	mwiPanFromWindowBody: {
+		type: Boolean,
+		default: false
+	},
+
 	// optional background image for MWI frames
 	mwiBGPattern: {
 		type: String,
@@ -221,6 +257,12 @@ const windowMgr = new WindowManager(
 
 // set settings on windowMgr
 windowMgr.showBlenderSplitMergeHandles.value = props.splitMergeHandles;
+windowMgr.splitFillMode.value = props.splitFillMode;
+windowMgr.keepEmptyFrames.value = props.keepEmptyFrames;
+windowMgr.showMergeButtons.value = props.showMergeButtons;
+windowMgr.mwiTaskBar.value = props.mwiTaskBar;
+windowMgr.mwiStartMenu.value = props.mwiStartMenu;
+windowMgr.mwiPanFromWindowBody.value = props.mwiPanFromWindowBody;
 
 // provide the window manager for all our components down stream
 provide('windowManager', windowMgr);
@@ -320,6 +362,31 @@ watch(() => props.availableWindows, (newVal) => {
 
 watch(() => props.splitMergeHandles, (newVal) => {
 	windowMgr.showBlenderSplitMergeHandles.value = newVal;
+}, { immediate: true });
+
+// keep the optional behavior settings in sync with their props
+watch(() => props.splitFillMode, (newVal) => {
+	windowMgr.splitFillMode.value = newVal;
+}, { immediate: true });
+
+watch(() => props.keepEmptyFrames, (newVal) => {
+	windowMgr.keepEmptyFrames.value = newVal;
+}, { immediate: true });
+
+watch(() => props.showMergeButtons, (newVal) => {
+	windowMgr.showMergeButtons.value = newVal;
+}, { immediate: true });
+
+watch(() => props.mwiTaskBar, (newVal) => {
+	windowMgr.mwiTaskBar.value = newVal;
+}, { immediate: true });
+
+watch(() => props.mwiStartMenu, (newVal) => {
+	windowMgr.mwiStartMenu.value = newVal;
+}, { immediate: true });
+
+watch(() => props.mwiPanFromWindowBody, (newVal) => {
+	windowMgr.mwiPanFromWindowBody.value = newVal;
 }, { immediate: true });
 
 watch(

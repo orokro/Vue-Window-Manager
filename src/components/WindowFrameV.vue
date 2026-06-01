@@ -50,6 +50,9 @@
 			<!-- actual window frame content -->
 			<WindowFrameContents :frame="frame" @on-window-tear-off="handleTear"/>
 
+			<!-- when the frame is empty (and not MWI), offer the picker / merge helpers -->
+			<EmptyFrameMenu v-if="isEmptyFrame" :frame="frame"/>
+
 			<!-- this "curtain" will darken & deactivate frames when 
 				just one is being focused in the window manager -->
 			<div
@@ -202,12 +205,13 @@
 <script setup>
 
 // vue
-import { ref, watch, inject, h, provide } from 'vue';
+import { ref, watch, inject, h, provide, computed } from 'vue';
 import ContextMenu from '@imengyu/vue3-context-menu';
 
 // components
 import WindowFrameHeader from './WindowFrameHeader.vue';
 import WindowFrameContents from './WindowFrameContents.vue';
+import EmptyFrameMenu from './EmptyFrameMenu.vue';
 
 // lib/misc
 import { clamp } from '@misc/Utils';
@@ -217,6 +221,14 @@ import Window from '@classes/Window';
 
 // get our local components window manager
 const windowMgr = inject('windowManager');
+
+// true when this is a non-MWI frame with no windows in it - in that case we show the
+// empty-frame picker / merge helpers instead of a blank, dead-end frame. Empty MWI
+// desktops are valid and handle their own empty state, so they're excluded here.
+const isEmptyFrame = computed(() =>
+	props.frame.windowsRef.value.length <= 0
+	&& props.frame.frameStyle.value != WindowFrame.STYLE.MWI
+);
 
 // x/y position for positioning the split cursor
 const splitPos = ref(0);

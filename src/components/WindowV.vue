@@ -69,8 +69,33 @@ function getComponent(kind) {
 	return windowMgr.availableWindowList.getWindowBySlug(kind).window;
 }
 
-// get the frame context from the window manager & provide it to the component tree
-const frameCtx = windowMgr.getFrameFromWindow(props.window).frameContext;
+// Provide the frame context to the window-component tree.
+//
+// IMPORTANT: a window can be dragged/docked from one frame to another, but this
+// WindowV component is NOT remounted when that happens (its contents merely
+// re-teleport). So we must NOT capture a single frame's context here - that's how
+// frameCtx used to go stale and keep targeting the old frame.
+//
+// Instead we provide a live proxy that resolves the window's _current_ frame on every
+// access (via the reactive window.frameRef). Method calls and reactive reads both stay
+// correct after a move, with no remount or re-provide required.
+const frameCtx = new Proxy({}, {
+	get(target, prop) {
+
+		// resolve the frame the window lives in right now (reactive)
+		const frame = props.window.frameRef.value
+			?? windowMgr.getFrameFromWindow(props.window);
+		const ctx = (frame != null) ? frame.frameContext : null;
+
+		// undocked (e.g. mid-drag): expose nothing rather than throw
+		if (ctx == null)
+			return undefined;
+
+		// forward the property, binding methods back to the real context instance
+		const value = ctx[prop];
+		return (typeof value === 'function') ? value.bind(ctx) : value;
+	}
+});
 provide('frameCtx', frameCtx);
 provide('windowCtx', props.window.ctx);
 

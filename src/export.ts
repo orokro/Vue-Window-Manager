@@ -16,13 +16,18 @@ const FRAME_STYLE = WindowFrame.STYLE;
 // but users probably never need to instantiate these directly:
 import WindowManagerContext from './classes/WindowManagerContext';
 import WindowFrameContext from './classes/WindowFrameContext';
-import WindowContext from './classes/WindowContext'; 
+import WindowContext from './classes/WindowContext';
 
-export { 
+// composables a window-component can use to persist & restore its own state across layout saves
+import { onSerialize, onLayoutLoad } from './hooks/useWindowSerialization';
+
+export {
 	WindowManager,
 	FRAME_STYLE,
 	WindowManagerContext,
 	WindowFrameContext,
-	WindowContext
+	WindowContext,
+	onSerialize,
+	onLayoutLoad
 };
 export default WindowManager;

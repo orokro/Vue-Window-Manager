@@ -16,7 +16,7 @@
 */
 
 // vue
-import { reactive, ref } from 'vue';
+import { reactive, ref, shallowRef } from 'vue';
 
 // classes
 import WindowFrame from './WindowFrame';
@@ -70,6 +70,25 @@ export default class Window {
 		// when windows are moved around from frame-to-frame
 		// null when not in use
 		this.domContainer = ref(null);
+
+		// a _reactive_ reference to the WindowFrame we currently live in (or null).
+		// because Windows are teleported between frames without remounting their WindowV,
+		// this is the single source of truth that lets contexts (like frameCtx) stay live.
+		// it is set/cleared exclusively by WindowFrame.addWindow / removeWindow.
+		this.frameRef = shallowRef(null);
+
+		// true when this window is minimized (only meaningful in an MWI frame w/ a task bar).
+		// minimized windows are hidden but keep their task-bar button for recovery.
+		this.minimized = ref(false);
+
+		// optional serialization hooks a user's window-component can register via the
+		// onSerialize() / onLayoutLoad() composables. null until registered.
+		this.serializeHook = null;
+		this.loadHook = null;
+
+		// rider data restored from a saved layout, consumed by onLayoutLoad when the
+		// component registers its hook. null when there's nothing pending to restore.
+		this.restoreData = null;
 
 		// we'll store a tab order value on the window, but note that this value
 		// is only referenced when the window is docked in a Tabbed-frame
@@ -181,6 +200,31 @@ export default class Window {
 
 		// remove the window from the frame
 		frame.removeWindow(this, { noMerge: true });
+	}
+
+
+	/**
+	 * Minimizes this window (only meaningful in an MWI frame with a task bar).
+	 *
+	 * The window is hidden but kept alive, recoverable from its task-bar button.
+	 */
+	minimize(){
+		this.minimized.value = true;
+	}
+
+
+	/**
+	 * Restores this window from a minimized state & focuses it.
+	 */
+	restore(){
+
+		// un-minimize
+		this.minimized.value = false;
+
+		// re-focus within our current frame, if we have one
+		const frame = this.frameRef.value;
+		if(frame!=null)
+			frame.focusWindow(this);
 	}
 
 }

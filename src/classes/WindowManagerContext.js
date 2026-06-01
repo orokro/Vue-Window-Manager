@@ -75,8 +75,77 @@ export default class WindowManagerContext {
 	showSplitMergeHandles(show=true) {
 
 		this.#refs.splitMergeHandles.value = show;
-	}	
-	
+	}
+
+
+	/**
+	 * Sets how a freshly-split frame is populated.
+	 *
+	 * @param {String} mode - 'clone' (copy the source frame's active window) or 'picker' (leave empty w/ a picker grid)
+	 */
+	setSplitFillMode(mode){
+
+		if (mode !== 'clone' && mode !== 'picker')
+			throw new Error(`Invalid splitFillMode "${mode}". Must be 'clone' or 'picker'.`);
+
+		this.#windowManager.splitFillMode.value = mode;
+	}
+
+
+	/**
+	 * Enable/disable keeping empty (non-MWI) frames instead of auto-merging them away.
+	 *
+	 * @param {Boolean} keep - true to keep empty frames, defaults to true
+	 */
+	setKeepEmptyFrames(keep=true){
+
+		this.#windowManager.keepEmptyFrames.value = keep;
+	}
+
+
+	/**
+	 * Enable/disable the merge-arrow buttons shown on an empty frame's valid edges.
+	 *
+	 * @param {Boolean} show - true to show merge buttons, defaults to true
+	 */
+	setShowMergeButtons(show=true){
+
+		this.#windowManager.showMergeButtons.value = show;
+	}
+
+
+	/**
+	 * Enable/disable the Windows-style task bar in MWI frames (also enables per-window minimize).
+	 *
+	 * @param {Boolean} show - true to show the MWI task bar, defaults to true
+	 */
+	setMwiTaskBar(show=true){
+
+		this.#windowManager.mwiTaskBar.value = show;
+	}
+
+
+	/**
+	 * Enable/disable the "start menu" add-window affordance in MWI frames.
+	 *
+	 * @param {Boolean} show - true to show the MWI start menu, defaults to true
+	 */
+	setMwiStartMenu(show=true){
+
+		this.#windowManager.mwiStartMenu.value = show;
+	}
+
+
+	/**
+	 * Enable/disable right-click-drag panning from over an MWI window body.
+	 *
+	 * @param {Boolean} allow - true to allow pan-from-window-body, defaults to true
+	 */
+	setMwiPanFromWindowBody(allow=true){
+
+		this.#windowManager.mwiPanFromWindowBody.value = allow;
+	}
+
 
 	/**
 	 * Loads window layout

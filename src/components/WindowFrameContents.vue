@@ -59,9 +59,9 @@
 				:key="win.windowID"
 				:idx="idx"
 				:class="getContainerClassName(frame)"
-				:style="getContainerStyle(win)"			
+				:style="getContainerStyle(win)"
 				class="windowContentsContainer"
-				@mousedown="sortWindowOnTop(win)"
+				@mousedown="e=>onContainerMouseDown(e, win)"
 			>
 
 				<!-- when in MDI mode, windows have title bars that can drag, close, etc -->
@@ -78,6 +78,15 @@
 
 					<!-- the titlebar title text -->
 					<div class="titleText">{{ win.titleRef.value }}</div>
+
+					<!-- minimize button (only when the MWI task bar is enabled to recover it) -->
+					<div
+						v-if="frame.mgr.mwiTaskBar.value==true"
+						class="minimizeButton"
+						@mousedown="minimizeWindow($event, win)"
+					>
+						<span>&#9472;</span>
+					</div>
 
 					<!-- close button -->
 					<div class="closeButton" @mousedown="closeWindow(win)">
@@ -107,6 +116,22 @@
 		<!-- a layer that shows a drop shadow, if we're in MWI mode -->
 		<div v-if="frame.frameStyle.value==WindowFrame.STYLE.MWI" class="MWIInnerShadow"></div>
 
+		<!-- the MWI task bar, when enabled (sits outside the pan layer so it never moves) -->
+		<MWITaskBar
+			v-if="frame.frameStyle.value==WindowFrame.STYLE.MWI && frame.mgr.mwiTaskBar.value==true"
+			:frame="frame"
+		/>
+
+		<!-- a floating "start" button when the start menu is on but the task bar is off -->
+		<div
+			v-if="frame.frameStyle.value==WindowFrame.STYLE.MWI && frame.mgr.mwiStartMenu.value==true && frame.mgr.mwiTaskBar.value!=true"
+			class="floatingStartButton noSel"
+			title="Add a window"
+			@mousedown.stop="openStartMenu"
+		>
+			<div class="startIcon"></div>
+		</div>
+
 	</div>
 </template>
 <script setup>
@@ -114,9 +139,14 @@
 // vue
 import { ref, watch } from 'vue';
 
+// components
+import MWITaskBar from './MWITaskBar.vue';
+
 // lib/misc
 import WindowFrame from '@classes/WindowFrame';
+import WindowManager from '@classes/WindowManager';
 import Window from '@classes/Window';
+import { showAddWindowMenu } from '@misc/frameMenus';
 
 // define our props
 const props = defineProps({
@@ -316,6 +346,10 @@ function startMWIDrag(e){
 	// stop normal behavior
 	e.preventDefault();
 
+	// remember where the press happened (for a potential start-menu popup) & whether we panned
+	const menuPos = { x: e.x, y: e.y };
+	let didPan = false;
+
 	// save initial x/y position of the window
 	const startDragPos = {
 		x: props.frame.mwiDragX.value,
@@ -332,6 +366,10 @@ function startMWIDrag(e){
 		// during drag operation
 		(dx, dy) => {
 
+			// once the cursor has moved past the threshold, treat this as a real pan
+			if(Math.abs(dx) + Math.abs(dy) > WindowManager.SPLIT_MERGE_DRAG_THRESHOLD)
+				didPan = true;
+
 			// move windows
 			props.frame.mwiDragX.value = startDragPos.x - dx;
 			props.frame.mwiDragY.value = startDragPos.y - dy;
@@ -343,7 +381,11 @@ function startMWIDrag(e){
 			// we're done dragging now
 			isDraggingBG.value = false;
 			MWITitleBarBeingDragged = null;
-	
+
+			// a right-click WITHOUT a drag opens the start menu (when enabled) instead of panning
+			if(didPan==false && props.frame.mgr.mwiStartMenu.value==true)
+				showAddWindowMenu(props.frame.mgr, props.frame, menuPos.x, menuPos.y);
+
 		}
 	);
 
@@ -357,6 +399,17 @@ function startMWIDrag(e){
  * @param {Window} win - the window to drag
  */
 function startWindowDrag(e, win){
+
+	// a title bar must never let a right-click bubble up & pan the desktop (that was a bug),
+	// so we always swallow right-clicks here and do nothing else with them.
+	if(e.which == 3){
+		e.stopPropagation();
+		return;
+	}
+
+	// only the left mouse button drags a floating window
+	if(e.which != 1)
+		return;
 
 	// make sure window is on top
 	sortWindowOnTop(win);
@@ -407,12 +460,30 @@ function startWindowDrag(e, win){
  */
 function sortWindowOnTop(win){
 
-	win.position.z = 999;
+	// focus logic (z-order raise + focused-window tracking) lives on the frame now,
+	// so the task bar and the contents stay in agreement about what's focused
+	props.frame.focusWindow(win);
+}
 
-	let wins = [...props.frame.windows].sort((winA, winB) => winA.position.z - winB.position.z);
-	for(let i=0; i<wins.length; i++){
-		wins[i].position.z = i*30;
-	}
+
+/**
+ * Mouse-down on a window's container (the floating window as a whole).
+ *
+ * Raises the window, and - unless pan-from-window-body is explicitly enabled - prevents a
+ * right-click over the window body from bubbling up and panning the MWI desktop. That keeps
+ * right-click available to the user's own window-component by default.
+ *
+ * @param {Event} e - JavaScript Event Object
+ * @param {Window} win - the window whose container was pressed
+ */
+function onContainerMouseDown(e, win){
+
+	// always raise the clicked window to the top
+	sortWindowOnTop(win);
+
+	// swallow right-clicks over the body so they don't pan, unless the user opted in
+	if(e.which == 3 && props.frame.mgr.mwiPanFromWindowBody.value != true)
+		e.stopPropagation();
 }
 
 
@@ -425,6 +496,32 @@ function closeWindow(win){
 
 	// just use our frame's remove window method
 	props.frame.removeWindow(win);
+}
+
+
+/**
+ * Minimizes an MWI window (hides it; it stays recoverable from the task bar).
+ *
+ * @param {Event} e - JavaScript Event Object
+ * @param {Window} win - the window to minimize
+ */
+function minimizeWindow(e, win){
+
+	// don't let this also start a title-bar drag
+	e.stopPropagation();
+
+	// minimize via the window's own method
+	win.minimize();
+}
+
+
+/**
+ * Opens the add-window "start" menu at the cursor (used by the floating start button).
+ *
+ * @param {Event} e - JavaScript Event Object
+ */
+function openStartMenu(e){
+	showAddWindowMenu(props.frame.mgr, props.frame, e.x, e.y);
 }
 
 
@@ -484,9 +581,9 @@ function shouldShowFrame(win){
 	
 	// I could write this in one big logic statement, but three if's is easier to read
 
-	// always show all containers if in MWI mode
+	// in MWI mode, show every window EXCEPT the ones that are minimized
 	if(props.frame.frameStyle.value == WindowFrame.STYLE.MWI)
-		return true;
+		return win.minimized.value != true;
 
 	// there is only one container in single mode, so should always show
 	if(props.frame.frameStyle.value == WindowFrame.STYLE.SINGLE)
@@ -586,6 +683,54 @@ function setRef(el, win){
 		&.isDragging {
 			cursor: move;
 		}
+
+		// the floating "start" button (MWI start menu when the task bar is off)
+		.floatingStartButton {
+
+			// bottom-left, above the windows & inner shadow
+			position: absolute;
+			left: 10px;
+			bottom: 10px;
+			z-index: 101;
+
+			width: 34px;
+			height: 34px;
+
+			border-radius: 8px;
+			cursor: pointer;
+
+			background: var(--theme-frameTabsActiveColor);
+			border: 1px solid rgba(255, 255, 255, 0.2);
+
+			display: flex;
+			align-items: center;
+			justify-content: center;
+
+			filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.5));
+
+			&:hover {
+				background: var(--theme-menuActiveBGColor);
+			}
+
+			.startIcon {
+
+				// a simple 2x2 "window" glyph
+				width: 16px;
+				height: 16px;
+				border: 2px solid var(--theme-activeTabTextColor);
+				border-radius: 2px;
+				position: relative;
+
+				&::after {
+					content: '';
+					position: absolute;
+					inset: 3px 3px 3px 3px;
+					border-left: 2px solid var(--theme-activeTabTextColor);
+					border-top: 2px solid var(--theme-activeTabTextColor);
+				}
+			}// .startIcon
+
+		}// .floatingStartButton
 
 		// the layer that drags when in MWI mode
 		.dragLayer {
@@ -691,6 +836,44 @@ function setRef(el, win){
 						}//&:hover
 
 					}// close button
+
+					// the minimize button (sits just left of the close button)
+					.minimizeButton {
+
+						// fixed in the space on the right, left of the close button
+						position: absolute;
+						top: 4px;
+						right: 22px;
+
+						background: var(--theme-closeButtonCircle);
+
+						// text setting
+						font-size: 12px;
+						color: var(--theme-closeButtonXColor);
+
+						border-radius: 100px;
+						width: 14px;
+						height: 14px;
+
+						// don't move cursor
+						cursor: default;
+
+						// the dash glyph lives in a span:
+						span {
+							position: relative;
+							left: 1px;
+							top: -3px;
+						}// span
+
+						// hover styles
+						&:hover {
+
+							background: var(--theme-closeButtonCircleHover);
+							color: var(--theme-closeButtonXColorHover);
+
+						}//&:hover
+
+					}// minimize button
 
 				}// .titleBar
 

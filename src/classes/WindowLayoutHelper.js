@@ -324,6 +324,13 @@ export default class WindowLayoutHelper {
 				const props = wIsObject ? windows[w].props : {};
 
 				const newWindow = windowMgr.createWindow(kind, props);
+
+				// stash any serialized rider state so the window-component's onLayoutLoad
+				// hook can consume it once the component mounts & registers
+				const state = wIsObject ? windows[w].state : undefined;
+				if (state !== undefined && state !== null)
+					newWindow.restoreData = state;
+
 				newFrame.addWindow(newWindow);
 
 			}// next w
@@ -333,6 +340,44 @@ export default class WindowLayoutHelper {
 		// after all our windows are loaded, they're in an arbitrary coordinate system,
 		// so we'll call this which will fit them to the IRL window space
 		windowMgr.edgeMap.computeFrameLayout();
+	}
+
+
+	/**
+	 * Serializes a single window into either a slug string or a { kind, props, state } object.
+	 *
+	 * If the window registered an onSerialize hook, its (JSON-safe) return value is captured as
+	 * `state`. Windows with no hook and no props collapse to a plain slug string for compactness.
+	 *
+	 * @param {Window} win - the window to serialize
+	 * @returns {String|Object} - a slug string, or a { kind, props, state } descriptor
+	 */
+	static serializeWindow(win) {
+
+		// pull rider state from the window's onSerialize hook, if it registered one
+		let state;
+		if (typeof win.serializeHook === 'function') {
+
+			// enforce JSON-safety up-front so a bad payload fails loudly at save time
+			try {
+				state = JSON.parse(JSON.stringify(win.serializeHook()));
+			} catch (e) {
+				throw new Error(`onSerialize for window "${win.windowSlug}" returned non-JSON-safe data: ${e.message}`);
+			}
+		}
+
+		// do we have any props worth persisting?
+		const hasProps = win.props && Object.keys(win.props).length > 0;
+
+		// simple windows (no state, no props) serialize as a plain slug string
+		if (state === undefined && !hasProps)
+			return win.windowSlug;
+
+		// otherwise use the richer object form
+		const out = { kind: win.windowSlug, props: win.props || {} };
+		if (state !== undefined)
+			out.state = state;
+		return out;
 	}
 
 
@@ -361,7 +406,11 @@ export default class WindowLayoutHelper {
 		// Iterate over all frames and extract their layout data
 		for (const frame of wndMgr.frames) {
 			const { t, b, l, r } = frame.screenPos.value;
-			const windows = frame.windows.map(win => win.windowSlug); // Convert to slug strings
+
+			// serialize each window. A plain slug string is used for simple windows, but if a
+			// window registered an onSerialize hook (or carries props) we emit the richer
+			// { kind, props, state } object form, which loadLayout also understands.
+			const windows = frame.windows.map(win => WindowLayoutHelper.serializeWindow(win));
 
 			layout.push({
 				name: frame.frameID,

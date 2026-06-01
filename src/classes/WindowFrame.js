@@ -102,6 +102,10 @@ export default class WindowFrame {
 		// this will be a string windowID if valid, null the rest of the time
 		this.currentTab = ref(null);
 
+		// the windowID of the currently focused window when in MWI mode (null otherwise).
+		// used by the MWI task bar to highlight the active floating window.
+		this.focusedWindowID = ref(null);
+
 		// create a default position which can be updated later via methods
 		this.screenPos = shallowRef({
 			t: 50,
@@ -361,12 +365,67 @@ export default class WindowFrame {
 	addWindow(newWin) {
 
 		// clear array before adding window if we only support one at a time
-		if (this.frameStyle.value == WindowFrame.STYLE.SINGLE)
+		if (this.frameStyle.value == WindowFrame.STYLE.SINGLE) {
+
+			// any window we displace is no longer parented to us, so clear its frameRef
+			this.windows.forEach(w => { w.frameRef.value = null; });
 			this.windows = [];
+		}
 
 		// add window to our static & dynamic arrays
 		this.windows.push(newWin);
 		this.windowsRef.value = [...this.windows];
+
+		// this window now lives in us; update its reactive frame reference so
+		// any live contexts (frameCtx) resolve to the correct frame after moves
+		newWin.frameRef.value = this;
+	}
+
+
+	/**
+	 * Returns the "active" window in this frame...
+	 *
+	 * ... i.e. the visible tab for a TABBED frame, or simply the sole/first window otherwise.
+	 *
+	 * @returns {Window|null} - the active Window, or null if the frame is empty
+	 */
+	getActiveWindow() {
+
+		// empty frame -> nothing active
+		if (this.windows.length <= 0)
+			return null;
+
+		// for a tabbed frame, prefer the window matching the current tab
+		if (this.frameStyle.value == WindowFrame.STYLE.TABBED && this.currentTab.value != null) {
+			const active = this.windows.find(w => w.windowID == this.currentTab.value);
+			if (active != null)
+				return active;
+		}
+
+		// otherwise (single/MWI, or no valid current tab) use the first window
+		return this.windows[0];
+	}
+
+
+	/**
+	 * Focuses a window in this frame: raises it to the top (MWI z-order) & records it as focused.
+	 *
+	 * @param {Window} win - the window to focus
+	 */
+	focusWindow(win) {
+
+		// guard
+		if (win == null)
+			return;
+
+		// raise the focused window above the others, then re-normalize z-order
+		win.position.z = 999;
+		const wins = [...this.windows].sort((a, b) => a.position.z - b.position.z);
+		for (let i = 0; i < wins.length; i++)
+			wins[i].position.z = i * 30;
+
+		// record it as the focused window (used by the task bar highlight)
+		this.focusedWindowID.value = win.windowID;
 	}
 
 
@@ -419,6 +478,16 @@ export default class WindowFrame {
 		// filter it out & update arrays
 		this.windows = this.windows.filter(w => w != window);
 		this.windowsRef.value = [...this.windows];
+
+		// this window no longer lives in us; clear its reactive frame reference,
+		// unless it's already been re-parented elsewhere (defensive guard)
+		if (window != null && window.frameRef.value == this)
+			window.frameRef.value = null;
+
+		// if the user opted to keep empty frames around, never auto-merge on emptying;
+		// the frame stays put so the empty-frame picker / merge helpers can take over.
+		if (this.mgr.keepEmptyFrames.value == true)
+			noMerge = true;
 
 		// if we closed the last window & we have noMerg set false, we should attempt to merge windows
 		if(noMerge==false){

@@ -159,6 +159,34 @@ export default class WindowManager {
 		// we'll make this a setting that can be turned on/off
 		this.showBlenderSplitMergeHandles = ref(true);
 
+		// ----- optional behavior settings (all hot-swappable refs) -----
+
+		// how a freshly-split frame is populated:
+		//   'clone'  - the new frame inherits a copy of the source frame's active window (Blender-like, default)
+		//   'picker' - the new frame is left empty and shows a window-picker grid
+		this.splitFillMode = ref('clone');
+
+		// when true, a TABBED/SINGLE frame that loses its last window is NOT auto-merged away;
+		// it stays put (showing the picker / merge helpers) so the user can refill or collapse it.
+		this.keepEmptyFrames = ref(false);
+
+		// when true, an empty (non-MWI) frame shows merge-arrow buttons along each edge that
+		// has a valid adjacent neighbor, so the user can collapse the empty space.
+		this.showMergeButtons = ref(false);
+
+		// when true, MWI frames render a Windows-style task bar along the bottom.
+		// the task bar is also what enables per-window minimize buttons.
+		this.mwiTaskBar = ref(false);
+
+		// when true, MWI frames expose a "start menu" button for adding windows
+		// (in addition to the hamburger), plus right-click-without-drag on the background.
+		this.mwiStartMenu = ref(false);
+
+		// when true, right-click-drag anywhere over an MWI window body pans the desktop
+		// (the "pan from anywhere" effect). when false (default), the window body keeps
+		// its own right-click and only the empty background pans.
+		this.mwiPanFromWindowBody = ref(false);
+
 		// this boolean will become true once the corresponding WindowingSystem.vue component
 		// has mounted and passed in a reference to the WindowContainer DOM.
 		this.isReady = ref(false);
@@ -433,6 +461,9 @@ export default class WindowManager {
 				r: pos.r,
 			};
 
+			// we'll capture the freshly-created frame so we can optionally populate it
+			let newFrame = null;
+
 			if (axis == WindowFrame.SPLIT_MODE.HORIZONTAL) {
 
 				// get absolute pos
@@ -440,7 +471,7 @@ export default class WindowManager {
 
 				// shrink original frame to new size & make new frame in void:
 				frame.updateFramePos({ b: absPos });
-				this.addWindowFrame(absPos, originalFramePos.b, originalFramePos.l, originalFramePos.r);
+				newFrame = this.addWindowFrame(absPos, originalFramePos.b, originalFramePos.l, originalFramePos.r);
 
 			} else {
 
@@ -449,8 +480,11 @@ export default class WindowManager {
 
 				// shrink original frame to new size & make new frame in void:
 				frame.updateFramePos({ r: absPos });
-				this.addWindowFrame(originalFramePos.t, originalFramePos.b, absPos, originalFramePos.r);
+				newFrame = this.addWindowFrame(originalFramePos.t, originalFramePos.b, absPos, originalFramePos.r);
 			}
+
+			// populate the new frame (or leave it empty for the picker) based on settings
+			this.populateSplitFrame(frame, newFrame);
 
 			// refit when split
 			if (this.isReady.value == true)
@@ -460,6 +494,44 @@ export default class WindowManager {
 		// clear our split/focus modes
 		this.splitModeDetails.value = null;
 		this.frameFocusID.value = null;
+	}
+
+
+	/**
+	 * Populates a frame produced by a split operation.
+	 *
+	 * In the default 'clone' mode, the new frame inherits the source frame's style and a
+	 * fresh copy of its active window (Blender-like: splitting a view keeps the same view).
+	 * In 'picker' mode - or when there's nothing sensible to clone (empty or MWI source) -
+	 * the new frame is left empty so the empty-frame picker can take over.
+	 *
+	 * @param {WindowFrame} sourceFrame - the frame that was split
+	 * @param {WindowFrame} newFrame - the freshly-created frame to (maybe) populate
+	 */
+	populateSplitFrame(sourceFrame, newFrame) {
+
+		// nothing to do if we somehow have no new frame
+		if (newFrame == null)
+			return;
+
+		// only clone when the setting asks for it
+		if (this.splitFillMode.value != 'clone')
+			return;
+
+		// MWI frames are happy being empty, and "cloning" a single floating window is odd,
+		// so we don't auto-populate MWI splits
+		if (sourceFrame.frameStyle.value == WindowFrame.STYLE.MWI)
+			return;
+
+		// figure out which window to clone (the active tab / sole window)
+		const sourceWin = sourceFrame.getActiveWindow();
+		if (sourceWin == null)
+			return;
+
+		// match the source frame's style, then add a fresh copy of the active window
+		newFrame.frameStyle.value = sourceFrame.frameStyle.value;
+		const clone = this.createWindow(sourceWin.windowSlug, { ...sourceWin.props });
+		newFrame.addWindow(clone);
 	}
 
 
