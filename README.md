@@ -43,11 +43,14 @@ npm run build
 - 📐 Top Bar & Status Bar
 - 🎨 Theming System
 - ⚙️ Remaining Props
+- 🪓 Splitting, Empty Frames & Merging
+- 🖼 MWI Enhancements (Task Bar, Start Menu, Minimize)
 - 🧠 JavaScript API: Contexts
   - 🔧 WindowManagerContext
   - 🪟 WindowFrameContext
   - 📦 WindowContext
 - 📦 Saving & Restoring Layouts
+  - 💾 Window State Serialization
 - 🧼 Wrap Up
 - 🔮 Coming Soon
 
@@ -295,6 +298,47 @@ All values are **reactive and hot-swappable at runtime**.
 | `splitMergeHandles` | Boolean | Toggles split/merge handle visibility |
 | `mwiBGPattern` | String | Background pattern for MWI frames |
 | `theme` | Object | Theme overrides |
+| `splitFillMode` | String | How a freshly-split frame is filled: `'clone'` (copy the source frame's active window, the default) or `'picker'` (leave empty and show a window-picker grid). |
+| `keepEmptyFrames` | Boolean | When `true`, a TABBED/SINGLE frame that loses its last window is **not** auto-merged away — it stays put and shows the picker / merge helpers. Default `false`. |
+| `showMergeButtons` | Boolean | When `true`, an empty (non-MWI) frame shows merge-arrow buttons along each edge that has a valid adjacent neighbor, so it can be collapsed. Default `false`. |
+| `mwiTaskBar` | Boolean | When `true`, MWI frames render a Windows-style task bar along the bottom (this also enables per-window minimize buttons). Default `false`. |
+| `mwiStartMenu` | Boolean | When `true`, MWI frames get a "start" add-window affordance (a task-bar button, or a floating button when the task bar is off) plus right-click-without-drag on the background. Default `false`. |
+| `mwiPanFromWindowBody` | Boolean | When `true`, right-click-drag anywhere over an MWI window body pans the desktop. When `false` (default), the window body keeps its own right-click and only the empty background pans. |
+
+All of these props are also settable at runtime via the `WindowManagerContext` (see below).
+
+---
+
+## 🪓 Splitting, Empty Frames & Merging
+
+When you split a frame (via the corner handles, the hamburger menu, or the right-click edge menu), the new region is populated according to **`splitFillMode`**:
+
+- `'clone'` (default) — the new frame inherits a copy of the source frame's **active** window, Blender-style: split a 3D view and you get another 3D view. You never end up staring at an empty frame.
+- `'picker'` — the new frame is left empty and shows a **picker grid** of every available window kind (icon + name); click one to fill the space.
+
+Dragging-and-dropping a tab to a frame edge always places the dragged window there (this is unaffected by `splitFillMode`).
+
+### Empty frames as a "start menu"
+
+By default, closing the last window in a TABBED/SINGLE frame auto-merges that frame away. Set **`keepEmptyFrames`** to `true` to keep the empty frame around instead — it will display the same picker grid so the user can drop a new window back in.
+
+### Merge buttons
+
+Blender newcomers often ask "how do I close a window?" — the answer in a no-overlap system is to *merge* a neighbor over it. Set **`showMergeButtons`** to `true` and any empty (non-MWI) frame shows merge-arrow buttons on each edge that has a perfectly-adjacent neighbor. Clicking one collapses the empty frame by expanding that neighbor over it.
+
+> Empty **MWI** frames are valid (an empty floating-window desktop is fine), so the picker / merge helpers only apply to TABBED/SINGLE frames. Use the MWI start menu (below) to add windows to an empty MWI frame.
+
+---
+
+## 🖼 MWI Enhancements (Task Bar, Start Menu, Minimize)
+
+MWI (floating-window) frames have a few optional, OS-like conveniences:
+
+- **Task bar** (`mwiTaskBar`) — a strip along the bottom of the frame with one button per floating window. Buttons show the window's icon/title and reflect its state (focused / visible / minimized). Clicking a button focuses & raises the window; clicking the button of the **already-focused** window minimizes it (just like Windows); clicking a minimized window restores it. The task bar stays fixed while you pan the desktop.
+- **Start menu** (`mwiStartMenu`) — an add-window menu listing every available window kind. It appears as a button at the left of the task bar, or as a floating button in the bottom-left when the task bar is off. You can also **right-click the MWI background** (without dragging) to open it.
+- **Minimize** — when the task bar is enabled, each floating window's title bar gets a minimize button. Minimized windows are hidden but remain recoverable from their task-bar button.
+
+Panning: right-click-**drag** the MWI background to pan all windows at once. By default the background is the only thing that pans on right-click — set `mwiPanFromWindowBody` to `true` to allow panning from over a window body as well (off by default so your window-components keep their own right-click).
 
 ---
 
@@ -325,6 +369,12 @@ ctx.loadLayout(savedLayout);
 | `loadLayout(layoutObj)` | Load a new layout definition |
 | `resetLayout()` | Revert to default layout |
 | `getLayoutDetails()` | Get the current layout structure |
+| `setSplitFillMode(mode)` | Set how splits are filled: `'clone'` or `'picker'` |
+| `setKeepEmptyFrames(bool)` | Keep empty (non-MWI) frames instead of auto-merging them |
+| `setShowMergeButtons(bool)` | Show/hide merge-arrow buttons on empty frames |
+| `setMwiTaskBar(bool)` | Show/hide the MWI task bar (also enables minimize) |
+| `setMwiStartMenu(bool)` | Show/hide the MWI start-menu affordance |
+| `setMwiPanFromWindowBody(bool)` | Allow/disallow right-click-drag panning from a window body |
 
 
 ### 🪟 WindowFrameContext
@@ -350,7 +400,7 @@ frameCtx.addWindow("notes");
 | `getFrameStyle()` | Returns `{ styleName, styleValue }` |
 
 
-⚠️ **Limitation**: The frameCtx does **not** update if the window is moved to another frame.
+✅ **The injected `frameCtx` now stays live.** It is a thin proxy that always resolves the window's **current** frame, so it keeps working after the window is dragged/docked into another frame (e.g. `frameCtx.addWindow(...)` always targets the frame the window is actually in). This used to be a limitation — it no longer is.
 
 ### 📦 WindowContext
 
@@ -370,6 +420,10 @@ windowCtx.close();
 | `setTitle(title)` | Set the window’s title |
 | `close()` | Close the current window |
 | `setKind(slug)` | Change window kind to another slug |
+| `getFrame()` | Get the live `WindowFrameContext` for the frame this window is **currently** in (or `null`) |
+| `onFrameChange(cb)` | Subscribe to re-dock events; `cb(newFrameCtx, oldFrameCtx)` fires whenever the window moves to a different frame. Returns a stop handle. |
+| `onSerialize(cb)` | Register a callback returning JSON-safe state to persist with the layout (see below) |
+| `onLayoutLoad(cb)` | Register a callback that receives that state back when a saved layout is restored (see below) |
 
 
 ---
@@ -386,6 +440,30 @@ localStorage.setItem("myLayout", JSON.stringify(layout));
 const saved = JSON.parse(localStorage.getItem("myLayout"));
 windowManagerEl.value.getContext().loadLayout(saved);
 ```
+
+### 💾 Window State Serialization
+
+A saved layout stores each window's **slug** so the right component is recreated on load. But if two windows are the same kind showing different data (e.g. image A vs. image B), the slug alone isn't enough to restore them.
+
+Your window-components can attach their own JSON-safe "rider" data using two composables exported from the library:
+
+```js
+import { onSerialize, onLayoutLoad } from 'vue-win-mgr';
+
+// return JSON-safe data to persist alongside this window in the layout
+onSerialize(() => ({ imageId: currentImage.value }));
+
+// receive that exact data back when a saved layout is restored
+onLayoutLoad((saved) => { currentImage.value = saved.imageId; });
+```
+
+Notes:
+
+- Whatever `onSerialize` returns **must be JSON-safe** (no circular references, functions, etc.). It's validated at save time, so a bad payload fails loudly rather than silently corrupting the layout.
+- `onLayoutLoad` fires the moment your component registers it (on mount) with any pending restore data — so it doesn't matter that the window manager mounts before the rest of your app's state is ready. If you need to wait on external state, defer inside the callback.
+- Under the hood, windows that carry rider data (or props) are serialized in the richer object form `{ kind, props, state }`; plain windows stay as a simple slug string, so old layouts keep loading.
+
+These composables are also available as methods on the `WindowContext` (`windowCtx.onSerialize(...)` / `windowCtx.onLayoutLoad(...)`).
 
 ---
 
