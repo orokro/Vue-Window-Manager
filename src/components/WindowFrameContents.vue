@@ -30,7 +30,6 @@
 		}"
 		
 		@mousedown="e=>startMWIDrag(e)"
-		@contextmenu="onBgContextMenu"
 		@mouseleave="mouseLeave"
 	>
 			
@@ -63,7 +62,6 @@
 				:style="getContainerStyle(win)"
 				class="windowContentsContainer"
 				@mousedown="e=>onContainerMouseDown(e, win)"
-				@contextmenu="onContainerContextMenu"
 			>
 
 				<!-- when in MDI mode, windows have title bars that can drag, close, etc -->
@@ -354,6 +352,10 @@ function startMWIDrag(e){
 	if(e.which != 3)
 		return;
 
+	// right-click on the MWI background is "ours" (pan / start menu), so swallow the
+	// browser's context menu that would otherwise fire on release
+	suppressNextContextMenu();
+
 	// stop normal behavior
 	e.preventDefault();
 
@@ -499,31 +501,29 @@ function onContainerMouseDown(e, win){
 
 
 /**
- * Right-click on the MWI background. Since right-click here is "ours" (pan / start menu),
- * suppress the browser's context menu so it doesn't appear alongside our own.
+ * Suppresses the next browser context menu (used when a background right-click is "ours",
+ * for panning or the start menu).
  *
- * @param {Event} e - JavaScript Event Object
+ * We can't rely on an @contextmenu handler on the background: our start menu opens on
+ * mouse-up, so by the time the contextmenu event fires our (body-teleported) menu is under
+ * the cursor and the event no longer targets the frame. Instead we arm a one-shot, capture
+ * -phase listener on the document that eats the very next contextmenu, then cleans itself up.
  */
-function onBgContextMenu(e){
+function suppressNextContextMenu(){
 
-	// only claim right-click for MWI frames; other frame styles keep default behavior
-	if(props.frame.frameStyle.value == WindowFrame.STYLE.MWI)
-		e.preventDefault();
-}
+	const handler = (ev) => {
+		ev.preventDefault();
+		cleanup();
+	};
+	const cleanup = () => {
+		document.removeEventListener('contextmenu', handler, true);
+		clearTimeout(timeoutID);
+	};
 
+	// safety: if no contextmenu ever fires, don't leave the listener armed forever
+	const timeoutID = setTimeout(cleanup, 500);
 
-/**
- * Right-click on a window body. Unless pan-from-window-body is enabled, keep the event
- * with the window-component (stop it from reaching the background's preventDefault) so the
- * component can show its own context menu.
- *
- * @param {Event} e - JavaScript Event Object
- */
-function onContainerContextMenu(e){
-
-	if(props.frame.frameStyle.value == WindowFrame.STYLE.MWI
-		&& props.frame.mgr.mwiPanFromWindowBody.value != true)
-		e.stopPropagation();
+	document.addEventListener('contextmenu', handler, true);
 }
 
 
