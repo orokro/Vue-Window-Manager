@@ -1,0 +1,317 @@
+/*
+	styles.scss
+	-----------
+
+	Everything is nested under .windowManager, which gives the same practical isolation
+	Vue's `scoped` attribute did without needing a build-time transform. Colours all
+	come from --theme-* custom properties published by themeToCssVars.
+*/
+
+.windowManager {
+
+	// fill whatever the consumer sized us to
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+
+	background: var(--theme-systemBGColor);
+	font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+	font-size: 13px;
+
+	// the handles are the interaction surface; text selection just gets in the way
+	user-select: none;
+	-webkit-user-select: none;
+
+	*, *::before, *::after {
+		box-sizing: border-box;
+	}
+
+	.topBar, .statusBar {
+		position: absolute;
+		left: 0;
+		right: 0;
+		display: flex;
+		align-items: center;
+		padding: 0 8px;
+		color: var(--theme-windowTitleTextColor);
+		z-index: 10;
+	}
+
+	.topBar {
+		top: 0;
+		height: 36px;
+		background: var(--theme-topBarBGColor);
+	}
+
+	.statusBar {
+		bottom: 0;
+		height: 26px;
+		background: var(--theme-statusBarBGColor);
+		font-size: 12px;
+	}
+
+	.windowingSystemWrapper {
+		position: absolute;
+	}
+
+	// the coordinate space every frame is positioned inside
+	.windowFrameContainer {
+		position: absolute;
+		inset: 1px;
+		overflow: clip;
+		border-top: 2px solid var(--theme-systemBGColor);
+		border-bottom: 2px solid var(--theme-systemBGColor);
+	}
+
+	// windows park here before a frame claims them, and after they lose one
+	.thePen {
+		display: none;
+		position: absolute;
+		top: -1px;
+		left: 1px;
+		width: 1px;
+		height: 1px;
+		overflow: clip;
+	}
+
+
+	// ---------------------------------------------------------------
+	// frames
+	// ---------------------------------------------------------------
+
+	.windowFrame {
+
+		position: absolute;
+		overflow: visible;
+
+		// the inner wrapper clips content; the frame itself must not, because the
+		// grab handles deliberately overhang its edges
+		.innerWrapper {
+			position: absolute;
+			inset: 2px;
+			overflow: clip;
+			border-radius: 3px;
+			background: var(--theme-frameBGColor);
+		}
+
+		.frameHeader {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			height: 24px;
+			display: flex;
+			align-items: center;
+			padding: 0 8px;
+			background: var(--theme-frameHeaderColor);
+			color: var(--theme-windowTitleTextColor);
+			font-size: 12px;
+			z-index: 2;
+		}
+
+		.singleTitle {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+
+		.frameContents {
+			position: absolute;
+			inset: 24px 0 0 0;
+			overflow: clip;
+		}
+
+		// a frame with no header (MWI, later) uses its full height
+		&.noHeader .frameContents {
+			inset: 0;
+		}
+
+		.windowContentsContainer {
+			position: absolute;
+			inset: 0;
+		}
+
+		.windowContents {
+			position: absolute;
+			inset: 0;
+			overflow: clip;
+		}
+
+		.emptyFrameHint {
+			position: absolute;
+			inset: 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: var(--theme-tabTextColor);
+			font-size: 12px;
+			opacity: 0.6;
+		}
+
+		// dims every frame except the one being operated on
+		.focusCurtain {
+			position: absolute;
+			inset: 0;
+			background: rgba(0, 0, 0, 0.5);
+			opacity: 0;
+			pointer-events: none;
+			transition: opacity 120ms ease-out;
+			z-index: 50;
+
+			&.enabled {
+				opacity: 1;
+				pointer-events: auto;
+			}
+		}
+
+		// shows which frame is about to be swallowed by a merge
+		.mergeOverlay {
+			position: absolute;
+			inset: 0;
+			opacity: 0;
+			pointer-events: none;
+			background: rgba(0, 0, 0, 0.45);
+			z-index: 60;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+
+			&.enabled {
+				opacity: 1;
+			}
+
+			.arrowGraphic {
+				width: 0;
+				height: 0;
+				border: 22px solid transparent;
+			}
+
+			&.u .arrowGraphic { border-bottom-color: rgba(255, 255, 255, 0.85); margin-bottom: 22px; }
+			&.d .arrowGraphic { border-top-color: rgba(255, 255, 255, 0.85); margin-top: 22px; }
+			&.l .arrowGraphic { border-right-color: rgba(255, 255, 255, 0.85); margin-right: 22px; }
+			&.r .arrowGraphic { border-left-color: rgba(255, 255, 255, 0.85); margin-left: 22px; }
+		}
+
+		// covers the frame during a modal split so the cursor can be tracked
+		.splitLayer {
+			position: absolute;
+			inset: 0;
+			z-index: 70;
+			outline: none;
+			cursor: crosshair;
+		}
+
+		.splitCursorRedLine {
+			position: absolute;
+			background: #FF3B30;
+
+			&.horizontal {
+				height: 4px;
+				width: 100%;
+			}
+
+			&.vertical {
+				width: 4px;
+				height: 100%;
+			}
+		}
+
+
+		// ---------------------------------------------------------------
+		// resize handles
+		// ---------------------------------------------------------------
+
+		.grabHandle {
+
+			position: absolute;
+			z-index: 80;
+			background: transparent;
+			transition: background-color 90ms ease-out;
+
+			&.vertical {
+				top: 4px;
+				bottom: 4px;
+				width: 8px;
+			}
+
+			&.horizontal {
+				left: 4px;
+				right: 4px;
+				height: 8px;
+			}
+
+			&.left { left: -4px; }
+			&.right { right: -4px; }
+			&.top { top: -4px; }
+			&.bottom { bottom: -4px; }
+
+			// an outer border of the whole system: nothing to resize against
+			&.extremity_edge {
+				pointer-events: none;
+			}
+
+			&.partial_edge, &.adjacent_edge {
+				&.vertical { cursor: ew-resize; }
+				&.horizontal { cursor: ns-resize; }
+
+				&:hover {
+					background: var(--theme-handleHoverColor);
+				}
+			}
+
+			&.selected_edge {
+				background: var(--theme-handleActiveColor);
+			}
+		}
+
+
+		// ---------------------------------------------------------------
+		// corner split/merge handles
+		// ---------------------------------------------------------------
+
+		.mergeHandle {
+
+			position: absolute;
+			width: 14px;
+			height: 14px;
+			z-index: 90;
+
+			// the diagonal hatch that says "grab me" in Blender
+			background:
+				repeating-linear-gradient(
+					var(--corner-angle, 45deg),
+					rgba(255, 255, 255, 0.55) 0 1px,
+					transparent 1px 4px
+				);
+			opacity: 0.35;
+			transition: opacity 90ms ease-out;
+
+			&:hover {
+				opacity: 1;
+			}
+
+			&.TL { top: 0; left: 0; cursor: nwse-resize; --corner-angle: 45deg; }
+			&.TR { top: 0; right: 0; cursor: nesw-resize; --corner-angle: -45deg; }
+			&.BL { bottom: 0; left: 0; cursor: nesw-resize; --corner-angle: -45deg; }
+			&.BR { bottom: 0; right: 0; cursor: nwse-resize; --corner-angle: 45deg; }
+		}
+	}
+
+
+	// content parented in by WindowHost
+	.appViewContainer {
+		position: absolute;
+		inset: 0;
+		overflow: auto;
+		background: var(--theme-windowBGColor);
+	}
+
+	.windowKindMissing {
+		padding: 12px;
+		color: #a00;
+		font-family: ui-monospace, monospace;
+		font-size: 12px;
+	}
+}

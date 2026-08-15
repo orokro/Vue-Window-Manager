@@ -11,11 +11,19 @@
 		"src/export.ts"
 	],
 	"private": false,
+	"workspaces": [
+		"packages/*",
+		"apps/*"
+	],
 	"scripts": {
 		"dev": "vite --host",
 		"build": "vite build",
 		"lint": "eslint ./src/. --ext .js,.vue",
-		"format": "eslint ./src/. --ext .js,.vue --fix"
+		"format": "eslint ./src/. --ext .js,.vue --fix",
+		"build:core": "npm run build --workspace @win-mgr/core",
+		"build:react": "npm run build --workspace react-win-mgr",
+		"typecheck": "npm run typecheck --workspace @win-mgr/core && npm run typecheck --workspace react-win-mgr",
+		"dev:react": "npm run dev --workspace @win-mgr/demo-react"
 	},
 	"peerDependencies": {
 		"vue": "^3.3.4"

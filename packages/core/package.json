@@ -1,0 +1,28 @@
+{
+	"name": "@win-mgr/core",
+	"version": "0.1.0",
+	"description": "Framework-agnostic window-manager core: geometric frame layout, edge map, split/merge, layout (de)serialization.",
+	"type": "module",
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		}
+	},
+	"files": [
+		"dist",
+		"src"
+	],
+	"scripts": {
+		"build": "vite build",
+		"typecheck": "tsc --noEmit"
+	},
+	"devDependencies": {
+		"typescript": "^5.4.0",
+		"vite": "^5.2.0",
+		"vite-plugin-dts": "^3.9.0"
+	}
+}

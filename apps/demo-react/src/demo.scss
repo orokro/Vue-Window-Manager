@@ -1,0 +1,95 @@
+.demoTopBar {
+
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	width: 100%;
+	color: #ddd;
+
+	.sep {
+		flex: 1;
+	}
+
+	button {
+		font: inherit;
+		font-size: 12px;
+		padding: 3px 10px;
+		border-radius: 4px;
+		border: 1px solid #555;
+		background: #3d3d46;
+		color: #eee;
+		cursor: pointer;
+
+		&:hover {
+			background: #4a4a55;
+		}
+	}
+}
+
+.demoWindow {
+
+	padding: 12px 14px;
+	color: #222;
+	font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+	font-size: 13px;
+	line-height: 1.45;
+
+	h3 {
+		margin: 0 0 6px;
+		font-size: 14px;
+	}
+
+	.hint {
+		margin: 0 0 10px;
+		color: #666;
+		font-size: 12px;
+	}
+
+	.notes {
+		width: 100%;
+		min-height: 90px;
+		font: inherit;
+		padding: 6px 8px;
+		border: 1px solid #bbb;
+		border-radius: 4px;
+		resize: vertical;
+	}
+
+	.counterRow {
+
+		display: flex;
+		align-items: center;
+		gap: 10px;
+
+		button {
+			width: 30px;
+			height: 30px;
+			font-size: 16px;
+			border-radius: 4px;
+			border: 1px solid #bbb;
+			background: #fff;
+			cursor: pointer;
+		}
+
+		.count {
+			min-width: 40px;
+			text-align: center;
+			font-size: 20px;
+			font-variant-numeric: tabular-nums;
+		}
+	}
+
+	.canvas {
+		max-width: 100%;
+		border-radius: 4px;
+	}
+
+	.readme {
+		margin: 0;
+		padding-left: 18px;
+
+		li {
+			margin-bottom: 6px;
+		}
+	}
+}
