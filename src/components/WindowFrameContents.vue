@@ -146,7 +146,9 @@ import MWITaskBar from './MWITaskBar.vue';
 import WindowFrame from '@classes/WindowFrame';
 import WindowManager from '@classes/WindowManager';
 import Window from '@classes/Window';
-import { showAddWindowMenu } from '@misc/frameMenus';
+
+// menus
+import { showAddWindowMenu } from '@menus/frameMenus';
 
 // define our props
 const props = defineProps({

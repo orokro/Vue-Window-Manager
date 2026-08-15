@@ -69,8 +69,8 @@ import { inject } from 'vue';
 // classes
 import WindowFrame from '@classes/WindowFrame';
 
-// lib/misc
-import { showAddWindowMenu } from '@misc/frameMenus';
+// menus
+import { showAddWindowMenu } from '@menus/frameMenus';
 
 // define our props
 const props = defineProps({

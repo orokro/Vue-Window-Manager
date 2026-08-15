@@ -33,5 +33,6 @@ coverage
 npmls.txt
 project_tree.txt
 
-# misc folder
-misc/
+# misc folder (root-level scratch/art only - the leading slash is important:
+# a bare "misc/" would also match src/misc/ and silently un-track source files)
+/misc/

@@ -42,6 +42,6 @@
 		],
 		"vue/no-mutating-props": "off",
 		"no-constant-condition": "off",
-		"indent": "off",
+		"indent": "off"
 	}
 }
