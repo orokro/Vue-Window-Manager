@@ -29,9 +29,10 @@ const layout: Layout = [
 		top: 0, left: 0, bottom: 1080, right: 1920,
 	},
 	{
+		// a tabbed frame with several tabs, to exercise reordering and tear-off
 		name: 'main',
-		style: FRAME_STYLE.SINGLE,
-		windows: ['readme'],
+		style: FRAME_STYLE.TABBED,
+		windows: ['readme', 'notes', 'counter', 'canvas'],
 		left: 0,
 		right: ['ref', 'window.right-620'],
 		top: 0,
@@ -47,9 +48,10 @@ const layout: Layout = [
 		bottom: ['ref', 'window.bottom'],
 	},
 	{
+		// a second tabbed frame, so torn windows have somewhere to be dropped
 		name: 'sideTop',
-		style: FRAME_STYLE.SINGLE,
-		windows: ['counter'],
+		style: FRAME_STYLE.TABBED,
+		windows: ['counter', 'canvas'],
 		left: ['ref', 'main.right'],
 		right: ['ref', 'window.right'],
 		top: 0,

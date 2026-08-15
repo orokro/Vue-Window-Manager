@@ -14,6 +14,8 @@ import './styles.scss';
 export { WindowManagerView, type WindowManagerProps, type WindowManagerHandle } from './WindowManagerView';
 export { WindowFrameView } from './WindowFrameView';
 export { WindowHost } from './WindowHost';
+export { TabStrip, SingleTitleBar } from './TabStrip';
+export { WindowDragLayer } from './WindowDragLayer';
 
 export {
 	useWindowManager,

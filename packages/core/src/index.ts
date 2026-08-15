@@ -27,6 +27,13 @@ export { WindowManager, type WindowManagerOptions, type SplitFillMode, type Spli
 export { WindowFrame, type WindowFrameOptions, type RemoveWindowOptions } from './WindowFrame';
 export { Window, type WindowPosition, type WindowSize } from './Window';
 export { EdgeMap, type EdgeEntry, type PreferredPositionsCache } from './EdgeMap';
+export {
+	WindowDragSystem,
+	type DropRegion,
+	type DropTarget,
+	type DragOperation,
+	type DropPreview,
+} from './WindowDragSystem';
 export { WindowLayoutHelper } from './WindowLayoutHelper';
 export { AvailableWindowList } from './AvailableWindowList';
 export { DragHelper, type DragHandlers, type DragToken, type Point } from './DragHelper';

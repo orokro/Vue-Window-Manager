@@ -20,6 +20,7 @@ import {
 } from '@win-mgr/core';
 import { useWindowManager, type ReactWindow, type ReactWindowFrame } from './context';
 import { useReactive } from './useReactive';
+import { SingleTitleBar, TabStrip } from './TabStrip';
 
 
 export interface WindowFrameViewProps {
@@ -335,9 +336,15 @@ export function WindowFrameView({ frame }: WindowFrameViewProps): JSX.Element {
 
 				{style === FRAME_STYLE.SINGLE && (
 					<div className="frameHeader">
-						<div className="singleTitle">
-							<FrameTitle frame={frame} />
-						</div>
+						<SingleTitleBar frame={frame} />
+					</div>
+				)}
+
+				{style === FRAME_STYLE.TABBED && (
+					<div className="frameHeader tabbed">
+						<TabStrip frame={frame} />
+						<div className="gradientFade left" />
+						<div className="gradientFade right" />
 					</div>
 				)}
 
@@ -464,15 +471,3 @@ function WindowSlot({ window: win, visible }: WindowSlotProps): JSX.Element {
 }
 
 
-/**
- * The title shown by a SINGLE-style frame's header.
- */
-function FrameTitle({ frame }: { frame: ReactWindowFrame }): JSX.Element {
-
-	const title = useReactive(() => {
-		const win = frame.windowsRef.value[0];
-		return (win !== undefined) ? win.titleRef.value : '';
-	});
-
-	return <>{title}</>;
-}

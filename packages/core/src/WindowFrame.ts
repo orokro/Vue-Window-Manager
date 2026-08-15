@@ -305,8 +305,17 @@ export class WindowFrame<TComponent = unknown> {
 	 * A SINGLE frame holds one window at a time, so anything already here is displaced.
 	 *
 	 * @param newWin - the window to add
+	 * @param options - `index` to insert at a specific tab position (default: append),
+	 *                  `activate` to make it the visible tab (default: true). Layout
+	 *                  loading passes activate:false so a multi-window frame opens on
+	 *                  its FIRST tab rather than whichever one happened to load last.
 	 */
-	addWindow(newWin: Window<TComponent>): void {
+	addWindow(
+		newWin: Window<TComponent>,
+		options: { index?: number; activate?: boolean } = {},
+	): void {
+
+		const activate = options.activate ?? true;
 
 		if (this.frameStyle.peek() === FRAME_STYLE.SINGLE) {
 
@@ -317,10 +326,53 @@ export class WindowFrame<TComponent = unknown> {
 			this.windows = [];
 		}
 
-		this.windows = [...this.windows, newWin];
+		// insert at a position, or append
+		const next = this.windows.filter(w => w !== newWin);
+		const at = (options.index !== undefined)
+			? Math.max(0, Math.min(options.index, next.length))
+			: next.length;
+
+		next.splice(at, 0, newWin);
+
+		this.windows = next;
 		this.windowsRef.value = this.windows;
 
 		newWin.frameRef.value = this;
+
+		if (activate || this.currentTab.peek() === null)
+			this.currentTab.value = newWin.windowID;
+	}
+
+
+	/**
+	 * Moves a window this frame already holds to a different tab position.
+	 *
+	 * Tab order IS `this.windows` order - there's no separate ordering model to keep in
+	 * step, which is what lets a drag-reorder survive re-renders and serialisation for
+	 * free.
+	 *
+	 * @param win - a window already in this frame
+	 * @param index - where it should end up
+	 * @returns true if the order actually changed
+	 */
+	reorderWindow(win: Window<TComponent>, index: number): boolean {
+
+		const from = this.windows.indexOf(win);
+		if (from < 0)
+			return false;
+
+		const without = this.windows.filter(w => w !== win);
+		const to = Math.max(0, Math.min(index, without.length));
+
+		if (to === from)
+			return false;
+
+		without.splice(to, 0, win);
+
+		this.windows = without;
+		this.windowsRef.value = this.windows;
+
+		return true;
 	}
 
 
@@ -408,7 +460,7 @@ export class WindowFrame<TComponent = unknown> {
 			noMerge = true;
 
 		if (!noMerge && this.frameStyle.peek() !== FRAME_STYLE.MWI && this.windows.length <= 0)
-			this._collapseIntoNeighbor();
+			this.collapseIntoNeighbor();
 
 		if (!noCull)
 			this.mgr.cullOrphanedWindows();
@@ -448,7 +500,7 @@ export class WindowFrame<TComponent = unknown> {
 	 * Edges are tried right, bottom, left, top - the same order as the original, which
 	 * biases collapse towards pulling content leftward/upward.
 	 */
-	private _collapseIntoNeighbor(): void {
+	collapseIntoNeighbor(): void {
 
 		const order: ReadonlyArray<{ check: Edge; opposite: Edge }> = [
 			{ check: EDGE.RIGHT, opposite: EDGE.LEFT },

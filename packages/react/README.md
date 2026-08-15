@@ -3,8 +3,8 @@
 A Blender-style tiling window manager for React. Frames split, merge and resize with
 no gaps and no overlaps — and windows keep their DOM alive when they move.
 
-> Status: early. The layout engine works; tabs, floating windows and drag-between-frames
-> are not implemented yet.
+> Status: early. Layout, tabs and drag-and-drop work. Floating (MWI) windows and
+> context menus are not implemented yet.
 
 ```sh
 npm install react-win-mgr
@@ -78,6 +78,17 @@ ref.current.getManager();         // the core WindowManager, for anything else
 - **Split** — drag *inward* from a corner handle, then click to place the cut.
 - **Merge** — drag *outward* from a corner handle toward the neighbour to absorb.
 - Reversing direction mid-drag swaps between the two.
+- **Reorder tabs** — drag a tab sideways. It sorts in place while the others slide,
+  and it stays put in its frame.
+- **Tear off** — keep pulling until the tab leaves the strip. Drop on another frame's
+  tab strip to dock, or near a frame's edge to split that frame.
+
+### Tabs behave like Chrome's
+
+Dragging a tab horizontally reorders it and nothing else; the window only tears out
+once you pull it clear of the strip. Most React dock libraries tear on the first pixel
+of movement, which is simpler to build and makes reordering impossible to do by feel.
+The threshold is `manager.tabTearThreshold` (30px) if you want it tighter or looser.
 
 ## Why windows don't remount
 

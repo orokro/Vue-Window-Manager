@@ -34,6 +34,7 @@ import {
 } from './context';
 import { useReactive } from './useReactive';
 import { WindowFrameView } from './WindowFrameView';
+import { WindowDragLayer } from './WindowDragLayer';
 import { WindowHost } from './WindowHost';
 import { themeToCssVars, type ThemeOverrides } from './theme';
 
@@ -184,6 +185,10 @@ export const WindowManagerView = forwardRef<WindowManagerHandle, WindowManagerPr
 							{frames.map(frame => (
 								<WindowFrameView key={frame.frameID} frame={frame} />
 							))}
+
+							{/* sits inside the frame container so its coordinates are
+							    the same ones the core's hit testing works in */}
+							<WindowDragLayer />
 						</div>
 					</div>
 

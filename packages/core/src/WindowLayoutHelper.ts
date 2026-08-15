@@ -169,11 +169,13 @@ export class WindowLayoutHelper {
 				if (state !== undefined && state !== null)
 					win.restoreData = state;
 
-				frame.addWindow(win);
+				// activate:false so a multi-tab frame opens on its FIRST tab rather than
+				// whichever one happened to be loaded last
+				frame.addWindow(win, { activate: false });
 			}
 
 			// a tabbed frame should open showing something
-			if (frame.currentTab.peek() === null && frame.windows.length > 0)
+			if (frame.windows.length > 0)
 				frame.currentTab.value = frame.windows[0].windowID;
 		}
 

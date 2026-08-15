@@ -30,7 +30,7 @@ browser with no rebuild in between.
 - `signal.ts` — signal / effect / computed / batch / untracked / reactive. Keeps the
   `.value` shape the classes already used, so porting them was mostly an import swap.
 - `WindowManager`, `WindowFrame`, `Window`, `EdgeMap`, `WindowLayoutHelper`,
-  `AvailableWindowList`, `DragHelper`, `utils`.
+  `AvailableWindowList`, `DragHelper`, `WindowDragSystem`, `utils`.
 - No framework imports anywhere. `AvailableWindowList<TComponent>` is generic over
   whatever a "component" is, so the same core can drive Vue/Svelte/Angular later.
 
@@ -41,11 +41,13 @@ browser with no rebuild in between.
 - `WindowHost` — the stable-host-div portal (see below).
 - `WindowManagerView`, `WindowFrameView` — frames, resize handles, corner
   split/merge handles, modal split overlay, theme variables.
+- `TabStrip`, `WindowDragLayer`, `measureText`, `coords`.
 
 **Working:** frame layout, edge-drag resize with transitive edge selection, corner-drag
-split and merge with live preview, SINGLE-style frames, layout load/save, theming.
+split and merge with live preview, SINGLE and TABBED frames, Chrome-style tab
+reordering and tear-off, drag-between-frames, drop-to-split, layout load/save, theming.
 
-**Not yet:** tabs, MWI, drag-between-frames, context menus, empty-frame picker.
+**Not yet:** MWI, context menus, empty-frame picker, hamburger menu.
 
 ---
 
@@ -116,13 +118,74 @@ runs.
 
 ---
 
+## Slice 2 — tabs
+
+### 6. The tab gesture
+
+The behaviour being reproduced is Chrome's: horizontal movement reorders in place while
+the neighbours slide out of the way, and the tab does not tear out of the frame until
+it is pulled far enough VERTICALLY to genuinely leave the strip. `tabTearThreshold`
+(30px) is the number that decides it. dockview / rc-dock / FlexLayout all tear on first
+movement, which is much easier and feels cheap.
+
+Mechanically:
+
+- Tabs are absolutely positioned, not flexed, because a dragged tab has to sit at an
+  arbitrary x. Widths come from canvas text measurement (`measureText.ts`).
+- `transition: left 0.3s` on `.tab` is what makes displaced tabs glide. The tab under
+  the cursor sets `transition: left 0s` so it tracks the pointer exactly.
+- Reordering compares the dragged tab's LEFT EDGE against the resting left edges of the
+  others — the same comparison the Vue version made when it sorted the whole tab array
+  by x on every move.
+- **Tab order IS `frame.windows` order.** There is no parallel ordering model, so a
+  reorder survives re-render and serialisation with no extra bookkeeping. The Vue
+  version kept `order` on a component-local tab array, which is why its `updateTabs`
+  had to reassign and re-sort on every pass.
+
+### 7. Hit testing is geometry now
+
+The original rendered a lattice of invisible `.dropTarget` divs during a drag, found
+them with `document.elementFromPoint()`, and read the frame ID and region back out of
+HTML attributes. `WindowDragSystem.hitTest()` asks the geometry instead — the manager
+already knows every frame's rect to the pixel. Faster, unit-testable with no DOM, and
+the renderer no longer materialises elements purely so they can be hit.
+
+The region bands reproduce the original CSS exactly (sides 15% capped at 80px, ends 25%
+capped at 80px, ends stacked above sides) so a corner still resolves to a horizontal
+split.
+
+### 8. Tearing no longer collapses the source frame mid-drag
+
+**Deliberate deviation.** The original tore with merge enabled, so pulling the last tab
+out of a frame made that frame evaporate the instant the drag began — and if you then
+dropped on nothing, it put the window back into a frame that no longer existed. Here
+the source frame stays while you drag and is collapsed on drop instead, if it is still
+empty. Same end state, no orphan, and the layout does not rearrange itself underneath a
+gesture in progress. Flip it in `WindowDragSystem.tearWindow` if the original timing is
+preferred.
+
+Also: a cancelled drag returns the window to its original tab INDEX, not the end of the
+strip.
+
+### 9. Coordinate spaces
+
+`frame.screenPos` has its origin at the frame container's PADDING box, because that is
+where an absolutely positioned child starts. `getBoundingClientRect()` returns the
+BORDER box. The container has a border, so converting a pointer event needs
+`clientLeft` / `clientTop` subtracted too — see `coords.ts`. Being a couple of pixels
+out looks like it works until you test hit detection near an edge.
+
+`tabStripHeight` on the manager (25) must agree with `.frameHeader` in the stylesheet,
+since the core hit-tests the strip geometrically rather than measuring the DOM.
+
+---
+
 ## Next slice
 
-Tabs, done properly: in-strip drag reordering, and tear-off **only** once the pointer
-leaves the strip. That ordering is the whole feel and the reason the other React dock
-libraries feel cheap — they tear on first movement because it's easier.
+MWI (floating windows): free positioning and resize, z-order, desktop panning,
+optional task bar and start menu, minimise. Most of the state is already on `Window`
+(`position`, `size`, `minimized`) and on `WindowFrame` (`mwiDragX/Y`, `focusedWindowID`,
+`focusWindow`), so this is largely a rendering and gesture job.
 
-Needs, roughly: `WindowDragSystem` ported to core, a drag layer component, the
-drop-target regions, canvas text measurement for tab widths, and the "fantom tab"
-placeholder. Hit-testing is worth replacing with geometry math against `screenPos`
-rather than porting `document.elementFromPoint` — the manager already knows every rect.
+After that: context menus (needs a headless menu library to replace
+`@imengyu/vue3-context-menu`), the empty-frame picker, and the hamburger menu.

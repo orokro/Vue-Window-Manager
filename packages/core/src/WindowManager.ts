@@ -21,6 +21,7 @@ import { DragHelper } from './DragHelper';
 import { EdgeMap, type EdgeEntry } from './EdgeMap';
 import { Window } from './Window';
 import { WindowFrame } from './WindowFrame';
+import { WindowDragSystem } from './WindowDragSystem';
 import { WindowLayoutHelper } from './WindowLayoutHelper';
 import { rangeOverlap, RANGE_OVERLAP } from './utils';
 import {
@@ -76,6 +77,22 @@ export class WindowManager<TComponent = unknown> {
 	/** Space reserved at the bottom so the lowest grab handles stay reachable, in px. */
 	bottomGutter = 4;
 
+	/** Height of a tabbed frame's tab strip, in px. Must match the stylesheet. */
+	tabStripHeight = 25;
+
+	/**
+	 * How far a tab must move VERTICALLY before it tears out of its strip, in px.
+	 *
+	 * This is the number that makes these tabs feel like Chrome's rather than like
+	 * every other dock library's: horizontal movement only ever reorders, and a tab
+	 * refuses to leave its strip until you genuinely pull it away. Tearing on first
+	 * movement is far easier to implement and feels cheap.
+	 */
+	tabTearThreshold = 30;
+
+	/** How far a SINGLE frame's title bar must move, in any direction, to tear. */
+	titleTearThreshold = 10;
+
 
 	// ---- contents ----
 
@@ -93,6 +110,7 @@ export class WindowManager<TComponent = unknown> {
 
 	readonly edgeMap: EdgeMap<TComponent>;
 	readonly dragHelper: DragHelper;
+	readonly windowDragSystem: WindowDragSystem<TComponent>;
 
 
 	// ---- transient UI state ----
@@ -141,6 +159,7 @@ export class WindowManager<TComponent = unknown> {
 
 		this.edgeMap = new EdgeMap<TComponent>(this);
 		this.dragHelper = new DragHelper();
+		this.windowDragSystem = new WindowDragSystem<TComponent>(this);
 
 		this.isReady = signal(false);
 		this.frameFocusID = signal<string | null>(null);
