@@ -21,6 +21,10 @@ import {
 import { useWindowManager, type ReactWindow, type ReactWindowFrame } from './context';
 import { useReactive } from './useReactive';
 import { SingleTitleBar, TabStrip } from './TabStrip';
+import { MwiSurface } from './MwiSurface';
+import { EmptyFrameMenu } from './EmptyFrameMenu';
+import { useMenu } from './Menu';
+import { buildFrameMenu } from './frameMenus';
 
 
 export interface WindowFrameViewProps {
@@ -35,6 +39,7 @@ type Direction = 'u' | 'd' | 'l' | 'r';
 export function WindowFrameView({ frame }: WindowFrameViewProps): JSX.Element {
 
 	const mgr = useWindowManager();
+	const { openMenu } = useMenu();
 
 	const pos = useReactive(() => frame.screenPos.value);
 	const style = useReactive(() => frame.frameStyle.value);
@@ -318,6 +323,20 @@ export function WindowFrameView({ frame }: WindowFrameViewProps): JSX.Element {
 	};
 
 
+	/**
+	 * Raises the frame's menu at the cursor.
+	 *
+	 * @param ev - the pointer event
+	 */
+	const onHamburgerPointerDown = (ev: React.PointerEvent<HTMLDivElement>): void => {
+
+		ev.preventDefault();
+		ev.stopPropagation();
+
+		openMenu(buildFrameMenu(mgr, frame), ev.clientX, ev.clientY);
+	};
+
+
 	const isHorizontalSplit = (splitMode === SPLIT_MODE.HORIZONTAL);
 
 	return (
@@ -348,17 +367,31 @@ export function WindowFrameView({ frame }: WindowFrameViewProps): JSX.Element {
 					</div>
 				)}
 
-				<div className="frameContents">
-					{windows.map(win => (
-						<WindowSlot
-							key={win.windowID}
-							window={win}
-							visible={isWindowVisible(style, win, windows, currentTab)}
-						/>
-					))}
+				{/* the frame menu. Lives outside the header because MWI frames have no
+				    header but still need somewhere to change mode from. */}
+				<div
+					className="hamburgerMenu"
+					title="Frame options"
+					onPointerDown={onHamburgerPointerDown}
+				>
+					<div className="icon" />
+				</div>
 
-					{windows.length === 0 && (
-						<div className="emptyFrameHint">Empty frame</div>
+				<div className="frameContents">
+					{style === FRAME_STYLE.MWI ? (
+						<MwiSurface frame={frame} />
+					) : (
+						<>
+							{windows.map(win => (
+								<WindowSlot
+									key={win.windowID}
+									window={win}
+									visible={isWindowVisible(style, win, windows, currentTab)}
+								/>
+							))}
+
+							{windows.length === 0 && <EmptyFrameMenu frame={frame} />}
+						</>
 					)}
 				</div>
 

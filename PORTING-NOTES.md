@@ -41,13 +41,20 @@ browser with no rebuild in between.
 - `WindowHost` — the stable-host-div portal (see below).
 - `WindowManagerView`, `WindowFrameView` — frames, resize handles, corner
   split/merge handles, modal split overlay, theme variables.
-- `TabStrip`, `WindowDragLayer`, `measureText`, `coords`.
+- `TabStrip`, `WindowDragLayer`, `MwiSurface`, `EmptyFrameMenu`, `Menu`, `frameMenus`,
+  `measureText`, `coords`.
 
 **Working:** frame layout, edge-drag resize with transitive edge selection, corner-drag
-split and merge with live preview, SINGLE and TABBED frames, Chrome-style tab
-reordering and tear-off, drag-between-frames, drop-to-split, layout load/save, theming.
+split and merge with live preview, all three frame modes (SINGLE / TABBED / MWI),
+Chrome-style tab reordering and tear-off, drag-between-frames, drop-to-split, floating
+windows with move / resize / z-order / desktop panning, the frame hamburger menu, the
+empty-frame picker and merge arrows, layout load/save, theming.
 
-**Not yet:** MWI, context menus, empty-frame picker, hamburger menu.
+Still zero runtime dependencies beyond `@win-mgr/core`. 29.1 kB js + 3.5 kB css,
+gzipped.
+
+**Not yet:** MWI task bar, start menu and minimise; right-click menus on frame edges;
+serialising MWI window positions into a saved layout.
 
 ---
 
@@ -180,12 +187,80 @@ since the core hit-tests the strip geometrically rather than measuring the DOM.
 
 ---
 
+## Slice 3 — MWI, menus, empty frames
+
+### 10. The corner grips were mirrored
+
+The Blender hatch stripes run PERPENDICULAR to the corner's inward diagonal: a top-left
+corner is striped `/`, a top-right corner `\`. All four were inverted. Confirmed by
+reading the original `window_frame_corners.png` sprite pixel by pixel rather than by
+eye — the hatch direction is one of those things that reads as subtly wrong without
+being obvious about why.
+
+Watch the sign convention: in `repeating-linear-gradient` the angle is the direction the
+gradient TRAVELS, and the visible bands sit at right angles to it. So the angle in the
+CSS is the opposite of the stripe you see.
+
+### 11. Portal events don't bubble where you think
+
+Clicking a floating window's **body** didn't raise it, and the reason generalises.
+
+Window content is rendered through a portal. React dispatches events from a portal along
+the **React** tree, and a window's React parent is `WindowManagerView` — not the
+`MwiWindow` that draws its chrome. So a React `onPointerDown` on the window div never
+sees a click that landed on the window's own content.
+
+The DOM tree has no such gap (the host element really is a descendant), so the fix is a
+native `addEventListener` on the window element. **Anything else in this library that
+needs to observe activity inside a window has the same constraint** — reach for a native
+listener, not a React prop.
+
+### 12. `backdrop-filter` creates a containing block
+
+The submenu rendered at x=1868 on a 1280px viewport: present in the DOM, invisible on
+screen. `.winMgrMenu` carries a `backdrop-filter`, and a filtered element becomes the
+containing block for `position: fixed` descendants — so a submenu nested inside its
+parent item had its "viewport" coordinates resolved against the parent panel.
+
+Fixed by rendering every panel as a sibling of the root inside the (unfiltered) menu
+layer, with the stack of open levels held in `MenuOverlay`. Nesting a fixed-position
+popup inside a filtered ancestor is a trap worth remembering; `filter`, `transform`,
+`perspective` and `will-change` all do the same thing.
+
+### 13. Menu: hand-rolled, and why
+
+`@radix-ui/react-dropdown-menu` measures **30.9 kB gzipped across 26 packages** — more
+than this entire library. Measured, not guessed. `Menu.tsx` is ~380 lines with no
+dependencies and covers what's actually needed: open at a point, nest, tick, disable,
+separate, keyboard-navigate, dismiss.
+
+### 14. Cascade has to run after layout normalisation
+
+Floating windows placed during `loadLayout` were sized against frame geometry that was
+still in the layout's own 1920x1080 coordinate space, so they came out far too big for
+the real frame. `addWindow` now takes `cascade: false` during load, and
+`WindowLayoutHelper` cascades MWI frames once `computeFrameLayout()` has run.
+
+Two related things learned by watching it: sizing a cascaded window to "whatever is left
+from here to the edge" makes each one nest exactly inside the previous, so every window
+after the first is completely hidden — a fraction of the desktop works far better. And a
+window defaulting to 640x480 on a small frame covers the entire desktop, leaving no
+background to right-drag for panning.
+
+### 15. SINGLE closes the other windows
+
+Reverted to the Vue original's behaviour after Greg pointed out why it matters: a window
+kept alive but hidden in SINGLE mode has no tab, no task-bar entry and no way to reach
+it — so if it is playing audio or polling something, you have a process you can neither
+see nor stop. Better to be destructive and obvious. One window per frame, Blender-style.
+
+---
+
 ## Next slice
 
-MWI (floating windows): free positioning and resize, z-order, desktop panning,
-optional task bar and start menu, minimise. Most of the state is already on `Window`
-(`position`, `size`, `minimized`) and on `WindowFrame` (`mwiDragX/Y`, `focusedWindowID`,
-`focusWindow`), so this is largely a rendering and gesture job.
+MWI extras: the Windows-style task bar, the start-menu affordance, and per-window
+minimise/restore (they're coupled — minimise is only recoverable from the task bar).
 
-After that: context menus (needs a headless menu library to replace
-`@imengyu/vue3-context-menu`), the empty-frame picker, and the hamburger menu.
+Then: right-click menus on frame edges and the MWI background, and teaching
+`getLayoutObject` to persist floating window positions and sizes so an MWI arrangement
+survives a save/load round trip.

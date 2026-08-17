@@ -16,6 +16,10 @@ export { WindowFrameView } from './WindowFrameView';
 export { WindowHost } from './WindowHost';
 export { TabStrip, SingleTitleBar } from './TabStrip';
 export { WindowDragLayer } from './WindowDragLayer';
+export { MwiSurface } from './MwiSurface';
+export { EmptyFrameMenu } from './EmptyFrameMenu';
+export { MenuProvider, useMenu, type MenuItem } from './Menu';
+export { buildFrameMenu } from './frameMenus';
 
 export {
 	useWindowManager,

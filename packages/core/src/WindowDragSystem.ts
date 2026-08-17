@@ -194,8 +194,13 @@ export class WindowDragSystem<TComponent = unknown> {
 		if (style === FRAME_STYLE.TABBED && y < pos.t + stripHeight)
 			return { frame, region: 'tab', tabIndex: frame.windows.length };
 
-		// everything below the strip is the frame body
-		const bodyTop = pos.t + ((style === FRAME_STYLE.MWI) ? 0 : stripHeight);
+		// a floating desktop takes a drop anywhere in its body - carving an MWI frame
+		// in half on a drop would be a strange thing to want
+		if (style === FRAME_STYLE.MWI)
+			return { frame, region: 'frame', tabIndex: frame.windows.length };
+
+		// everything below the strip is the frame body (MWI already returned above)
+		const bodyTop = pos.t + stripHeight;
 		const width = pos.r - pos.l;
 		const height = pos.b - bodyTop;
 
@@ -252,7 +257,25 @@ export class WindowDragSystem<TComponent = unknown> {
 			case 'tab':
 				return { t: pos.t + stripHeight, b: pos.b, l: pos.l, r: pos.r, isTab: true };
 
-			default:
+			default: {
+
+				// over a floating desktop, preview the window where it would actually
+				// land rather than highlighting the whole frame
+				if (target.frame.frameStyle.peek() === FRAME_STYLE.MWI) {
+
+					const op = this.dragOperation.peek();
+					const at = this.dragPos.peek();
+					const size = op?.initialSize ?? { width: 320, height: 240 };
+
+					return {
+						t: at.y,
+						b: at.y + size.height,
+						l: at.x,
+						r: at.x + size.width,
+						isTab: false,
+					};
+				}
+
 				return {
 					t: pos.t + (isTabbed ? stripHeight : 0),
 					b: pos.b,
@@ -260,6 +283,7 @@ export class WindowDragSystem<TComponent = unknown> {
 					r: pos.r,
 					isTab: isTabbed,
 				};
+			}
 		}
 	}
 
@@ -311,6 +335,20 @@ export class WindowDragSystem<TComponent = unknown> {
 			} else if (target.region === 'frame' || target.region === 'tab') {
 
 				target.frame.addWindow(op.window, { index: target.tabIndex });
+
+				// dropping onto a floating desktop should leave the window where it was
+				// let go, not at some cascade position - so convert the drop point out
+				// of container space, through the frame's origin and its pan offset
+				if (target.frame.frameStyle.peek() === FRAME_STYLE.MWI) {
+
+					const framePos = target.frame.screenPos.peek();
+					const pos = this.dragPos.peek();
+
+					op.window.position.x = pos.x - framePos.l - target.frame.mwiDragX.peek();
+					op.window.position.y = pos.y - framePos.t - target.frame.mwiDragY.peek();
+
+					target.frame.focusWindow(op.window);
+				}
 
 			} else {
 

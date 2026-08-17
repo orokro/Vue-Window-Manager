@@ -153,6 +153,263 @@
 			overflow: clip;
 		}
 
+		// the frame menu button. Deliberately outside the header, because an MWI frame
+		// has no header but still needs a way back to another mode.
+		.hamburgerMenu {
+
+			position: absolute;
+			top: 4px;
+			right: 4px;
+			width: 18px;
+			height: 18px;
+			border-radius: 100px;
+			z-index: 100;
+			cursor: pointer;
+			background: var(--theme-hamburgerCircleColor);
+
+			.icon {
+				position: absolute;
+				inset: 4px 3px;
+				background:
+					linear-gradient(var(--theme-hamburgerIconColor) 0 0) 0 0 / 100% 2px no-repeat,
+					linear-gradient(var(--theme-hamburgerIconColor) 0 0) 0 50% / 100% 2px no-repeat,
+					linear-gradient(var(--theme-hamburgerIconColor) 0 0) 0 100% / 100% 2px no-repeat;
+			}
+
+			&:hover {
+				background: var(--theme-hamburgerCircleColorHover);
+
+				.icon {
+					background:
+						linear-gradient(var(--theme-hamburgerIconColorHover) 0 0) 0 0 / 100% 2px no-repeat,
+						linear-gradient(var(--theme-hamburgerIconColorHover) 0 0) 0 50% / 100% 2px no-repeat,
+						linear-gradient(var(--theme-hamburgerIconColorHover) 0 0) 0 100% / 100% 2px no-repeat;
+				}
+			}
+		}
+
+
+		// ---------------------------------------------------------------
+		// MWI - floating windows
+		// ---------------------------------------------------------------
+
+		.mwiSurface {
+
+			position: absolute;
+			inset: 0;
+			overflow: clip;
+			background-color: var(--theme-mwiBGColor);
+
+			// the dotted desktop, drawn rather than shipped as an asset. background-position
+			// is driven by the pan offset so the dots travel with the windows.
+			background-image: radial-gradient(rgba(255, 255, 255, 0.18) 1px, transparent 1px);
+			background-size: 20px 20px;
+		}
+
+		// everything that pans together
+		.mwiPanLayer {
+			position: absolute;
+			width: 0;
+			height: 0;
+		}
+
+		.mwiEmptyHint {
+			position: absolute;
+			inset: 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: var(--theme-tabTextColor);
+			font-size: 12px;
+			opacity: 0.7;
+			pointer-events: none;
+		}
+
+		.mwiWindow {
+
+			position: absolute;
+			border-radius: 6px;
+			background: var(--theme-windowBGColor);
+			box-shadow: 0 6px 22px rgba(0, 0, 0, 0.45);
+			overflow: visible;
+
+			.mwiTitleBar {
+
+				position: absolute;
+				inset: 0 0 auto 0;
+				height: 24px;
+				border-radius: 6px 6px 0 0;
+				background: var(--theme-frameHeaderColor);
+				color: var(--theme-windowTitleTextColor);
+				font-size: 13px;
+				cursor: move;
+				overflow: clip;
+
+				.icon {
+					position: absolute;
+					top: 2px;
+					left: 4px;
+					width: 20px;
+					height: 20px;
+					background-size: contain;
+					background-repeat: no-repeat;
+					pointer-events: none;
+				}
+
+				.titleText {
+					position: absolute;
+					inset: 4px 26px 0 8px;
+					text-align: center;
+					white-space: nowrap;
+					overflow: hidden;
+					text-overflow: ellipsis;
+					pointer-events: none;
+				}
+
+				.closeButton {
+					position: absolute;
+					top: 4px;
+					right: 5px;
+					width: 15px;
+					height: 15px;
+					border-radius: 100px;
+					font-size: 11px;
+					line-height: 15px;
+					text-align: center;
+					cursor: pointer;
+					background: var(--theme-closeButtonCircle);
+					color: var(--theme-closeButtonXColor);
+
+					&:hover {
+						background: var(--theme-closeButtonCircleHover);
+						color: var(--theme-closeButtonXColorHover);
+					}
+				}
+			}
+
+			.mwiContents {
+				position: absolute;
+				inset: 24px 0 0 0;
+				overflow: clip;
+				border-radius: 0 0 6px 6px;
+			}
+
+			.windowContents {
+				position: absolute;
+				inset: 0;
+			}
+
+			// grips overhang the window slightly so they're catchable
+			.mwiResizeHandle {
+
+				position: absolute;
+				z-index: 2;
+
+				&.left { top: 6px; bottom: 6px; left: -4px; width: 8px; cursor: ew-resize; }
+				&.right { top: 6px; bottom: 6px; right: -4px; width: 8px; cursor: ew-resize; }
+				&.top { left: 6px; right: 6px; top: -4px; height: 8px; cursor: ns-resize; }
+				&.bottom { left: 6px; right: 6px; bottom: -4px; height: 8px; cursor: ns-resize; }
+
+				&.tl { top: -4px; left: -4px; width: 12px; height: 12px; cursor: nwse-resize; }
+				&.tr { top: -4px; right: -4px; width: 12px; height: 12px; cursor: nesw-resize; }
+				&.bl { bottom: -4px; left: -4px; width: 12px; height: 12px; cursor: nesw-resize; }
+				&.br { bottom: -4px; right: -4px; width: 12px; height: 12px; cursor: nwse-resize; }
+			}
+		}
+
+
+		// ---------------------------------------------------------------
+		// empty frame: picker + merge arrows
+		// ---------------------------------------------------------------
+
+		.emptyFrameMenu {
+
+			position: absolute;
+			inset: 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			overflow: auto;
+
+			.pickerGrid {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 8px;
+				justify-content: center;
+				align-content: center;
+				padding: 28px;
+				max-width: 100%;
+			}
+
+			.pickerItem {
+
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				gap: 6px;
+				width: 88px;
+				padding: 10px 6px;
+				border-radius: 6px;
+				border: 1px solid rgba(255, 255, 255, 0.14);
+				background: rgba(255, 255, 255, 0.05);
+				color: var(--theme-windowTitleTextColor);
+				font: inherit;
+				font-size: 12px;
+				cursor: pointer;
+
+				&:hover {
+					background: rgba(255, 255, 255, 0.14);
+					border-color: rgba(255, 255, 255, 0.3);
+				}
+			}
+
+			.pickerIcon {
+				width: 28px;
+				height: 28px;
+				font-size: 24px;
+				line-height: 28px;
+				opacity: 0.7;
+			}
+
+			.pickerLabel {
+				text-align: center;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				max-width: 100%;
+			}
+
+			.pickerEmpty {
+				color: var(--theme-tabTextColor);
+				font-size: 12px;
+			}
+
+			// "how do I close a window?" - you don't, you let a neighbour have the space
+			.mergeArrow {
+
+				position: absolute;
+				width: 30px;
+				height: 22px;
+				border: none;
+				border-radius: 4px;
+				background: rgba(255, 255, 255, 0.12);
+				color: var(--theme-windowTitleTextColor);
+				font-size: 11px;
+				line-height: 22px;
+				cursor: pointer;
+
+				&:hover {
+					background: rgba(255, 255, 255, 0.3);
+				}
+
+				&.up { top: 6px; left: 50%; transform: translateX(-50%); }
+				&.down { bottom: 6px; left: 50%; transform: translateX(-50%); }
+				&.left { left: 6px; top: 50%; transform: translateY(-50%); width: 22px; height: 30px; }
+				&.right { right: 6px; top: 50%; transform: translateY(-50%); width: 22px; height: 30px; }
+			}
+		}
+
+
 		// ---------------------------------------------------------------
 		// tabs
 		// ---------------------------------------------------------------
@@ -425,28 +682,39 @@
 		.mergeHandle {
 
 			position: absolute;
-			width: 14px;
-			height: 14px;
+			width: 12px;
+			height: 12px;
 			z-index: 90;
 
-			// the diagonal hatch that says "grab me" in Blender
+			// The Blender hatch. The stripes run PERPENDICULAR to the corner's inward
+			// diagonal - so a top-left corner is striped "/" and a top-right corner is
+			// striped "\". (Checked against the original's window_frame_corners.png
+			// sprite pixel by pixel; getting this backwards reads as subtly wrong
+			// without being obvious about why.)
+			//
+			// In a repeating-linear-gradient the ANGLE is the direction the gradient
+			// travels, and the bands sit at right angles to it - so the angle here is
+			// the opposite of the stripe you see.
 			background:
 				repeating-linear-gradient(
-					var(--corner-angle, 45deg),
-					rgba(255, 255, 255, 0.55) 0 1px,
+					var(--corner-angle),
+					rgba(255, 255, 255, 0.6) 0 1px,
 					transparent 1px 4px
 				);
-			opacity: 0.35;
+			opacity: 0.3;
 			transition: opacity 90ms ease-out;
+
+			// split-or-merge, not resize, so the cursor shouldn't promise an axis
+			cursor: move;
 
 			&:hover {
 				opacity: 1;
 			}
 
-			&.TL { top: 0; left: 0; cursor: nwse-resize; --corner-angle: 45deg; }
-			&.TR { top: 0; right: 0; cursor: nesw-resize; --corner-angle: -45deg; }
-			&.BL { bottom: 0; left: 0; cursor: nesw-resize; --corner-angle: -45deg; }
-			&.BR { bottom: 0; right: 0; cursor: nwse-resize; --corner-angle: 45deg; }
+			&.TL { top: 0; left: 0; --corner-angle: -45deg; }   // stripes /
+			&.TR { top: 0; right: 0; --corner-angle: 45deg; }   // stripes \
+			&.BL { bottom: 0; left: 0; --corner-angle: 45deg; } // stripes \
+			&.BR { bottom: 0; right: 0; --corner-angle: -45deg; } // stripes /
 		}
 	}
 
@@ -544,5 +812,105 @@
 		color: #a00;
 		font-family: ui-monospace, monospace;
 		font-size: 12px;
+	}
+}
+
+
+/*
+	Menus live at the end of <body> rather than inside .windowManager, because a frame
+	clips its own overflow and a menu opened near an edge has to escape it. That means
+	these rules can't be nested under .windowManager like everything else - hence the
+	winMgr prefix on the class names.
+*/
+
+.winMgrMenuLayer {
+	position: fixed;
+	inset: 0;
+	z-index: 10000;
+
+	// only the panels themselves should catch the pointer; the rest of the screen stays
+	// live so a click-through dismiss feels immediate
+	pointer-events: none;
+}
+
+.winMgrMenu {
+
+	position: fixed;
+	min-width: 172px;
+	padding: 4px;
+	border-radius: 5px;
+	outline: none;
+	pointer-events: auto;
+
+	background: var(--theme-menuBGColor, rgba(0, 0, 0, 0.7));
+	backdrop-filter: blur(var(--theme-menuBlur, 2px));
+	box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
+
+	color: var(--theme-menuTextColor, #EFEFEF);
+	font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+	font-size: 13px;
+	user-select: none;
+
+	.menuItem {
+
+		position: relative;
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		padding: 5px 8px;
+		border-radius: 3px;
+		cursor: pointer;
+		white-space: nowrap;
+
+		&.active:not(.disabled) {
+			background: var(--theme-menuActiveBGColor, rgba(255, 255, 255, 0.8));
+			color: var(--theme-menuActiveTextColor, #000);
+		}
+
+		&.disabled {
+			color: var(--theme-menuDisabledTextColor, #999);
+			cursor: default;
+		}
+	}
+
+	.menuCheck {
+		width: 12px;
+		flex: none;
+		font-size: 11px;
+	}
+
+	.menuIcon {
+		display: flex;
+		width: 20px;
+		height: 20px;
+		flex: none;
+		align-items: center;
+		justify-content: center;
+
+		img {
+			max-width: 100%;
+			max-height: 100%;
+		}
+	}
+
+	.menuLabel {
+		flex: 1;
+	}
+
+	.menuArrow {
+		flex: none;
+		opacity: 0.7;
+		font-size: 15px;
+		line-height: 1;
+	}
+
+	.menuSeparator {
+		height: 1px;
+		margin: 4px 6px;
+		background: rgba(255, 255, 255, 0.18);
+	}
+
+	.subMenuAnchor {
+		display: none;
 	}
 }

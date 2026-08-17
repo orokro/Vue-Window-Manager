@@ -306,13 +306,16 @@ export class WindowFrame<TComponent = unknown> {
 	 *
 	 * @param newWin - the window to add
 	 * @param options - `index` to insert at a specific tab position (default: append),
-	 *                  `activate` to make it the visible tab (default: true). Layout
-	 *                  loading passes activate:false so a multi-window frame opens on
-	 *                  its FIRST tab rather than whichever one happened to load last.
+	 *                  `activate` to make it the visible tab (default: true),
+	 *                  `cascade` to place it on a floating desktop (default: true).
+	 *                  Layout loading turns both off: it wants the FIRST tab active
+	 *                  rather than whichever loaded last, and it can't place floating
+	 *                  windows yet because frames are still in the layout's own
+	 *                  coordinate space until `computeFrameLayout` normalises them.
 	 */
 	addWindow(
 		newWin: Window<TComponent>,
-		options: { index?: number; activate?: boolean } = {},
+		options: { index?: number; activate?: boolean; cascade?: boolean } = {},
 	): void {
 
 		const activate = options.activate ?? true;
@@ -338,6 +341,13 @@ export class WindowFrame<TComponent = unknown> {
 		this.windowsRef.value = this.windows;
 
 		newWin.frameRef.value = this;
+
+		// a window arriving on a floating desktop needs somewhere to float. This covers
+		// every route in - layout load, the frame menu, a drop - so none of them has to
+		// remember to place it. A drop sets an exact position straight after; this just
+		// guarantees nothing ever renders stacked at 0,0.
+		if ((options.cascade ?? true) && this.frameStyle.peek() === FRAME_STYLE.MWI && newWin.position.x === null)
+			this.cascadeWindows();
 
 		if (activate || this.currentTab.peek() === null)
 			this.currentTab.value = newWin.windowID;
@@ -386,14 +396,132 @@ export class WindowFrame<TComponent = unknown> {
 		if (this.windows.length <= 0)
 			return null;
 
-		if (this.frameStyle.peek() === FRAME_STYLE.TABBED) {
-			const tab = this.currentTab.peek();
-			const active = this.windows.find(w => w.windowID === tab);
-			if (active !== undefined)
-				return active;
+		// currentTab drives both TABBED and SINGLE. Using it for SINGLE too is what
+		// lets a frame flip between modes without losing which window you were looking
+		// at - and without having to destroy the other windows to enforce "single".
+		const active = this.windows.find(w => w.windowID === this.currentTab.peek());
+
+		return active ?? this.windows[0];
+	}
+
+
+	/**
+	 * Switches this frame between SINGLE, TABBED and MWI, fixing up whatever each mode
+	 * needs.
+	 *
+	 * Switching to SINGLE **closes** every window except the active one, Blender-style:
+	 * one window per frame, full stop. Keeping the others alive but hidden sounds
+	 * kinder and isn't - a hidden window has no tab, no task-bar entry and no way to
+	 * reach it, so if one is playing audio or polling something you have a process you
+	 * can neither see nor stop. Better to be destructive and obvious about it.
+	 *
+	 * @param style - the mode to switch to
+	 */
+	setFrameStyle(style: FrameStyle): void {
+
+		if (style === this.frameStyle.peek())
+			return;
+
+		// work out what survives BEFORE the mode changes, so getActiveWindow still
+		// resolves using the mode the user was actually looking at
+		const survivor = (style === FRAME_STYLE.SINGLE) ? this.getActiveWindow() : null;
+
+		this.frameStyle.value = style;
+
+		if (style === FRAME_STYLE.SINGLE) {
+
+			for (const win of [...this.windows]) {
+				if (win !== survivor)
+					this.removeWindow(win, { noMerge: true, noCull: true });
+			}
+
+			this.currentTab.value = survivor?.windowID ?? null;
+			this.mgr.cullOrphanedWindows();
+			return;
 		}
 
-		return this.windows[0];
+		if (style === FRAME_STYLE.MWI) {
+
+			// floating windows need somewhere to float
+			this.cascadeWindows();
+
+			const active = this.getActiveWindow();
+			if (active !== null)
+				this.focusWindow(active);
+
+			return;
+		}
+
+		// coming back to a docked mode: make sure something is on screen
+		if (this.currentTab.peek() === null && this.windows.length > 0)
+			this.currentTab.value = this.windows[0].windowID;
+
+		// a window minimised while floating would otherwise be invisible AND untabbable
+		for (const win of this.windows)
+			win.minimized.value = false;
+	}
+
+
+	/**
+	 * Gives any window without a position a staggered starting spot.
+	 *
+	 * Windows that already have coordinates are left alone, so this is safe to call
+	 * whenever the frame becomes (or gains) a floating desktop.
+	 */
+	cascadeWindows(): void {
+
+		const step = 30;
+		const dim = this.getFrameDim();
+
+		// carry on from wherever the existing windows left off, rather than piling new
+		// ones on top of them
+		let next = step;
+
+		for (const win of this.windows) {
+			if (win.position.x !== null)
+				next = Math.max(next, win.position.x + step);
+		}
+
+		for (const win of this.windows) {
+
+			if (win.position.x !== null)
+				continue;
+
+			const margin = 10;
+
+			// A window's default size is a desktop-ish 640x480, which on a small frame
+			// covers the whole desktop - burying every other window and leaving no
+			// background to right-drag for panning.
+			//
+			// Size it to a fraction of the desktop rather than "whatever is left from
+			// here to the edge": the latter makes each cascaded window exactly nest
+			// inside the previous one, so every window after the first is completely
+			// hidden. A consistent size means the stagger actually shows.
+			const width = Math.max(
+				this.mgr.smallestWidthOrHeight,
+				Math.min(win.size.width, Math.round(dim.width * 0.65)),
+			);
+			const height = Math.max(
+				this.mgr.smallestWidthOrHeight,
+				Math.min(win.size.height, Math.round(dim.height * 0.65)),
+			);
+
+			// wrap back to the top-left once the stagger would push a window off the
+			// desktop entirely
+			if (next + width + margin > dim.width && next !== step)
+				next = step;
+
+			win.size.width = width;
+			win.size.height = height;
+
+			// keep the whole window on the desktop, pulling it back if the stagger
+			// would hang it over an edge
+			win.position.x = Math.max(0, Math.min(next, dim.width - width - margin));
+			win.position.y = Math.max(0, Math.min(Math.round(next * 1.5), dim.height - height - margin));
+			win.position.z = next;
+
+			next += step;
+		}
 	}
 
 

@@ -58,9 +58,10 @@ const layout: Layout = [
 		bottom: ['ref', 'main.bottom'],
 	},
 	{
+		// a floating-window desktop
 		name: 'sideBottom',
-		style: FRAME_STYLE.SINGLE,
-		windows: ['canvas'],
+		style: FRAME_STYLE.MWI,
+		windows: ['canvas', 'counter'],
 		left: ['ref', 'main.right'],
 		right: ['ref', 'window.right'],
 		top: ['ref', 'main.bottom'],
@@ -78,6 +79,8 @@ export function App(): JSX.Element {
 			ref={mgrRef}
 			availableWindows={availableWindows}
 			defaultLayout={layout}
+			keepEmptyFrames
+			showMergeButtons
 			topBar={
 				<div className="demoTopBar">
 					<strong>react-win-mgr</strong>

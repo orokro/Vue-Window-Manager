@@ -36,6 +36,7 @@ import { useReactive } from './useReactive';
 import { WindowFrameView } from './WindowFrameView';
 import { WindowDragLayer } from './WindowDragLayer';
 import { WindowHost } from './WindowHost';
+import { MenuProvider } from './Menu';
 import { themeToCssVars, type ThemeOverrides } from './theme';
 
 
@@ -52,6 +53,12 @@ export interface WindowManagerProps {
 
 	/** Keep an emptied frame instead of collapsing it. Default false. */
 	keepEmptyFrames?: boolean;
+
+	/** Show merge-arrow buttons on an empty frame's adjacent edges. Default false. */
+	showMergeButtons?: boolean;
+
+	/** Let right-click-drag over a floating window's body pan the desktop. Default false. */
+	mwiPanFromWindowBody?: boolean;
 
 	/** Theme overrides. */
 	theme?: ThemeOverrides;
@@ -84,6 +91,8 @@ export const WindowManagerView = forwardRef<WindowManagerHandle, WindowManagerPr
 			defaultLayout = null,
 			splitMergeHandles = true,
 			keepEmptyFrames = false,
+			showMergeButtons = false,
+			mwiPanFromWindowBody = false,
 			theme,
 			className,
 			style,
@@ -121,6 +130,14 @@ export const WindowManagerView = forwardRef<WindowManagerHandle, WindowManagerPr
 		useEffect(() => {
 			mgr.keepEmptyFrames.value = keepEmptyFrames;
 		}, [mgr, keepEmptyFrames]);
+
+		useEffect(() => {
+			mgr.showMergeButtons.value = showMergeButtons;
+		}, [mgr, showMergeButtons]);
+
+		useEffect(() => {
+			mgr.mwiPanFromWindowBody.value = mwiPanFromWindowBody;
+		}, [mgr, mwiPanFromWindowBody]);
 
 		// hand the manager its container, and watch it for size changes.
 		//
@@ -174,6 +191,7 @@ export const WindowManagerView = forwardRef<WindowManagerHandle, WindowManagerPr
 
 		return (
 			<WindowManagerContext.Provider value={contextValue}>
+				<MenuProvider>
 				<div
 					className={`windowManager${className ? ` ${className}` : ''}`}
 					style={{ ...cssVars, ...style } as CSSProperties}
@@ -201,6 +219,7 @@ export const WindowManagerView = forwardRef<WindowManagerHandle, WindowManagerPr
 						<WindowHost key={win.windowID} window={win} penEl={penEl} />
 					))}
 				</div>
+				</MenuProvider>
 			</WindowManagerContext.Provider>
 		);
 	},

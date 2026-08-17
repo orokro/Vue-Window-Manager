@@ -170,8 +170,10 @@ export class WindowLayoutHelper {
 					win.restoreData = state;
 
 				// activate:false so a multi-tab frame opens on its FIRST tab rather than
-				// whichever one happened to be loaded last
-				frame.addWindow(win, { activate: false });
+				// whichever one happened to be loaded last. cascade:false because frame
+				// geometry is still in the layout's coordinate space at this point -
+				// floating windows get placed once it's been normalised, below.
+				frame.addWindow(win, { activate: false, cascade: false });
 			}
 
 			// a tabbed frame should open showing something
@@ -181,6 +183,13 @@ export class WindowLayoutHelper {
 
 		// everything is currently in the layout's own coordinate space - normalise it
 		mgr.edgeMap.computeFrameLayout();
+
+		// NOW frames know their real pixel size, so floating windows can be placed and
+		// sized against the desktop they actually landed on
+		for (const frame of mgr.frames) {
+			if (frame.frameStyle.peek() === FRAME_STYLE.MWI)
+				frame.cascadeWindows();
+		}
 	}
 
 
